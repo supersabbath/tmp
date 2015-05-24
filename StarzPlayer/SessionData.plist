@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>videoURL</key>
+	<string>http://mena-cdn-lb.aws.playco.com/MGM/GIRLWITHTHEDRAGONTATTOOY2011M/GIRLWITHTHEDRAGONTATTOOY2011M.m3u8?faxs=1</string>
+	<key>token</key>
+	<string>bL5hYSREAO9GN046pqn8YVD40JDCsCB6</string>
+	<key>User</key>
+	<string>fernando.canon@playco.com </string>
+	<key>password</key>
+	<string>password</string>
+</dict>
+</plist>

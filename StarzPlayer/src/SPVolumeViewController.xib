@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6751" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SPVolumeViewController">
+            <connections>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+                <outlet property="volumeBaseView" destination="ZPs-ke-sEU" id="0Bn-fn-pHq"/>
+                <outlet property="volumeControlView" destination="Xwz-vI-KrN" id="48J-xf-8u3"/>
+                <outlet property="volumeFrontView" destination="09P-gp-IST" id="8Jz-2q-2pJ"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="147" height="291"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xwz-vI-KrN" userLabel="Volume View">
+                    <rect key="frame" x="0.0" y="0.0" width="72" height="241"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wf2-zT-rgj" userLabel="Mute Button">
+                            <rect key="frame" x="0.0" y="0.0" width="72" height="32"/>
+                            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            <state key="normal" image="btn_player_voltop_n.png">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <state key="highlighted" image="btn_player_voltop_p.png"/>
+                        </button>
+                        <view contentMode="bottom" horizontalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ZPs-ke-sEU" userLabel="MPVol Container">
+                            <rect key="frame" x="12" y="48" width="48" height="120"/>
+                            <subviews>
+                                <view contentMode="bottom" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="09P-gp-IST" userLabel="FrontView">
+                                    <rect key="frame" x="8" y="0.0" width="48" height="120"/>
+                                    <color key="backgroundColor" red="1" green="0.91614064679999996" blue="0.70325556840000003" alpha="1" colorSpace="calibratedRGB"/>
+                                </view>
+                            </subviews>
+                            <color key="backgroundColor" red="0.65714164399999997" green="0.60203417079999999" blue="0.46213852039999997" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="48" id="4bB-du-6DX"/>
+                                <constraint firstAttribute="height" constant="120" id="56D-cC-KNl"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="wf2-zT-rgj" firstAttribute="left" secondItem="Xwz-vI-KrN" secondAttribute="left" id="Fel-df-pvv"/>
+                        <constraint firstAttribute="centerX" secondItem="ZPs-ke-sEU" secondAttribute="centerX" id="TMw-Bs-eC9"/>
+                        <constraint firstAttribute="right" secondItem="wf2-zT-rgj" secondAttribute="right" id="Yt0-h1-uhr"/>
+                        <constraint firstAttribute="centerX" secondItem="wf2-zT-rgj" secondAttribute="centerX" id="dt9-rh-aaN"/>
+                        <constraint firstItem="wf2-zT-rgj" firstAttribute="top" secondItem="Xwz-vI-KrN" secondAttribute="top" id="gFa-h1-RqU"/>
+                        <constraint firstAttribute="width" constant="72" id="qh8-bs-j5a"/>
+                        <constraint firstItem="ZPs-ke-sEU" firstAttribute="top" secondItem="wf2-zT-rgj" secondAttribute="bottom" constant="16" id="rLM-Le-wrz"/>
+                        <constraint firstAttribute="height" constant="241" id="v6m-j1-Q4c"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="Xwz-vI-KrN" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" symbolic="YES" id="D3f-Cx-MOi"/>
+                <constraint firstItem="Xwz-vI-KrN" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="gFR-6Y-uoB"/>
+                <constraint firstItem="Xwz-vI-KrN" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="tvT-TX-fPi"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <variation key="default">
+                <mask key="constraints">
+                    <exclude reference="D3f-Cx-MOi"/>
+                </mask>
+            </variation>
+            <point key="canvasLocation" x="6.5" y="267.5"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="btn_player_voltop_n.png" width="32" height="32"/>
+        <image name="btn_player_voltop_p.png" width="32" height="32"/>
+    </resources>
+</document>
