@@ -11,7 +11,6 @@ extern NSString * const fontId;
 NSString * const fontId = @STRINGIFY(fontId);
 
 #define FONT_REG(fontId, fontName, fontSize) \
-DLog(@"%s", fontName);\
 [FontUtil registerFont:[UIFont fontWithName:@fontName size:fontSize] forKey:fontId];
 
 @interface FontUtil : NSObject

@@ -8,6 +8,8 @@
 
 #import <MBProgressHUD.h>
 #import "UIColor+PSColors.h"
+#import "PSUITools.h"
+
 @implementation PSUITools
 
 

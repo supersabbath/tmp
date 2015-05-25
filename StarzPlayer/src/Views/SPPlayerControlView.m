@@ -41,7 +41,6 @@
     [playButton setImage:[UIImage imageNamed:@"btn_player_play_p.png"] forState:UIControlStateNormal];
     
 
-
     [[UISlider appearance] setMaximumTrackImage:maxImage forState:UIControlStateNormal];
     [[UISlider appearance] setMinimumTrackImage:minImage forState:UIControlStateNormal];
     [scrubber setThumbImage:[UIImage imageNamed:@"btn_player_playhead_n.png"] forState:UIControlStateNormal];
@@ -154,7 +153,7 @@
 
 -(void) changeViewToLoadingMode
 {
-    [MBProgressHUD showHUDAddedTo:self animated:YES];
+   // [MBProgressHUD showHUDAddedTo:self animated:YES];
 }
 
 

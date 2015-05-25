@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <SabreTache-Core/FontUtil.h>
+#import "FontUtil.h"
 
 extern const CGFloat PSFontXXXS;
 extern const CGFloat PSFontXXS;

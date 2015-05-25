@@ -12,17 +12,54 @@
 #import "SPPlayerControlView.h"
 #import "PSScrubbingCollectionViewController.h"
 #import "SPVolumeViewController.h"
+// Accedo Utils
+#import "UIButton+Utils.h"
+// Views
+#import "PSContainerView.h"
 
 #define METADATA_TABLEVIE_TAG 843
+
+#ifdef UI_USER_INTERFACE_IDIOM
+#define IS_IPAD_IDIOM \
+(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+#else
+#define IS_IPAD_IDIOM NO
+#endif
+
 
 @interface SPPlayerViewController ()
 
 @property (nonatomic, strong) PTMediaPlayer *player;
+@property (nonatomic, strong) NSTimer * hideUIElementsTimer;
+
+/*
+ View Containes for the differen view Controllers
+ */
 @property (nonatomic, weak) IBOutlet SPPlayerControlView *controlView;
-@property (weak, nonatomic) IBOutlet UIView *playerContainerView;
-@property (nonatomic, strong) MetadataTableViewController *metadataTableViewController;
-@property (weak, nonatomic) IBOutlet UIView *thumbsContainer;
+@property (weak, nonatomic) IBOutlet UIView *playerContainerView;   //  --> PTMediaPlayer
+@property (weak, nonatomic) IBOutlet PSContainerView *thumbsContainer;       //  --> PSScrubbingCollectionViewController
+@property (weak, nonatomic) IBOutlet PSContainerView *volumenContainer;      //  --> SPVolumeViewController
+@property (weak, nonatomic) IBOutlet PSContainerView *topControlsContainer;
+@property (nonatomic, strong) NSMutableArray *containerViewsArray;
+/* UIElements in top container*/
+@property (weak, nonatomic) IBOutlet UIButton *backButton;
+@property (weak, nonatomic) IBOutlet UILabel *mainTitleLabel;
+@property (weak, nonatomic) IBOutlet UILabel *subtitleLabel;
+@property (weak, nonatomic) IBOutlet UIButton *episodeSelectorButton;
+
+/*
+ Constrains for addjusting the size to iphone view
+ */
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *volumeContainerHeightConstrain;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *volumenContainerWidthConstrain;
+
+/*
+ Controllers for the different features of the playert
+ */
+@property (strong, nonatomic) SPVolumeViewController *volumeViewController;
 @property (strong, nonatomic)  PSScrubbingCollectionViewController *scrubbCollectionView;
+@property (nonatomic, strong) MetadataTableViewController *metadataTableViewController;
+
 
 @end
 
@@ -33,28 +70,82 @@
     self = [super init];
     if (self) {
         _currentItem = videoItem;
+        _containerViewsArray = [@[] mutableCopy];
     }
     return self;
 }
 
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundle
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nil];
+    if (self) {
+        _containerViewsArray = [@[] mutableCopy];
+
+    }
+    return self;
+}
+-(void) dealloc
+{
+    [self.hideUIElementsTimer invalidate];
+}
+
 #pragma mark ViewController Lifecycle
+
+- (void)bringControlViewsToFrontMostPosition
+{
+    [self.playerContainerView bringSubviewToFront:_topControlsContainer];
+    [self.playerContainerView bringSubviewToFront:_controlView];
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self.view bringSubviewToFront:_controlView];
+
+    [self setUp];
+#warning FER: OJO
     [self showScrubbingThumbnails];
     [_scrubbCollectionView fetchScrubbingImagesForULR:@"http://mena-cdn-lb.aws.playco.com/MGM/GIRLWITHTHEDRAGONTATTOOY2011M/GIRLWITHTHEDRAGONTATTOOY2011M.fs"];
 }
 
-- (void)didReceiveMemoryWarning {
+
+-(void) setUp
+{
+    [_containerViewsArray addObjectsFromArray:@[_metadataContainerView,_thumbsContainer,_volumenContainer,_topControlsContainer,_controlView]];
+    
+    if (LEFTTORIGHTLANG)
+    {
+        [self.backButton setProvidedAssetAsImage:IS_IPAD ? @"ico_arrowleft_32_c1_": @"ico_arrowleft_24_c1_"];
+    }
+    else
+    {
+        [self.backButton setProvidedAssetAsImage:IS_IPAD ? @"ico_arrowright_32_c1_": @"ico_arrowright_24_c1_"];
+    }
+}
+- (void)didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
+    // TODO: remo controllers from view. Specially for the thumbs scroller
 }
 
 -(NSUInteger)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskLandscape;
-    //  return (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? UIInterfaceOrientationMaskLandscape : UIInterfaceOrientationMaskPortrait;
+}
+
+-(void) startHideElementsTimer
+{
+    if (self.hideUIElementsTimer)
+    {
+        [self.hideUIElementsTimer invalidate];
+        self.hideUIElementsTimer = nil;
+    }
+    self.hideUIElementsTimer = [NSTimer timerWithTimeInterval:10.0 target:self selector:@selector(handleTimerCallback:) userInfo:nil repeats:NO];
+    [[NSRunLoop currentRunLoop] addTimer:_hideUIElementsTimer forMode:NSRunLoopCommonModes];
+}
+
+- (void) handleTimerCallback:(NSTimer*) timer
+{
+    [self hideUIElements];
 }
 
 
@@ -65,7 +156,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMediaPlayerStatusChange:) name:PTMediaPlayerStatusNotification object:self.player];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMediaPlayerTimeChange:) name:PTMediaPlayerTimeChangeNotification object:self.player];
     //  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMediaPlayerNotificationItemEntry:) name:PTMediaPlayerNewNotificationEntryAddedNotification object:self.player];
-    //  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMediaPlayerItemPlayStarted:) name:PTMediaPlayerPlayStartedNotification object:self.player];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMediaPlayerItemPlayStarted:) name:PTMediaPlayerPlayStartedNotification object:self.player];
     //  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMediaPlayerItemPlayCompleted:) name:PTMediaPlayerPlayCompletedNotification object:self.player];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMediaPlayerSubscribedTagIdentified:) name:PTTimedMetadataChangedNotification object:self.player.currentItem];
@@ -78,7 +169,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-#pragma mark - Player Actions 
+#pragma mark - Player Actions
 
 - (void) playVideo:(PTSVideoItem *)item
 {
@@ -91,6 +182,7 @@
     }
     
     [self playVideo];
+    [self setTextInInformationLabels:item];
 }
 
 
@@ -165,18 +257,15 @@
    // _controlView.player = self.player;
     
 //
-    [self.playerContainerView setBackgroundColor:[UIColor redColor]];
    
-    
-    
-    
+   
     UIView *playerView =_player.view;//[[UIView alloc] init];
     playerView.translatesAutoresizingMaskIntoConstraints = NO;
     [playerView setBackgroundColor:[UIColor blackColor]];
  //   _player.view;
     [self.playerContainerView addSubview:playerView];
-    [self.playerContainerView bringSubviewToFront:_controlView];
-    
+ 
+    [self bringControlViewsToFrontMostPosition];
     [self.playerContainerView addConstraint:[NSLayoutConstraint constraintWithItem:playerView
                                                           attribute:NSLayoutAttributeWidth
                                                           relatedBy:NSLayoutRelationEqual
@@ -234,6 +323,7 @@
     else {
         [self startAuthentication:_currentItem];
     }
+    
     
 }
 
@@ -439,7 +529,69 @@
     return metadata;
 }
 
+#pragma mark -
+#pragma mark View Actions
+/*
+ */
+-(void) hideViewContainer:(UIView*) viewContainer animated:(BOOL) animated
+{
+    if (animated)
+    {
+        [UIView animateWithDuration:0.8 animations:^{
+              viewContainer.alpha = 0.0f;
+        }];
+    }
+    else{
+        viewContainer.alpha = 0.0f;
+    }
+}
 
+
+-(void) showViewContainer:(UIView*) viewContainer animated:(BOOL) animated
+{
+    if (animated)
+    {
+        [UIView animateWithDuration:0.8 animations:^{
+            viewContainer.alpha = 1.0f;
+        }];
+    }
+    else{
+        viewContainer.alpha = 1.0f;
+    }
+}
+
+-(void) setTextInInformationLabels:(PTSVideoItem*) item
+{
+    [self.subtitleLabel setText:item.description];
+    [self.mainTitleLabel setText:item.title];
+
+}
+
+#pragma mark  Touches
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [super touchesBegan:touches withEvent:event];
+    
+    UITouch *any = [touches anyObject];
+    
+    CGRect centerFrame =CGRectInset(self.view.frame, 50, 100);
+    
+    if ( CGRectContainsPoint(centerFrame, [any locationInView:self.view])) {
+        [self showViewContainer:_controlView animated:YES];
+        [self startHideElementsTimer];
+    }
+    
+}
+
+
+-(void) hideUIElements
+{
+    [_containerViewsArray enumerateObjectsUsingBlock:^(PSContainerView *obj, NSUInteger idx, BOOL *stop) {
+        [obj setDisplayStatus:NO];// set all objects to Not Visible
+    }];
+   
+}
 
 #pragma mark -
 #pragma mark Media Player Notifications
@@ -467,6 +619,7 @@
         case PTMediaPlayerStatusReady:
         //    [_activityIndicator stopAnimating];
               [[self controlView] changeViewToLoadingMode];
+                [self startHideElementsTimer];
         //    _activityIndicator.hidden = YES;
             [self log:@"=== Status: PTMediaPlayerStatusReady ==="];
             break;
@@ -593,7 +746,7 @@
 
 - (void) log:(NSString*)format, ...
 {
-    // if(DEBUG) //logging could be turned on/off here
+     if(DEBUG) //logging could be turned on/off here
     {
         va_list args;
         va_start(args,format);
@@ -610,7 +763,9 @@
 }
 
 
+
 #pragma mark - SPPlayerControlView Delegate
+#pragma mark - Play Button
 - (void)view:(SPPlayerControlView*) view didReceivePlayTouch:(UIButton*) button
 {
     [self.player  play];
@@ -623,9 +778,9 @@
 
 
 /*Slider delegate*/
+#pragma mark - Slider Related
 -(void)view:(SPPlayerControlView*) view valueDidChangeToPlaybackTime:(CMTime) time
 {
-    
     
     double currentTime = CMTimeGetSeconds(time);
     
@@ -664,42 +819,32 @@
     [self.player seekToTime:time completionHandler:^(BOOL finished) {
         NSLog(@"seekToTime complete........");
         [[self controlView] changeViewToPlayingMode];
+        [self.player play];
+        
     }];
 }
 
 /*Buttons delegate*/
+#pragma mark - Lang Button
 -(void)view:(SPPlayerControlView*) view didReceiveLANGButtonTouch:(UIButton*) langButton
 {
     BOOL  isCreated = [self loadMetadataMetadataTableViewIfneeded];
-    
-    self.metadataContainerView.hidden = !self.metadataContainerView.isHidden;
     
     if (isCreated == NO) {
         
         [self.metadataTableViewController reloadDataForItem:_player.currentItem];
     }
-}
 
-
--(void)view:(SPPlayerControlView*) view didReceiveVolumenButtonTouch:(UIButton*) volButton
-{
+    //self.metadataContainerView.hidden = !self.metadataContainerView.isHidden; // control second touch for hiden
  
-    SPVolumeViewController *volumeViewController = [[SPVolumeViewController alloc] initWithNibName:@"SPVolumeViewController" bundle:nil];
-    [self addChildViewController:volumeViewController];
-    UIView *volumeView = volumeViewController.view;
-    [_metadataContainerView addSubview:volumeViewController.view];
-    [volumeViewController didMoveToParentViewController:self];
-    
-    _metadataContainerView.hidden = NO;
-    [self.metadataContainerView  addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(0)-[volumeView(72)]-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(volumeView)]];
-    [self.metadataContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(0)-[volumeView(241)]-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(volumeView)]];
+    [self.metadataContainerView setDisplayStatus:![_metadataContainerView isDisplayed]];
+    [_volumenContainer setDisplayStatus:NO];
 }
-
 
 
 -(BOOL) loadMetadataMetadataTableViewIfneeded
 {
-
+    
     if (_metadataTableViewController == nil)
     {
         self.metadataTableViewController = [[MetadataTableViewController alloc] initWithAVPlayerItem:_player.currentItem];
@@ -724,24 +869,52 @@
     return NO;
 }
 
--(void) addMetadataView {
-    
-  
-    
+#pragma mark - Volumen Button
 
+-(void)view:(SPPlayerControlView*) view didReceiveVolumenButtonTouch:(UIButton*) volButton
+{
+    [self loadVolumenViewControllerInContainerIfNeeded];
 
+    [self.volumenContainer setDisplayStatus:![_volumenContainer isDisplayed]];
+    [self.metadataContainerView setDisplayStatus:NO];
 }
+
+
+-(BOOL) loadVolumenViewControllerInContainerIfNeeded
+{
+    
+    if(_volumeViewController) return NO; // not created
+    
+    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        self.volumeContainerHeightConstrain.constant = 172;
+        self.volumenContainerWidthConstrain.constant = 40;
+        [self.volumenContainer layoutIfNeeded];
+    }
+    
+    self.volumeViewController= [[SPVolumeViewController alloc] initWithNibName:@"SPVolumeViewController" bundle:nil];
+    [self addChildViewController:_volumeViewController];
+    UIView *volumeView = _volumeViewController.view;
+    [volumeView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [_volumenContainer addSubview:_volumeViewController.view];
+    [_volumeViewController didMoveToParentViewController:self];
+    
+    _volumenContainer.hidden = NO;
+    [self.volumenContainer  addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(0)-[volumeView]-(0)-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(volumeView)]];
+    [self.volumenContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(0)-[volumeView]-(0)-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(volumeView)]];
+
+    return YES;
+}
+
 #pragma mark -
 #pragma mark MetadataTableViewController Delegates
 
 -(void) metadataTableViewController:(MetadataTableViewController*) controller didSelectCloseCaptionOption:(BOOL)enabled
 {
-
     self.player.closedCaptionDisplayEnabled = enabled;
 }
 
 #pragma mark -
-#pragma ThumbsCollection 
+#pragma mark ThumbsCollection
 
 -(void) loadScrubbCollectionViewIfNeeded
 {

@@ -16,6 +16,7 @@
 @property (weak, nonatomic) IBOutlet UIView * volumeBaseView;
 @property (weak, nonatomic) IBOutlet UIView * volumeFrontView;
 @property (weak, nonatomic) IBOutlet UIView *volumeControlView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *VolContainerWidth;
 @property (nonatomic, strong) MPVolumeView *volumeView;
 @end
 
@@ -108,6 +109,10 @@ void volumeListenerCallback (
     self.volumeBaseView.backgroundColor = [UIColor colorWithPatternImage:baseImage];
     self.volumeFrontView.backgroundColor = [UIColor colorWithPatternImage:valueImage];
     
+    if (( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)) {
+        
+        self.VolContainerWidth.constant = 24;
+    }
     [self.volumeControlView setNeedsUpdateConstraints];
     [self.volumeControlView setNeedsLayout];
     [self.volumeControlView layoutIfNeeded];

@@ -6,7 +6,6 @@
 //  Copyright (c) 2014 accedo. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 
 #define LOADING_BEGINS(view) [PSUITools showLoadingIndicatorInView:view];
 #define LOADING_ENDS(view) [PSUITools hideLoadingIndicatorInView:view];

@@ -7,12 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PSContainerView.h"
+
 @import AVFoundation;
 
 @protocol SPPlayerControlViewDelegate ;
 
 
-@interface SPPlayerControlView : UIView
+@interface SPPlayerControlView : PSContainerView
 
 @property (nonatomic, assign) IBOutlet id <SPPlayerControlViewDelegate> delegate;
 @property (weak, nonatomic) IBOutlet UIButton * playButton;

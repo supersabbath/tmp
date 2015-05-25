@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <SabreTache-Core/Macros.h>
+#import  "Macros.h"
 
 #define APP_COLOR(r, g, b, a) static dispatch_once_t onceToken; \
 static UIColor *color = nil; \

@@ -7,6 +7,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SPVolumeViewController">
             <connections>
+                <outlet property="VolContainerWidth" destination="4bB-du-6DX" id="jPG-Ua-7B1"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
                 <outlet property="volumeBaseView" destination="ZPs-ke-sEU" id="0Bn-fn-pHq"/>
                 <outlet property="volumeControlView" destination="Xwz-vI-KrN" id="48J-xf-8u3"/>
@@ -15,13 +16,13 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
-            <rect key="frame" x="0.0" y="0.0" width="147" height="291"/>
+            <rect key="frame" x="0.0" y="0.0" width="72" height="201"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
                 <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xwz-vI-KrN" userLabel="Volume View">
-                    <rect key="frame" x="0.0" y="0.0" width="72" height="241"/>
+                    <rect key="frame" x="0.0" y="0.0" width="72" height="201"/>
                     <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wf2-zT-rgj" userLabel="Mute Button">
+                        <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wf2-zT-rgj" userLabel="Mute Button">
                             <rect key="frame" x="0.0" y="0.0" width="72" height="32"/>
                             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             <state key="normal" image="btn_player_voltop_n.png">
@@ -29,39 +30,51 @@
                             </state>
                             <state key="highlighted" image="btn_player_voltop_p.png"/>
                         </button>
-                        <view contentMode="bottom" horizontalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ZPs-ke-sEU" userLabel="MPVol Container">
+                        <view contentMode="bottom" horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="249" verticalCompressionResistancePriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="ZPs-ke-sEU" userLabel="MPVol Container">
                             <rect key="frame" x="12" y="48" width="48" height="120"/>
                             <subviews>
-                                <view contentMode="bottom" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="09P-gp-IST" userLabel="FrontView">
-                                    <rect key="frame" x="8" y="0.0" width="48" height="120"/>
+                                <view contentMode="bottom" horizontalCompressionResistancePriority="249" verticalCompressionResistancePriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="09P-gp-IST" userLabel="FrontView">
+                                    <rect key="frame" x="0.0" y="0.0" width="48" height="120"/>
                                     <color key="backgroundColor" red="1" green="0.91614064679999996" blue="0.70325556840000003" alpha="1" colorSpace="calibratedRGB"/>
                                 </view>
                             </subviews>
                             <color key="backgroundColor" red="0.65714164399999997" green="0.60203417079999999" blue="0.46213852039999997" alpha="1" colorSpace="calibratedRGB"/>
                             <constraints>
-                                <constraint firstAttribute="width" constant="48" id="4bB-du-6DX"/>
-                                <constraint firstAttribute="height" constant="120" id="56D-cC-KNl"/>
+                                <constraint firstAttribute="width" priority="750" constant="48" id="4bB-du-6DX"/>
+                                <constraint firstAttribute="height" priority="250" constant="120" id="56D-cC-KNl"/>
+                                <constraint firstAttribute="bottom" secondItem="09P-gp-IST" secondAttribute="bottom" id="XJv-jw-7Qh"/>
+                                <constraint firstItem="09P-gp-IST" firstAttribute="leading" secondItem="ZPs-ke-sEU" secondAttribute="leading" id="d5k-nb-Tm2"/>
+                                <constraint firstItem="09P-gp-IST" firstAttribute="top" secondItem="ZPs-ke-sEU" secondAttribute="top" id="eVo-Lf-rgQ"/>
+                                <constraint firstAttribute="trailing" secondItem="09P-gp-IST" secondAttribute="trailing" id="o9a-CP-CXQ"/>
                             </constraints>
                         </view>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
+                        <constraint firstItem="ZPs-ke-sEU" firstAttribute="leading" secondItem="Xwz-vI-KrN" secondAttribute="leading" constant="12" id="FPP-cM-mBM"/>
                         <constraint firstItem="wf2-zT-rgj" firstAttribute="left" secondItem="Xwz-vI-KrN" secondAttribute="left" id="Fel-df-pvv"/>
+                        <constraint firstAttribute="trailing" secondItem="ZPs-ke-sEU" secondAttribute="trailing" constant="12" id="HcN-5X-FWk"/>
                         <constraint firstAttribute="centerX" secondItem="ZPs-ke-sEU" secondAttribute="centerX" id="TMw-Bs-eC9"/>
                         <constraint firstAttribute="right" secondItem="wf2-zT-rgj" secondAttribute="right" id="Yt0-h1-uhr"/>
                         <constraint firstAttribute="centerX" secondItem="wf2-zT-rgj" secondAttribute="centerX" id="dt9-rh-aaN"/>
                         <constraint firstItem="wf2-zT-rgj" firstAttribute="top" secondItem="Xwz-vI-KrN" secondAttribute="top" id="gFa-h1-RqU"/>
-                        <constraint firstAttribute="width" constant="72" id="qh8-bs-j5a"/>
                         <constraint firstItem="ZPs-ke-sEU" firstAttribute="top" secondItem="wf2-zT-rgj" secondAttribute="bottom" constant="16" id="rLM-Le-wrz"/>
-                        <constraint firstAttribute="height" constant="241" id="v6m-j1-Q4c"/>
                     </constraints>
+                    <variation key="default">
+                        <mask key="constraints">
+                            <exclude reference="FPP-cM-mBM"/>
+                            <exclude reference="HcN-5X-FWk"/>
+                        </mask>
+                    </variation>
                 </view>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="Xwz-vI-KrN" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" symbolic="YES" id="D3f-Cx-MOi"/>
                 <constraint firstItem="Xwz-vI-KrN" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="gFR-6Y-uoB"/>
+                <constraint firstAttribute="bottom" secondItem="Xwz-vI-KrN" secondAttribute="bottom" id="gf8-n3-F5E"/>
                 <constraint firstItem="Xwz-vI-KrN" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="tvT-TX-fPi"/>
+                <constraint firstAttribute="trailing" secondItem="Xwz-vI-KrN" secondAttribute="trailing" id="vQh-o5-ScQ"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -70,7 +83,7 @@
                     <exclude reference="D3f-Cx-MOi"/>
                 </mask>
             </variation>
-            <point key="canvasLocation" x="6.5" y="267.5"/>
+            <point key="canvasLocation" x="-31" y="222.5"/>
         </view>
     </objects>
     <resources>

@@ -10,13 +10,14 @@
 #import "SPPlayerControlView.h"
 #import "MetadataTableViewController.h"
 
+@class PSContainerView;
 @class PTSVideoItem;
 
 @interface SPPlayerViewController : UIViewController <SPPlayerControlViewDelegate, UITableViewDelegate ,MetadataTableViewControllerDelegate>
 
 @property (nonatomic, strong) PTSVideoItem *currentItem ;
 
-@property (nonatomic, weak )  IBOutlet UIView *metadataContainerView;
+@property (nonatomic, weak )  IBOutlet PSContainerView *metadataContainerView;
 
 - (void)playVideo:(PTSVideoItem *)item;
 - (void)resize;

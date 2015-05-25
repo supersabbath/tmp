@@ -22,7 +22,7 @@
                     <rect key="frame" x="0.0" y="0.0" width="334" height="154"/>
                     <subviews>
                         <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="cye-Ld-Sst" userLabel="Table Audio">
-                            <rect key="frame" x="222" y="0.0" width="223" height="154"/>
+                            <rect key="frame" x="167" y="0.0" width="167" height="154"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
                                 <outlet property="dataSource" destination="-1" id="iPu-OE-2Ug"/>
@@ -30,7 +30,7 @@
                             </connections>
                         </tableView>
                         <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="wpS-hb-whU" userLabel="Table Subtitle">
-                            <rect key="frame" x="0.0" y="0.0" width="223" height="154"/>
+                            <rect key="frame" x="0.0" y="0.0" width="167" height="154"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
                                 <outlet property="dataSource" destination="-1" id="SFj-t7-38Y"/>
@@ -44,10 +44,10 @@
                         <constraint firstItem="cye-Ld-Sst" firstAttribute="height" secondItem="wpS-hb-whU" secondAttribute="height" id="7TY-9i-yZe"/>
                         <constraint firstItem="wpS-hb-whU" firstAttribute="leading" secondItem="4YD-7q-Y1t" secondAttribute="leading" id="9mZ-vd-vZF"/>
                         <constraint firstAttribute="height" secondItem="wpS-hb-whU" secondAttribute="height" id="SFB-sA-Qc7"/>
-                        <constraint firstItem="cye-Ld-Sst" firstAttribute="leading" secondItem="wpS-hb-whU" secondAttribute="trailing" constant="-1" id="UOc-tC-Jp2"/>
+                        <constraint firstItem="cye-Ld-Sst" firstAttribute="leading" secondItem="wpS-hb-whU" secondAttribute="trailing" id="UOc-tC-Jp2"/>
                         <constraint firstItem="cye-Ld-Sst" firstAttribute="centerY" secondItem="wpS-hb-whU" secondAttribute="centerY" id="VcC-mj-Xkn"/>
                         <constraint firstItem="wpS-hb-whU" firstAttribute="top" secondItem="4YD-7q-Y1t" secondAttribute="top" id="bPL-oL-yOY"/>
-                        <constraint firstAttribute="width" secondItem="wpS-hb-whU" secondAttribute="width" multiplier="1.5" id="hC1-X3-Qua"/>
+                        <constraint firstAttribute="width" secondItem="wpS-hb-whU" secondAttribute="width" multiplier="2" constant="1" id="hC1-X3-Qua"/>
                         <constraint firstItem="cye-Ld-Sst" firstAttribute="width" secondItem="wpS-hb-whU" secondAttribute="width" id="u08-V2-BVi"/>
                     </constraints>
                 </view>

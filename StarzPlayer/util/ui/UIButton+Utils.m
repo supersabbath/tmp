@@ -8,12 +8,7 @@
 
 #import "UIButton+Utils.h"
 
-#import "LanguageManager.h"
-
-#import "NSAttributedString+Utils.h"
-
-#import "PSFonts.h"
-#import "UIColor+PSColors.h"
+ 
 
 @implementation UIButton (Utils)
 
@@ -39,12 +34,12 @@
     [self setBackgroundImage:resizablePressed forState:UIControlStateSelected];
 }
 
-+ (NSMutableAttributedString *)buttonAttributedString:(NSString *)text
-{
-    return [[[NSAttributedString
-              withString:text]
-             withTracking:IS_IPAD ? 2 : 3] withFont:[FontUtil fontWithKey:IS_IPAD ? PSFontPDRS : PSFontPDRXXS]];
-}
+//+ (NSMutableAttributedString *)buttonAttributedString:(NSString *)text
+//{
+//    return [[[NSAttributedString
+//              withString:text]
+//             withTracking:IS_IPAD ? 2 : 3] withFont:[FontUtil fontWithKey:IS_IPAD ? PSFontPDRS : PSFontPDRXXS]];
+//}
 
 //- (void)updateWatchButtonTitleForState:(PSWatchlistType)watchListType color:(UIColor *)c
 //{
