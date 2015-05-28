@@ -7,8 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SPChildViewControllerDelegate.h"
 
-@interface SPVolumeViewController : UIViewController
 
-- (void)updateUIForVolume:(double)volume;
+
+@interface SPVolumeViewController : UIViewController 
+
+@property (nonatomic, weak) id <SPChildViewControllerDelegate> delegate;
+
+- (void) updateVolumeLevel;
+- (IBAction) mutePlayer:(id)sender;
 @end
+

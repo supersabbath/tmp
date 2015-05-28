@@ -9,23 +9,34 @@
 #import <UIKit/UIKit.h>
 #import "SPPlayerControlView.h"
 #import "MetadataTableViewController.h"
+#import "SPChildViewControllerDelegate.h"
 
-@class PSContainerView;
+#import "SPPlayerViewControllerDelegate.h"
+
+@class SPContainerView;
 @class PTSVideoItem;
+@class SPPlayerUIStyle;
 
-@interface SPPlayerViewController : UIViewController <SPPlayerControlViewDelegate, UITableViewDelegate ,MetadataTableViewControllerDelegate>
 
+@interface SPPlayerViewController : UIViewController <SPPlayerControlViewDelegate, UITableViewDelegate ,MetadataTableViewControllerDelegate, SPChildViewControllerDelegate>
+
+/*currentItem Video playable item*/
 @property (nonatomic, strong) PTSVideoItem *currentItem ;
-
-@property (nonatomic, weak )  IBOutlet PSContainerView *metadataContainerView;
-
-- (void)playVideo:(PTSVideoItem *)item;
-- (void)resize;
-- (void)stopVideo;
-- (void)pauseVideo;
-- (void)resumeVideo;
+/* DataSource Will provide views that are not included in the player view controller .. such as the Episode Selector*/
+@property (nonatomic, weak) id <SPPlayerViewControllerViewDataSource> dataSource;   // see SPPlayerViewControllerDelegate.h
+@property (nonatomic, weak) id <SPPlayerViewControllerDelegate> delgate;            // see SPPlayerViewControllerDelegate.h
 
 
+/*Initialization*/
+-(instancetype) initWithVideoItem:(PTSVideoItem *) videoItem andStyle:(SPPlayerUIStyle*) uiStyle;
+
+/*Playback Public Actions*/
+- (void) playVideo:(PTSVideoItem *)item;
+- (void) resize;
+- (void) stopVideo;
+- (void) pauseVideo;
+- (void) resumeVideo;
+ 
 @end
 
 
@@ -34,3 +45,4 @@
 @property (nonatomic, weak) IBOutlet SPPlayerControlView *controlView;
 
 @end
+

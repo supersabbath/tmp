@@ -20,17 +20,16 @@
 
 @interface PTSVideoItem : NSObject
 {
-    NSString *_url;
-    NSString *_title;
-    NSString *_mediaId;
-    NSString *_streamType;
-    NSString *_description;
-    NSString *_drmToken;
-    NSString *_drmUserName;
-    NSString *_drmUserPassword;
-    NSString *_thumbnail;
-    NSMutableArray *_tags;
-    NSMutableDictionary *_auditudeInfo;
+    NSString *url;
+    NSString *title;
+    NSString *mediaId;
+    NSString *streamType;
+    NSString *description;
+    NSString *drmToken;
+    NSString *drmUserName;
+    NSString *drmUserPassword;
+    NSString *thumbnail;
+ 
 }
 
 - (id)initWithDictionary:(NSDictionary *)info;
@@ -40,12 +39,11 @@
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) NSString *mediaId;
 @property (nonatomic, strong) NSString *streamType;
-@property (nonatomic, strong) NSString *description;
+@property (nonatomic, strong) NSString *contentDescription;
 @property (nonatomic, strong) NSString *drmToken;
 @property (nonatomic, strong) NSString *drmUserName;
 @property (nonatomic, strong) NSString *drmUserPassword;
 @property (nonatomic, strong) NSString *thumbnail;
-@property (nonatomic, strong) NSArray *tags;
-@property (nonatomic, strong) NSDictionary *auditudeInfo;
+@property (nonatomic, strong) NSString * stripContentUrl;
 
 @end

@@ -10,6 +10,7 @@
                 <outlet property="VolContainerWidth" destination="4bB-du-6DX" id="jPG-Ua-7B1"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
                 <outlet property="volumeBaseView" destination="ZPs-ke-sEU" id="0Bn-fn-pHq"/>
+                <outlet property="volumeControlMuteButton" destination="G6p-2f-Qtx" id="ZfP-bt-w7H"/>
                 <outlet property="volumeControlView" destination="Xwz-vI-KrN" id="48J-xf-8u3"/>
                 <outlet property="volumeFrontView" destination="09P-gp-IST" id="8Jz-2q-2pJ"/>
             </connections>
@@ -22,23 +23,15 @@
                 <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xwz-vI-KrN" userLabel="Volume View">
                     <rect key="frame" x="0.0" y="0.0" width="72" height="201"/>
                     <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wf2-zT-rgj" userLabel="Mute Button">
-                            <rect key="frame" x="0.0" y="0.0" width="72" height="32"/>
-                            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                            <state key="normal" image="btn_player_voltop_n.png">
-                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                            </state>
-                            <state key="highlighted" image="btn_player_voltop_p.png"/>
-                        </button>
-                        <view contentMode="bottom" horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="249" verticalCompressionResistancePriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="ZPs-ke-sEU" userLabel="MPVol Container">
-                            <rect key="frame" x="12" y="48" width="48" height="120"/>
+                        <view clipsSubviews="YES" contentMode="bottom" horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="249" verticalCompressionResistancePriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="ZPs-ke-sEU" userLabel="MPVol Container">
+                            <rect key="frame" x="12" y="48" width="48" height="143"/>
                             <subviews>
                                 <view contentMode="bottom" horizontalCompressionResistancePriority="249" verticalCompressionResistancePriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="09P-gp-IST" userLabel="FrontView">
-                                    <rect key="frame" x="0.0" y="0.0" width="48" height="120"/>
-                                    <color key="backgroundColor" red="1" green="0.91614064679999996" blue="0.70325556840000003" alpha="1" colorSpace="calibratedRGB"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="48" height="143"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                             </subviews>
-                            <color key="backgroundColor" red="0.65714164399999997" green="0.60203417079999999" blue="0.46213852039999997" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstAttribute="width" priority="750" constant="48" id="4bB-du-6DX"/>
                                 <constraint firstAttribute="height" priority="250" constant="120" id="56D-cC-KNl"/>
@@ -46,19 +39,32 @@
                                 <constraint firstItem="09P-gp-IST" firstAttribute="leading" secondItem="ZPs-ke-sEU" secondAttribute="leading" id="d5k-nb-Tm2"/>
                                 <constraint firstItem="09P-gp-IST" firstAttribute="top" secondItem="ZPs-ke-sEU" secondAttribute="top" id="eVo-Lf-rgQ"/>
                                 <constraint firstAttribute="trailing" secondItem="09P-gp-IST" secondAttribute="trailing" id="o9a-CP-CXQ"/>
+                                <constraint firstItem="09P-gp-IST" firstAttribute="top" secondItem="ZPs-ke-sEU" secondAttribute="top" id="qfT-8C-y6z"/>
                             </constraints>
                         </view>
+                        <button autoresizesSubviews="NO" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G6p-2f-Qtx" userLabel="Mute Button">
+                            <rect key="frame" x="20" y="8" width="32" height="32"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="32" id="5Sk-y0-No9"/>
+                                <constraint firstAttribute="width" constant="32" id="y3B-CX-TL6"/>
+                            </constraints>
+                            <state key="normal" image="btn_player_mute_n.png">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="mutePlayer:" destination="-1" eventType="touchUpInside" id="oPa-MN-Uo2"/>
+                            </connections>
+                        </button>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
+                        <constraint firstAttribute="bottom" secondItem="ZPs-ke-sEU" secondAttribute="bottom" constant="10" id="6Za-wl-g8x"/>
+                        <constraint firstItem="G6p-2f-Qtx" firstAttribute="top" secondItem="Xwz-vI-KrN" secondAttribute="top" constant="8" id="8CE-Qk-77G"/>
+                        <constraint firstItem="09P-gp-IST" firstAttribute="top" secondItem="G6p-2f-Qtx" secondAttribute="bottom" constant="8" id="EBj-6s-YgN"/>
                         <constraint firstItem="ZPs-ke-sEU" firstAttribute="leading" secondItem="Xwz-vI-KrN" secondAttribute="leading" constant="12" id="FPP-cM-mBM"/>
-                        <constraint firstItem="wf2-zT-rgj" firstAttribute="left" secondItem="Xwz-vI-KrN" secondAttribute="left" id="Fel-df-pvv"/>
                         <constraint firstAttribute="trailing" secondItem="ZPs-ke-sEU" secondAttribute="trailing" constant="12" id="HcN-5X-FWk"/>
+                        <constraint firstAttribute="centerX" secondItem="G6p-2f-Qtx" secondAttribute="centerX" id="RB4-S5-u8X"/>
                         <constraint firstAttribute="centerX" secondItem="ZPs-ke-sEU" secondAttribute="centerX" id="TMw-Bs-eC9"/>
-                        <constraint firstAttribute="right" secondItem="wf2-zT-rgj" secondAttribute="right" id="Yt0-h1-uhr"/>
-                        <constraint firstAttribute="centerX" secondItem="wf2-zT-rgj" secondAttribute="centerX" id="dt9-rh-aaN"/>
-                        <constraint firstItem="wf2-zT-rgj" firstAttribute="top" secondItem="Xwz-vI-KrN" secondAttribute="top" id="gFa-h1-RqU"/>
-                        <constraint firstItem="ZPs-ke-sEU" firstAttribute="top" secondItem="wf2-zT-rgj" secondAttribute="bottom" constant="16" id="rLM-Le-wrz"/>
                     </constraints>
                     <variation key="default">
                         <mask key="constraints">
@@ -87,7 +93,6 @@
         </view>
     </objects>
     <resources>
-        <image name="btn_player_voltop_n.png" width="32" height="32"/>
-        <image name="btn_player_voltop_p.png" width="32" height="32"/>
+        <image name="btn_player_mute_n.png" width="32" height="32"/>
     </resources>
 </document>

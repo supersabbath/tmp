@@ -13,7 +13,7 @@
 
 typedef void (^Completion)(PTSVideoItem*);
 
-@interface HomeViewController ()
+@interface HomeViewController () <SPPlayerViewControllerDelegate,SPPlayerViewControllerViewDataSource>
 
 @end
 
@@ -35,7 +35,8 @@ typedef void (^Completion)(PTSVideoItem*);
     [self reloadWithURL:@"http://adunit.cdn.auditude.com/player/downloads/data/psdk-ios/data/content.plist" withCompletion:^(PTSVideoItem *video) {
         
         SPPlayerViewController* playerController = [[SPPlayerViewController alloc]initWithNibName:@"SPPlayerViewController" bundle:nil];
-     
+        
+        [playerController setDataSource:self];
         [self presentViewController:playerController animated:YES completion:^{
             NSLog(@"Presented");
             
@@ -43,7 +44,6 @@ typedef void (^Completion)(PTSVideoItem*);
         }];
     }];
  
-
 }
 
 
@@ -99,5 +99,23 @@ typedef void (^Completion)(PTSVideoItem*);
    // [Gigya initWithAPIKey:[] APIDomain:@"" ];
 
 }
+
+#pragma mark -
+#pragma mark delegates and data source
+
+-(UIView*) playerViewController:(SPPlayerViewController *)playerVC viewForEpisodeSelectorForVideoItem:(PTSVideoItem *)item {
+    UIView *v =[[UIView alloc] init];
+    [v setBackgroundColor:[UIColor grayColor]];
+    return v;
+}
+
+-(UIView*) playerViewController:(SPPlayerViewController *)playerVC viewToDisplayAfterVideoPlayback:(PTSVideoItem *)item {
+
+    UIView *v =[[UIView alloc] init];
+    [v setBackgroundColor:[UIColor colorWithWhite:0.5 alpha:0.2]];
+    return v;
+}
+
+
 
 @end

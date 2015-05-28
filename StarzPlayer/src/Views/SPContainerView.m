@@ -6,11 +6,11 @@
 //  Copyright (c) 2015 Fernando Canon. All rights reserved.
 //
 
-#import "PSContainerView.h"
+#import "SPContainerView.h"
 
 
 
-@interface PSContainerView ()
+@interface SPContainerView ()
 {
     NSNumber * displayed;
 }
@@ -18,13 +18,13 @@
 @end
 
 
-@implementation PSContainerView
+@implementation SPContainerView
 
 - (instancetype)init
 {
     self = [super init];
     if (self) {
-        displayed = @YES;
+        displayed = @NO;
     }
     return self;
 }
@@ -33,10 +33,25 @@
 {
     self = [super initWithCoder:coder];
     if (self) {
-           displayed = @YES;
+           displayed = @NO;
+        
     }
     return self;
 }
+
+-(void) setDisplayed:(NSNumber*) value
+{
+    displayed = value;
+    if ([self isDisplayed])
+    {
+        [self showViewContainer];
+    
+    }else{
+        [self hideViewContainer];
+    }
+    
+}
+
 
 -(BOOL) isDisplayed
 {
@@ -46,15 +61,8 @@
 
 -(void) setDisplayStatus:(BOOL) isDisplayed
 {
-    
-    displayed = [NSNumber numberWithBool:isDisplayed];
-    
-    if (isDisplayed == YES)
-    {
-        [self showViewContainer];
-    } else {
-        [self hideViewContainer];
-    }
+    self.displayed = [NSNumber numberWithBool:isDisplayed];
+
 }
 
 
@@ -64,7 +72,7 @@
  */
 -(void) hideViewContainer
 {
-    [UIView animateWithDuration:0.8 animations:^{
+    [UIView animateWithDuration:0.2 animations:^{
         self.alpha = 0.0f;
     }];
 }
@@ -72,7 +80,7 @@
 
 -(void) showViewContainer
 {
-    [UIView animateWithDuration:0.8 animations:^{
+    [UIView animateWithDuration:0.2 animations:^{
         self.alpha = 1.0;
     }];
 }

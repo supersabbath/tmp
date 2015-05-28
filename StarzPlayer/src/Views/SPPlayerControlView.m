@@ -10,7 +10,7 @@
 #import <MBProgressHUD.h>
 
 #define AD_TIMESCALE 100000
-
+#define CONTROL_CONTAINER_TAG 221
 @interface SPPlayerControlView ()
 {
     CMTimeRange sliderRange;
@@ -33,13 +33,11 @@
 {
     isSeeking = NO;
     
-    
     UIImage *minImage = [[UIImage imageNamed:@"bg_player_played_n.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 1, 0, 1)];
     UIImage *maxImage = [[UIImage imageNamed:@"bg_player_loaded_n.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 1, 0, 1)];
     
     [playButton setImage:[UIImage imageNamed:@"btn_player_pause_n.png"] forState:UIControlStateSelected];
     [playButton setImage:[UIImage imageNamed:@"btn_player_play_p.png"] forState:UIControlStateNormal];
-    
 
     [[UISlider appearance] setMaximumTrackImage:maxImage forState:UIControlStateNormal];
     [[UISlider appearance] setMinimumTrackImage:minImage forState:UIControlStateNormal];
@@ -93,7 +91,7 @@
 
 - (IBAction) sliderFinishedMoving: (id)sender {
     
-    NSLog(@"-...............................        ....................    finished ");
+    NSLog(@"-...............................   finished     ....................     ");
     isSeeking  = NO;
     double sliderTime = [scrubber value];
     if (CMTIMERANGE_IS_VALID(sliderRange))
@@ -153,7 +151,7 @@
 
 -(void) changeViewToLoadingMode
 {
-   // [MBProgressHUD showHUDAddedTo:self animated:YES];
+    [MBProgressHUD showHUDAddedTo:self animated:YES];
 }
 
 
@@ -183,6 +181,29 @@
           
         }
     }
+}
+
+#pragma UI appearance setup
+
+-(void) setupColorInLangButton:(UIColor*) color forState:(UIControlState) state
+{
+    [_langButton setTitleColor:color forState:state];
+}
+
+
+-(void) setupFontInLanButton:(UIFont*) font
+{
+    [_langButton.titleLabel setFont:font];
+}
+
+-(void) setupFontInTimeLabel:(UIFont*) font
+{
+    [_timeLabel setFont:font];
+}
+
+-(void) setControlViewColor:(UIColor*) backColor
+{
+    [[self viewWithTag:CONTROL_CONTAINER_TAG] setBackgroundColor:backColor];
 }
 
 #pragma mark - Time Format Helpers

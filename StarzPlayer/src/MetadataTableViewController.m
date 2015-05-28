@@ -12,9 +12,10 @@
 @interface MetadataTableViewController () {
     
     PTMediaPlayerItem *currentItem;
+
 }
 
-@property (nonatomic,weak) IBOutlet UIView * metadataHeaderView;
+
 @property (strong, nonatomic) NSMutableArray * subtitleDataSource;
 
 @end
@@ -54,19 +55,20 @@
  //   _subtitlesTableView.tableHeaderView = [self customHeaderView];
 
 }
-- (void)didReceiveMemoryWarning {
+
+- (void)didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
--(UIView *) customHeaderView {
-  
-    if (!_metadataHeaderView) {
-        [[NSBundle mainBundle] loadNibNamed:@"MetadataHeaderView" owner:self options:nil];
-    }
-    
-    return _metadataHeaderView;
+
+-(void) configureBackgroundColorInTables:(UIColor*) color
+{
+    [_audiosTableView setBackgroundColor:color];
+    [_subtitlesTableView setBackgroundColor:color];
 }
+
 
 #pragma mark - UITableViewDataSource methods
 
@@ -151,6 +153,21 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
+{
+    // Background color
+    view.tintColor = [UIColor blackColor];
+    
+    // Text Color
+    UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
+    if (_headerFont)
+    {
+        [header.textLabel setFont:_headerFont];
+    }
+    [header.textLabel setTextColor:(_headerTextColor)?_headerTextColor:[UIColor whiteColor]];
+
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     
@@ -174,13 +191,12 @@
 }
 
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+- (NSString *) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     if (tableView == self.audiosTableView)
-        return @"AUDIOS";
+        return NSLocalizedString(@"key_moviePlayer_audio",nil);
     else
-        return @"SUBTITLES";
-    
+        return NSLocalizedString(@"key_moviePlayer_subtitles", nil);
 }
 
 #pragma mark - Helper

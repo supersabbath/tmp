@@ -1,4 +1,4 @@
-//
+ //
 //  SPVolumeViewController.m
 //  StarzPlayer
 //
@@ -17,53 +17,44 @@
 @property (weak, nonatomic) IBOutlet UIView * volumeFrontView;
 @property (weak, nonatomic) IBOutlet UIView *volumeControlView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *VolContainerWidth;
+@property (weak, nonatomic) IBOutlet UIButton *volumeControlMuteButton;
 @property (nonatomic, strong) MPVolumeView *volumeView;
 @end
 
 @implementation SPVolumeViewController
 
 
-void volumeListenerCallback (
-                             void *inUserData,
-                             AudioSessionPropertyID inPropertyID,
-                             Float32 volume){
-    
-    if (inPropertyID != kAudioSessionProperty_CurrentHardwareOutputVolume) return;
-    
-    volume = kAudioSessionProperty_CurrentHardwareOutputVolume;
-    SPVolumeViewController * volumeViewController = (__bridge SPVolumeViewController *)inUserData;
-   
-    [volumeViewController updateUIForVolume:volume];
-}
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
-    [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error: nil];
-    AudioSessionAddPropertyListener (kAudioSessionProperty_CurrentHardwareOutputVolume,
-                                     volumeListenerCallback,
-                                     (__bridge void*)self
-                                     );
+    [self startListeningToAudioVolume];
+    [self configVolumenButtonsImages];
     [self setupView];
-    // Do any additional setup after loading the view from its nib.
+    [self.volumeControlMuteButton sizeToFit];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    
 }
+
+-(void) configVolumenButtonsImages
+{
+    [self.volumeControlMuteButton setImage:[UIImage imageNamed:@"btn_player_voltop_n.png"] forState:UIControlStateNormal];
+    [self.volumeControlMuteButton setImage:[UIImage imageNamed:@"btn_player_voltop_p.png"] forState:UIControlStateHighlighted];
+    [self.volumeControlMuteButton setImage:[UIImage imageNamed:@"btn_player_mute_n.png"] forState:UIControlStateSelected];
+
+}
+
+
 -(void) setupView
 
 {
-
     self.volumeView = [[MPVolumeView alloc] init];
     self.volumeView.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    [self.volumeControlView addSubview:self.volumeView];
-    
-    [self.volumeView setNeedsUpdateConstraints];
-    [self.volumeControlView setNeedsLayout];
-    
-    [self.volumeControlView layoutIfNeeded];
+    [self.volumeBaseView addSubview:self.volumeView];
+
     
     UIImage * valueImage = [UIImage imageNamed:@"volume_value.png"];
     valueImage = [valueImage stretchableImageWithLeftCapWidth:0 topCapHeight:1];
@@ -77,26 +68,23 @@ void volumeListenerCallback (
     [self.volumeView setMaximumVolumeSliderImage:blankImage forState:UIControlStateNormal];
     [self.volumeView setVolumeThumbImage:blankImage forState:UIControlStateNormal];
     
-    NSMutableArray* cons = [NSMutableArray array];
-    for (NSLayoutConstraint* con in self.volumeControlView.constraints)
-        if (con.firstItem == self.volumeView || con.secondItem == self.volumeView)
-            [cons addObject:con];
+ 
     
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
     {
-        [self.volumeControlView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.volumeBaseView attribute:NSLayoutAttributeLeft multiplier:1.0 constant:self.volumeBaseView.bounds.size.width / 2]];
-        [self.volumeControlView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.volumeBaseView attribute:NSLayoutAttributeTop multiplier:1.0 constant:self.volumeBaseView.bounds.size.height / 2]];
+        [self.volumeBaseView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.volumeBaseView attribute:NSLayoutAttributeLeft multiplier:1.0 constant:self.volumeBaseView.bounds.size.width / 2]];
+        [self.volumeBaseView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.volumeBaseView attribute:NSLayoutAttributeTop multiplier:1.0 constant:self.volumeBaseView.bounds.size.height / 2]];
         
-        [self.volumeControlView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:self.volumeBaseView.frame.size.height]];
-        [self.volumeControlView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:self.volumeBaseView.frame.size.width]];
+        [self.volumeBaseView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:self.volumeBaseView.frame.size.height]];
+        [self.volumeBaseView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:self.volumeBaseView.frame.size.width]];
     }
     else
     {
-        [self.volumeControlView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.volumeBaseView attribute:NSLayoutAttributeLeft multiplier:1.0 constant:self.volumeBaseView.bounds.size.width / 2]];
-        [self.volumeControlView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.volumeBaseView attribute:NSLayoutAttributeTop multiplier:1.0 constant:self.volumeBaseView.bounds.size.height / 2]];
-        
-        [self.volumeControlView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:self.volumeBaseView.frame.size.height]];
-        [self.volumeControlView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:self.volumeBaseView.frame.size.width]];
+        [self.volumeBaseView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeBaseView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.volumeBaseView attribute:NSLayoutAttributeLeft multiplier:1.0 constant:self.volumeBaseView.bounds.size.width / 2]];
+        [self.volumeBaseView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.volumeBaseView attribute:NSLayoutAttributeTop multiplier:1.0 constant:self.volumeBaseView.bounds.size.height / 2]];
+        // here is the diff
+        [self.volumeBaseView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:self.volumeBaseView.frame.size.height]];
+        [self.volumeBaseView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:self.volumeBaseView.frame.size.width]];
     }
     
     
@@ -113,17 +101,21 @@ void volumeListenerCallback (
         
         self.VolContainerWidth.constant = 24;
     }
-    [self.volumeControlView setNeedsUpdateConstraints];
+
+ 
     [self.volumeControlView setNeedsLayout];
     [self.volumeControlView layoutIfNeeded];
-
+    
+    [self updateVolumeLevel];
 }
 
 
-- (void)updateUIForVolume:(double)volume
+
+
+- (void) updateVolumeLevel
 {
 
-    volume = [AVAudioSession sharedInstance].outputVolume;
+    CGFloat volume = [AVAudioSession sharedInstance].outputVolume;
 
     CGFloat h = self.volumeFrontView.bounds.size.height;
     CGFloat w = self.volumeFrontView.bounds.size.width;
@@ -135,55 +127,75 @@ void volumeListenerCallback (
     maskLayer.backgroundColor = [UIColor blackColor].CGColor;
     
     self.volumeFrontView.layer.mask = maskLayer;
-    
     [self.volumeFrontView setNeedsUpdateConstraints];
     [self.volumeControlView setNeedsLayout];
     
-//    [self layoutIfNeeded];
-//    
-//    if (volume == 0)
-//    {
-//        [self.volumeControlMuteButton setImage:[UIImage imageNamed:@"btn_player_mute_n.png"] forState:UIControlStateNormal];
-//        [self.volumeControlMuteButton setImage:[UIImage imageNamed:@"btn_player_mute_p.png"] forState:UIControlStateHighlighted];
-//    }
-//    else
-//    {
-//        [self.volumeControlMuteButton setImage:[UIImage imageNamed:@"btn_player_voltop_n.png"] forState:UIControlStateNormal];
-//        [self.volumeControlMuteButton setImage:[UIImage imageNamed:@"btn_player_voltop_p.png"] forState:UIControlStateHighlighted];
-//    }
+    if (volume == 0) {
+        [_volumeControlMuteButton setSelected:YES];
+    }
+    else {
+        [_volumeControlMuteButton setSelected:NO];
+    }
+    [self.delegate childViewController:self didCompleteActionWithMessage:PSPlayerMessageUnMute];
 }
 
 
+-(void) dealloc
+{
+    [self stopListeningToAudioVolume];
+}
+
+
+- (IBAction) mutePlayer:(id)sender {
+    NSLog(@"Mute");
+    [_volumeControlMuteButton setSelected:!_volumeControlMuteButton.isSelected];
+    
+    if ([self.delegate respondsToSelector:@selector(childViewController:didCompleteActionWithMessage:)]) {
+        if (_volumeControlMuteButton.isSelected) {
+            
+            [self.delegate childViewController:self didCompleteActionWithMessage:PSPlayerMessageMute];
+        }else{
+            [self.delegate childViewController:self didCompleteActionWithMessage:PSPlayerMessageUnMute];
+
+        }
+    }
+}
+
+
+#pragma mark -
+#pragma mark audio session
+
 //// Hardware Button Volume Callback
-//void audioVolumeChangeListenerCallback (
-//                                        void                      *inUserData,
-//                                        AudioSessionPropertyID    inID,
-//                                        UInt32                    inDataSize,
-//                                        const void                *inData)
-//{
-//    SPVolumeViewController * volumeViewController = (__bridge SPVolumeViewController *)inUserData;
-//    
-//}
-//
-//
-//- (void)startListeningToAudioVolume
-//{
-//    AudioSessionAddPropertyListener(
-//                                     kAudioSessionProperty_CurrentHardwareOutputVolume ,
-//                                     audioVolumeChangeListenerCallback,
-//                                     (__bridge void*)self);
-//    
-//    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
-//    CGFloat volume = audioSession.outputVolume;
-//}
-//
-//- (void)stopListeningToAudioVolume
-//{
-//    AudioSessionRemovePropertyListenerWithUserData(
-//                                                   kAudioSessionProperty_CurrentHardwareOutputVolume,
-//                                                   audioVolumeChangeListenerCallback,
-//                                                   (__bridge void*)self);
-//}
+void volumeListenerCallback (void                   *inUserData,
+                             AudioSessionPropertyID inPropertyID,
+                             UInt32                         volume,
+                             const void                *inData){
+    
+    if (inPropertyID != kAudioSessionProperty_CurrentHardwareOutputVolume) return;
+    
+    volume = kAudioSessionProperty_CurrentHardwareOutputVolume;
+    SPVolumeViewController * volumeViewController = (__bridge SPVolumeViewController *)inUserData;
+    
+    [volumeViewController updateVolumeLevel];
+}
 
 
+- (void)startListeningToAudioVolume
+{
+    [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error: nil];
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+    AudioSessionAddPropertyListener (kAudioSessionProperty_CurrentHardwareOutputVolume,
+                                     volumeListenerCallback,
+                                     (__bridge void*)self);
+}
+
+
+
+- (void)stopListeningToAudioVolume
+{
+    AudioSessionRemovePropertyListenerWithUserData(
+                                                   kAudioSessionProperty_CurrentHardwareOutputVolume,
+                                                   volumeListenerCallback,
+                                                   (__bridge void*)self);
+}
 @end

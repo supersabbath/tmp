@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PSContainerView : UIView
+@interface SPContainerView : UIView
 
 -(BOOL) isDisplayed;
 

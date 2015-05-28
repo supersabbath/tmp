@@ -6,11 +6,11 @@
 //  Copyright (c) 2014 accedo. All rights reserved.
 //
 
-#import "UIButton+Utils.h"
+#import "UIButton+Player.h"
 
  
 
-@implementation UIButton (Utils)
+@implementation UIButton (Player)
 
 - (void)setProvidedAssetAsBackgroundImage:(NSString *)asset
 {
@@ -23,7 +23,7 @@
     [self setBackgroundImage:resizablePressed forState:UIControlStateHighlighted];
 }
 
-- (void)setProvidedAssetAsImage:(NSString *)asset
+- (void) setProvidedAssetAsImage:(NSString *)asset
 {
     UIImage * resizableNormal = [UIImage imageNamed:[NSString stringWithFormat:@"%@n.png", asset]];
     UIImage * resizableDisabled = [UIImage imageNamed:[NSString stringWithFormat:@"%@d.png", asset]];

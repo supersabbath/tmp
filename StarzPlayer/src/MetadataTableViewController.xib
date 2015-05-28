@@ -21,24 +21,27 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4YD-7q-Y1t" userLabel="Container">
                     <rect key="frame" x="0.0" y="0.0" width="334" height="154"/>
                     <subviews>
-                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="cye-Ld-Sst" userLabel="Table Audio">
+                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="cye-Ld-Sst" userLabel="Table Audio">
                             <rect key="frame" x="167" y="0.0" width="167" height="154"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <connections>
                                 <outlet property="dataSource" destination="-1" id="iPu-OE-2Ug"/>
                                 <outlet property="delegate" destination="-1" id="IKa-CC-wmD"/>
                             </connections>
                         </tableView>
-                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="wpS-hb-whU" userLabel="Table Subtitle">
+                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="wpS-hb-whU" userLabel="Table Subtitle">
                             <rect key="frame" x="0.0" y="0.0" width="167" height="154"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <color key="separatorColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <connections>
                                 <outlet property="dataSource" destination="-1" id="SFj-t7-38Y"/>
                                 <outlet property="delegate" destination="-1" id="Pq3-JM-5pT"/>
                             </connections>
                         </tableView>
                     </subviews>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstItem="cye-Ld-Sst" firstAttribute="top" secondItem="4YD-7q-Y1t" secondAttribute="top" id="4gy-yY-94u"/>
                         <constraint firstItem="cye-Ld-Sst" firstAttribute="height" secondItem="wpS-hb-whU" secondAttribute="height" id="7TY-9i-yZe"/>
@@ -52,7 +55,7 @@
                     </constraints>
                 </view>
             </subviews>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="4YD-7q-Y1t" firstAttribute="leading" secondItem="Pad-Dd-5Ye" secondAttribute="leading" id="EHW-RF-j4F"/>
                 <constraint firstAttribute="bottom" secondItem="4YD-7q-Y1t" secondAttribute="bottom" id="euw-wX-W6N"/>

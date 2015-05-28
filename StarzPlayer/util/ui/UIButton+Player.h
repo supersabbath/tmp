@@ -10,15 +10,10 @@
 
 
 
-@interface UIButton (Utils)
+@interface UIButton (Player)
 
 - (void)setProvidedAssetAsBackgroundImage:(NSString *)asset;
 - (void)setProvidedAssetAsImage:(NSString *)asset;
 
- 
-
-#pragma mark - Static utility methods
-
-+ (NSMutableAttributedString *)buttonAttributedString:(NSString *)text;
 
 @end

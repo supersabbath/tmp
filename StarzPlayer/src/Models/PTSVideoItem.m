@@ -22,17 +22,8 @@
 
 @implementation PTSVideoItem
 
-@synthesize url = _url;
-@synthesize title = _title;
-@synthesize mediaId = _mediaId;
-@synthesize streamType = _streamType;
-@synthesize description = _description;
-@synthesize drmToken = _drmToken;
-@synthesize drmUserName = _drmUserName;
-@synthesize drmUserPassword = _drmUserPassword;
-@synthesize thumbnail = _thumbnail;
-@synthesize tags = _tags;
-@synthesize auditudeInfo = _auditudeInfo;
+
+@synthesize url,title,mediaId,streamType,contentDescription,drmToken,drmUserName,drmUserPassword,thumbnail,stripContentUrl;
 
 - (id)initWithDictionary:(NSDictionary *)info
 {
@@ -46,44 +37,25 @@
                 
             NSDictionary *sessionData = [NSDictionary dictionaryWithContentsOfFile:sessionPath];
             
-            _url = [sessionData objectForKey:@"videoURL"];//[info objectForKey:@"ContentURL"];
-            //_url = [info objectForKey:@"ContentURL"];
-            _title = [info objectForKey:@"Title"];
-            _mediaId = [info objectForKey:@"MediaID"];
-            _streamType = [info objectForKey:@"StreamType"];
-            _description = [info objectForKey:@"Description"];
-            _drmToken = [info objectForKey:@"DrmToken"];
-            _drmUserName = @"http://mps.theplatform.com/data/Account/2458698081";// [info objectForKey:@"DrmUserName"];
-            _drmUserPassword =[sessionData objectForKey:@"token"];
-            // [info objectForKey:@"DrmUserPassword"];
-            _thumbnail = [info objectForKey:@"Thumbnail"];
-//            _tags = [[NSMutableArray alloc] init];
-//            
-//            NSString *tagString = [info objectForKey:@"Tags"];
-//            if (tagString)
-//            {
-//                NSArray *rawTags = [tagString componentsSeparatedByString:@","];
-//                for (int i = 0; i < rawTags.count; i++)
-//                {
-//                    [_tags addObject:[[rawTags objectAtIndex:i] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
-//                }
-//            }
-//            
-//            NSDictionary *auditudeDict = [info objectForKey:@"Auditude"];
-//            if (auditudeDict)
-//            {
-//                _auditudeInfo = [NSMutableDictionary dictionaryWithDictionary:auditudeDict];
-//            }
+           // url = [sessionData objectForKey:@"videoURL"];//[info objectForKey:@"ContentURL"];
+            url = [info objectForKey:@"ContentURL"];
+            title = [info objectForKey:@"Title"];
+            mediaId = [info objectForKey:@"MediaID"];
+            streamType = [info objectForKey:@"StreamType"];
+            contentDescription = [info objectForKey:@"Description"];
+            drmToken = [info objectForKey:@"DrmToken"];
+            drmUserName =[info objectForKey:@"DrmUserName"]; // @"http://mps.theplatform.com/data/Account/2458698081";//
+            drmUserPassword = [info objectForKey:@"DrmUserPassword"];//[sessionData objectForKey:@"token"];
+        
+            thumbnail = [info objectForKey:@"Thumbnail"];
+            stripContentUrl =@"http://mena-cdn-lb.aws.playco.com/MGM/GIRLWITHTHEDRAGONTATTOOY2011M/GIRLWITHTHEDRAGONTATTOOY2011M.fs";
+ 
         }
     }
     
     return self;
 }
 
-- (BOOL)hasTag:(NSString *)tag
-{
-    return [_tags indexOfObject:tag] != NSNotFound;
-}
 
 
 @end

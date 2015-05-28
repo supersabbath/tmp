@@ -34,34 +34,34 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0bF-ex-98e" userLabel="PlayerContainer">
                     <rect key="frame" x="0.0" y="0.0" width="667" height="375"/>
                     <subviews>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Ex-fj-Wbk" userLabel="ControlView" customClass="SPPlayerControlView">
-                            <rect key="frame" x="0.0" y="187" width="667" height="188"/>
+                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Ex-fj-Wbk" userLabel="ControlView" customClass="SPPlayerControlView">
+                            <rect key="frame" x="0.0" y="75" width="667" height="300"/>
                             <subviews>
-                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XYA-yx-bW1" userLabel="Thumbs Container" customClass="PSContainerView">
-                                    <rect key="frame" x="16" y="-116" width="635" height="220"/>
+                                <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XYA-yx-bW1" userLabel="Thumbs Container" customClass="SPContainerView">
+                                    <rect key="frame" x="16" y="-4" width="635" height="220"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="220" id="1vK-MH-cjl"/>
                                     </constraints>
                                 </view>
-                                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mzQ-aP-kv1" userLabel="Volume Container" customClass="PSContainerView">
-                                    <rect key="frame" x="607" y="-90" width="40" height="200"/>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mzQ-aP-kv1" userLabel="Volume Container" customClass="SPContainerView">
+                                    <rect key="frame" x="607" y="22" width="40" height="200"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="200" id="JT1-5L-ftm"/>
                                         <constraint firstAttribute="width" constant="40" id="h7Y-kT-jhR"/>
                                     </constraints>
                                 </view>
-                                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="t8X-vt-KEo" userLabel="metadataContainerView" customClass="PSContainerView">
-                                    <rect key="frame" x="345" y="-30" width="260" height="140"/>
-                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="t8X-vt-KEo" userLabel="metadataContainerView" customClass="SPContainerView">
+                                    <rect key="frame" x="345" y="82" width="260" height="140"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="260" id="fhJ-Wz-Rzh"/>
                                         <constraint firstAttribute="height" constant="140" id="na2-61-FaX"/>
                                     </constraints>
                                 </view>
-                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8dJ-YV-WXw" userLabel="ControlsContainer" customClass="PSContainerView">
-                                    <rect key="frame" x="8" y="110" width="651" height="70"/>
+                                <view tag="221" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8dJ-YV-WXw" userLabel="ControlsContainer">
+                                    <rect key="frame" x="8" y="222" width="651" height="70"/>
                                     <subviews>
                                         <view autoresizesSubviews="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ywn-vf-9vC" userLabel="SliderContainer">
                                             <rect key="frame" x="0.0" y="0.0" width="651" height="21"/>
@@ -123,7 +123,7 @@
                                         </button>
                                         <button opaque="NO" tag="543" contentMode="scaleToFill" horizontalHuggingPriority="750" horizontalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OI4-vr-wV5">
                                             <rect key="frame" x="554" y="21" width="41" height="30"/>
-                                            <color key="backgroundColor" red="0.49790694819473058" green="0.88033698429510154" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <state key="normal" title="LANG">
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
@@ -132,7 +132,7 @@
                                             </connections>
                                         </button>
                                     </subviews>
-                                    <color key="backgroundColor" red="1" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                     <constraints>
                                         <constraint firstItem="OI4-vr-wV5" firstAttribute="leading" secondItem="tcC-Ki-cca" secondAttribute="trailing" priority="250" constant="350" id="3BP-dm-4Jt"/>
                                         <constraint firstAttribute="trailing" secondItem="ec1-yE-vGz" secondAttribute="trailing" constant="16" id="95V-97-udb"/>
@@ -152,7 +152,7 @@
                                     </constraints>
                                 </view>
                             </subviews>
-                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstItem="mzQ-aP-kv1" firstAttribute="centerX" secondItem="ec1-yE-vGz" secondAttribute="centerX" id="8V8-fP-NKW"/>
                                 <constraint firstItem="8dJ-YV-WXw" firstAttribute="leading" secondItem="9Ex-fj-Wbk" secondAttribute="leading" constant="8" id="8am-br-lct"/>
@@ -174,36 +174,40 @@
                             </variation>
                             <connections>
                                 <outlet property="delegate" destination="-1" id="PhZ-Ar-YDl"/>
+                                <outlet property="langButton" destination="OI4-vr-wV5" id="gWL-zj-tl8"/>
                                 <outlet property="playButton" destination="IaM-s4-DVR" id="1np-Nm-U7s"/>
                                 <outlet property="scrubber" destination="3BJ-T6-Wn9" id="6Kl-6W-JHa"/>
                                 <outlet property="timeLabel" destination="tcC-Ki-cca" id="gsh-5x-nHk"/>
                             </connections>
                         </view>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QVH-Tn-h3k" userLabel="Top Controls Container" customClass="PSContainerView">
+                        <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QVH-Tn-h3k" userLabel="Top Controls Container" customClass="SPContainerView">
                             <rect key="frame" x="16" y="20" width="634" height="57"/>
                             <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tyj-hS-HEV">
-                                    <rect key="frame" x="283" y="8" width="42" height="20.5"/>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tyj-hS-HEV">
+                                    <rect key="frame" x="288" y="8" width="33" height="21"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="StarzPlay" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qgw-fB-YHX">
-                                    <rect key="frame" x="70" y="35.5" width="468" height="20.5"/>
+                                    <rect key="frame" x="70" y="35" width="468" height="21"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6hP-eg-Fk7">
+                                <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6hP-eg-Fk7">
                                     <rect key="frame" x="596" y="13" width="30" height="34"/>
-                                    <color key="backgroundColor" red="1" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <state key="normal" title="EP">
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
+                                    <connections>
+                                        <action selector="showEpisodeSelector:" destination="-1" eventType="touchUpInside" id="omn-io-c1f"/>
+                                    </connections>
                                 </button>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UvO-pC-e06">
+                                <button autoresizesSubviews="NO" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UvO-pC-e06" userLabel="Back Button">
                                     <rect key="frame" x="0.0" y="0.0" width="60" height="60"/>
-                                    <color key="backgroundColor" red="1" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="60" id="ekM-sa-Clo"/>
                                         <constraint firstAttribute="width" constant="60" id="jXk-f5-CXq"/>
@@ -211,9 +215,12 @@
                                     <state key="normal">
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
+                                    <connections>
+                                        <action selector="closePlayer:" destination="-1" eventType="touchUpInside" id="Ybb-Mj-ZIS"/>
+                                    </connections>
                                 </button>
                             </subviews>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstAttribute="trailing" secondItem="6hP-eg-Fk7" secondAttribute="trailing" constant="8" id="4o4-ok-l51"/>
                                 <constraint firstItem="qgw-fB-YHX" firstAttribute="top" secondItem="Tyj-hS-HEV" secondAttribute="bottom" constant="7" id="JRC-Jf-N4s"/>
@@ -232,7 +239,7 @@
                     <constraints>
                         <constraint firstItem="9Ex-fj-Wbk" firstAttribute="leading" secondItem="0bF-ex-98e" secondAttribute="leading" id="9Xg-e0-ETm"/>
                         <constraint firstAttribute="trailing" secondItem="9Ex-fj-Wbk" secondAttribute="trailing" id="RF3-ZR-xqk"/>
-                        <constraint firstItem="9Ex-fj-Wbk" firstAttribute="height" secondItem="0bF-ex-98e" secondAttribute="height" multiplier="0.5" id="fEr-4f-uub"/>
+                        <constraint firstItem="9Ex-fj-Wbk" firstAttribute="height" secondItem="0bF-ex-98e" secondAttribute="height" multiplier="0.8" id="fEr-4f-uub"/>
                         <constraint firstAttribute="centerX" secondItem="QVH-Tn-h3k" secondAttribute="centerX" id="jcL-NZ-JYa"/>
                         <constraint firstItem="QVH-Tn-h3k" firstAttribute="top" secondItem="0bF-ex-98e" secondAttribute="top" constant="20" symbolic="YES" id="k55-PB-iXc"/>
                         <constraint firstItem="QVH-Tn-h3k" firstAttribute="width" secondItem="0bF-ex-98e" secondAttribute="width" multiplier="0.95" id="oFd-RA-mq2"/>

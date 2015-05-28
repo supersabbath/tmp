@@ -7,19 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "PSContainerView.h"
+#import "SPContainerView.h"
 
 @import AVFoundation;
 
 @protocol SPPlayerControlViewDelegate ;
 
 
-@interface SPPlayerControlView : PSContainerView
+@interface SPPlayerControlView : SPContainerView
 
 @property (nonatomic, assign) IBOutlet id <SPPlayerControlViewDelegate> delegate;
 @property (weak, nonatomic) IBOutlet UIButton * playButton;
 @property (weak, nonatomic) IBOutlet UISlider *scrubber;
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
+@property (weak, nonatomic) IBOutlet  UIButton *langButton;
+ 
 
 -(void) updateViewForTimeRange:(CMTimeRange) range andCurrentPosition:(CMTime) currentPosition;
 
@@ -33,7 +35,11 @@
 
 -(void) changeViewToPlayingMode;
 -(void) changeViewToLoadingMode;
-
+/* Appearence*/
+-(void) setupColorInLangButton:(UIColor*) color forState:(UIControlState) state;
+-(void) setupFontInLanButton:(UIFont*) font;
+-(void) setupFontInTimeLabel:(UIFont*) font;
+-(void) setControlViewColor:(UIColor*) backColor;
 @end
 
 @protocol SPPlayerControlViewDelegate <NSObject>
