@@ -26,7 +26,12 @@
 #define LOGGIN_LABEL_TAG 731
 #endif
 
-
+#ifdef UI_USER_INTERFACE_IDIOM
+#define IS_IPAD_IDIOM \
+(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+#else
+#define IS_IPAD_IDIOM NO
+#endif
 @interface SPPlayerViewController ()
 {
     PTQoSProvider *qosProvider;
@@ -162,13 +167,13 @@
 {
     [_containerViewsArray addObjectsFromArray:@[_metadataContainerView,_thumbsContainer,_volumenContainer,_topControlsContainer,_controlView]];
     
-    if (LEFTTORIGHTLANG)
+    if ( UIUserInterfaceLayoutDirectionLeftToRight == [UIApplication sharedApplication].userInterfaceLayoutDirection)
     {
-        [self.backButton setProvidedAssetAsImage:IS_IPAD ? @"ico_arrowleft_32_c1_": @"ico_arrowleft_24_c1_"];
+        [self.backButton setProvidedAssetAsImage:IS_IPAD_IDIOM ? @"ico_arrowleft_32_c1_": @"ico_arrowleft_24_c1_"];
     }
     else
     {
-        [self.backButton setProvidedAssetAsImage:IS_IPAD ? @"ico_arrowright_32_c1_": @"ico_arrowright_24_c1_"];
+        [self.backButton setProvidedAssetAsImage:IS_IPAD_IDIOM ? @"ico_arrowright_32_c1_": @"ico_arrowright_24_c1_"];
     }
     [self setupAppearence];
 }
@@ -496,7 +501,7 @@
 - (PTMetadata *) createMetadata
 {
     PTMetadata* metadata = [[PTMetadata alloc] init];
-#warning TODO:
+// #warning TODO:
 //TODO: check wtf is this for ?'
     
     //ABR metadata
@@ -742,7 +747,7 @@
             error = self.player.error;
             [self log:@"=== Status: PTMediaPlayerStatusError ==="];
             [self log:[NSString stringWithFormat:@"PTSPlayerView:: Error - media player error code[%ld], description[%@], metadata[%@].", (long)error.code, error.description, error.metadata]];
-#warning TODO: check the error
+//#warning TODO: check the error
             [self log:@"PTSPlayerView:: Stopping playback due to errors."];
             [self.player stop];
             break;
@@ -1031,13 +1036,16 @@
 #pragma mark - UTILS and Debugger
 - (void) log:(NSString*)format, ...
 {
-    if(DEBUG) //logging could be turned on/off here
-    {
+#ifdef DEBUG
+
+    //if(DEBUG) //logging could be turned on/off here
+   // {
         va_list args;
         va_start(args,format);
         NSLogv(format, args);
         va_end(args);
-    }
+   // }
+#endif
 }
 
 

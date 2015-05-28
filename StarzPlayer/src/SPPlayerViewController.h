@@ -32,7 +32,7 @@
 
 /*Playback Public Actions*/
 - (void) playVideo:(PTSVideoItem *)item;
-- (void) resize;
+//- (void) resize;
 - (void) stopVideo;
 - (void) pauseVideo;
 - (void) resumeVideo;
