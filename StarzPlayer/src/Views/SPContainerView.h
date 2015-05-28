@@ -10,6 +10,7 @@
 
 @interface SPContainerView : UIView
 
+ ;
 -(BOOL) isDisplayed;
 
 

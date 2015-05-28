@@ -11,4 +11,5 @@
 @interface PSScrubbingCollectionViewController : UICollectionViewController
 
 - (void)fetchScrubbingImagesForULR:(NSString*) url;
+
 @end

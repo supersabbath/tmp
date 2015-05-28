@@ -105,14 +105,14 @@ typedef void (^Completion)(PTSVideoItem*);
 
 -(UIView*) playerViewController:(SPPlayerViewController *)playerVC viewForEpisodeSelectorForVideoItem:(PTSVideoItem *)item {
     UIView *v =[[UIView alloc] init];
-    [v setBackgroundColor:[UIColor grayColor]];
+    [v setBackgroundColor:[UIColor blueColor]];
     return v;
 }
 
 -(UIView*) playerViewController:(SPPlayerViewController *)playerVC viewToDisplayAfterVideoPlayback:(PTSVideoItem *)item {
 
     UIView *v =[[UIView alloc] init];
-    [v setBackgroundColor:[UIColor colorWithWhite:0.5 alpha:0.2]];
+    [v setBackgroundColor:[UIColor colorWithWhite:0.5 alpha:1]];
     return v;
 }
 

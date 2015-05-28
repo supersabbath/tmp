@@ -309,7 +309,7 @@
 		E162F09F1B171FB10028D740 /* btn_player_mute_p@3x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_player_mute_p@3x~ipad.png"; sourceTree = "<group>"; };
 		E162F0A01B171FB10028D740 /* btn_player_mute_p~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_player_mute_p~ipad.png"; sourceTree = "<group>"; };
 		E162F0A11B171FB10028D740 /* btn_player_mute_p~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_player_mute_p~iphone.png"; sourceTree = "<group>"; };
-		E162F0AC1B1727DC0028D740 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
+		E162F0AC1B1727DC0028D740 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		E17643101B11285C00E6C840 /* catalog_letter_default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = catalog_letter_default.png; sourceTree = "<group>"; };
 		E17643111B11285C00E6C840 /* volume_base~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "volume_base~ipad.png"; sourceTree = "<group>"; };
 		E17643121B11285C00E6C840 /* volume_base~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "volume_base~iphone.png"; sourceTree = "<group>"; };

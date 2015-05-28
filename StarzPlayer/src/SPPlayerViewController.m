@@ -46,10 +46,10 @@
 @property (weak, nonatomic) IBOutlet SPContainerView *topControlsContainer;
 @property (nonatomic, weak ) IBOutlet SPContainerView *metadataContainerView; // --> SubTitle and Audios Table View Controller
 @property (nonatomic, strong) NSMutableArray *containerViewsArray;
-@property (nonatomic, weak) UIView *visibleElement;
+@property (nonatomic, weak) SPContainerView *visibleElement;
 
 @property (nonatomic, strong) SPContainerView *episodeSelectorView;
-
+@property (nonatomic, strong) SPContainerView *postPlaybackView;
 /* UIElements in top container*/
 @property (weak, nonatomic) IBOutlet UIButton *backButton;
 @property (weak, nonatomic) IBOutlet UILabel *mainTitleLabel;
@@ -108,8 +108,32 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-#warning  TODO
+    
+    [self tryRemoveUnUsedElement:_episodeSelectorView];
+    
+    if ([self tryRemoveUnUsedElement:_metadataContainerView]) {
+        [_metadataTableViewController removeFromParentViewController];
+    }
+    if ([self tryRemoveUnUsedElement:_volumenContainer]) {
+        [_volumeViewController removeFromParentViewController];
+    }
+    if ( self.thumbsContainer.alpha == 0.0) {
+        [_thumbsContainer removeFromSuperview];
+        [_scrubbCollectionView removeFromParentViewController];
+    }
 }
+
+
+-(BOOL) tryRemoveUnUsedElement:(SPContainerView*) element
+{
+    BOOL removed= NO;
+    if (![_visibleElement isEqual:element]) {
+        [element removeFromSuperview];
+        removed = YES;
+    }
+    return removed;
+}
+
 
 -(void) dealloc
 {
@@ -125,9 +149,6 @@
     [self setUp];
     
     [self addScrubbingThumbnailsToView];
-#warning FER: OJO
-    [self view:nil didReceiveVolumenButtonTouch:nil];
-   
 }
 
 - (void)bringControlViewsToFrontMostPosition
@@ -206,6 +227,7 @@
 - (void) playVideo:(PTSVideoItem *)item
 {
     self.currentItem = item;
+    [self loadScrubbCollectionViewIfNeeded];
     [_scrubbCollectionView fetchScrubbingImagesForULR:_currentItem.stripContentUrl];
     
     if (self.player)
@@ -517,45 +539,14 @@
     if ([self.dataSource respondsToSelector:@selector(playerViewController:viewForEpisodeSelectorForVideoItem:)]) {
         
         UIView *contentView = [self.dataSource playerViewController:self viewForEpisodeSelectorForVideoItem:self.currentItem];
-        contentView.translatesAutoresizingMaskIntoConstraints  = NO;
+
         [self loadEpisodeSelectorContainerViewFrorView:contentView];
-        [_episodeSelectorView setDisplayStatus:[self.episodeSelectorView isDisplayed]];
+        [_episodeSelectorView setDisplayStatus:![self.episodeSelectorView isDisplayed]];
         [self markViewAsVisible:_episodeSelectorView];
     }
 }
 
 
--(void) loadEpisodeSelectorContainerViewFrorView:(UIView*)view {
-    
-    if (!self.episodeSelectorView) {
-        
-        SPContainerView* episodeSelectorView =[[SPContainerView alloc] init];
-        episodeSelectorView.translatesAutoresizingMaskIntoConstraints  = NO;
-        [episodeSelectorView setBackgroundColor:[UIColor lightGrayColor]];
-        
-        [self.view addSubview:episodeSelectorView];
-        
-        CGPoint postion = [self positionForEpisodeSelectorView];
-        
-        NSDictionary *metrics = @{@"viewHeight":@200.0,@"viewWidth":@300.0,@"padding":@15.0,@"rightPaddin":@(postion.x-300),@"topPosition":@(postion.y),@"lowPriority":@(UILayoutPriorityDefaultLow),@"highPriority":@(UILayoutPriorityDefaultHigh)};
-        NSDictionary *views = NSDictionaryOfVariableBindings(episodeSelectorView);
-        
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10@200-[episodeSelectorView(viewWidth@highPriority)]-padding@highPriority-|" options:NSLayoutFormatAlignAllLeft metrics:metrics views:views]];
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-topPosition@highPriority-[episodeSelectorView(viewHeight@highPriority)]->=0@lowPriority-|" options:NSLayoutFormatAlignAllLeft metrics:metrics views:views]];
-        self.episodeSelectorView =episodeSelectorView;
-    
-        [episodeSelectorView setDisplayStatus:YES];
-    }
-
-}
-
-
--(CGPoint) positionForEpisodeSelectorView
-{
-    CGRect btnFrame =  self.episodeSelectorButton.frame;
-    CGFloat secureMargin = 10.0;
-    return CGPointMake(CGRectGetMaxX(btnFrame), CGRectGetMaxY(btnFrame)+secureMargin);
-}
 
 /*
  
@@ -592,6 +583,49 @@
     [self.subtitleLabel setText:item.description];
     [self.mainTitleLabel setText:item.title];
 
+}
+
+-(void) addView:(UIView*) view ToContainer:(SPContainerView*) container
+{
+    view.translatesAutoresizingMaskIntoConstraints  = NO;
+    [container addSubview:view];
+    //   NSDictionary *metrics = @{@"width":@(CGRectGetWidth(container.frame)),@"height":@(CGRectGetHeight(container.frame))};
+    NSDictionary *views = NSDictionaryOfVariableBindings(view);
+    [container addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(0)-[view]-(0)-|" options:NSLayoutFormatAlignAllCenterX metrics:nil views:views]];
+    [container addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(0)-[view]-(0)-|" options:NSLayoutFormatAlignAllCenterX metrics:nil views:views]];
+}
+
+
+-(void) loadEpisodeSelectorContainerViewFrorView:(UIView*)view {
+    
+    if (!self.episodeSelectorView) {
+        
+        SPContainerView* episodeSelectorView =[[SPContainerView alloc] init];
+        episodeSelectorView.translatesAutoresizingMaskIntoConstraints  = NO;
+        [episodeSelectorView setBackgroundColor:[UIColor lightGrayColor]];
+        
+        [self.view addSubview:episodeSelectorView];
+        
+        CGPoint postion = [self positionForEpisodeSelectorView];
+        
+        NSDictionary *metrics = @{@"viewHeight":@200.0,@"viewWidth":@300.0,@"padding":@15.0,@"rightPaddin":@(postion.x-300),@"topPosition":@(postion.y),@"lowPriority":@(UILayoutPriorityDefaultLow),@"highPriority":@(UILayoutPriorityDefaultHigh)};
+        NSDictionary *views = NSDictionaryOfVariableBindings(episodeSelectorView);
+        
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10@200-[episodeSelectorView(viewWidth@highPriority)]-padding@highPriority-|" options:NSLayoutFormatAlignAllLeft metrics:metrics views:views]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-topPosition@highPriority-[episodeSelectorView(viewHeight@highPriority)]->=0@lowPriority-|" options:NSLayoutFormatAlignAllLeft metrics:metrics views:views]];
+        self.episodeSelectorView =episodeSelectorView;
+        
+    }
+    
+    [self addView:view ToContainer:_episodeSelectorView];
+}
+
+
+-(CGPoint) positionForEpisodeSelectorView
+{
+    CGRect btnFrame =  self.episodeSelectorButton.frame;
+    CGFloat secureMargin = 10.0;
+    return CGPointMake(CGRectGetMaxX(btnFrame), CGRectGetMaxY(btnFrame)+secureMargin);
 }
 
 #pragma mark  Touches
@@ -693,7 +727,8 @@
             [[self controlView] changeViewToPlayingMode];
             break;
         case PTMediaPlayerStatusPaused:
-    
+            //TODO: 
+            [self onMediaPlayerItemPlayCompleted:nil];
             [self log:@"=== Status: PTMediaPlayerStatusPaused ==="];
             break;
         case PTMediaPlayerStatusStopped:
@@ -729,11 +764,55 @@
 - (void) onMediaPlayerItemPlayCompleted:(NSNotification *) notification
 {
     [self log:@"PTSPlayerView:: Media Playback completed."];
+    
     if ([self.dataSource respondsToSelector:@selector(playerViewController:viewToDisplayAfterVideoPlayback:)]) {
-        UIView *postPlaybackView = [self.dataSource playerViewController:self viewToDisplayAfterVideoPlayback:_player.currentItem];
-         
+        UIView *postPlaybackView = [self.dataSource playerViewController:self viewToDisplayAfterVideoPlayback:self.currentItem];
+        [self addPostPlaybackViewToScreenWithContent:postPlaybackView];
     }
 }
+
+
+-(void) addPostPlaybackViewToScreenWithContent:(UIView *) view
+{
+    [self loadPostPlaybackContainerViewFrorView:view];
+    [_postPlaybackView setDisplayStatus:![_postPlaybackView isDisplayed]];
+    [self markViewAsVisible:_postPlaybackView];
+}
+
+
+- (void) loadPostPlaybackContainerViewFrorView:(UIView*)view {
+    
+    if (!self.postPlaybackView) {
+        
+        self.postPlaybackView=[[SPContainerView alloc] init];
+        _postPlaybackView.translatesAutoresizingMaskIntoConstraints  = NO;
+        [_postPlaybackView setBackgroundColor:[UIColor blueColor]];
+        [self.view addSubview:_postPlaybackView];
+       
+        NSLayoutConstraint *centerXConstrain = [NSLayoutConstraint constraintWithItem:_postPlaybackView
+                                     attribute:NSLayoutAttributeCenterX
+                                     relatedBy:NSLayoutRelationEqual
+                                        toItem:_postPlaybackView.superview
+                                     attribute:NSLayoutAttributeCenterX
+                                    multiplier:1.f constant:0.f];
+        NSLayoutConstraint *centerYConstrain = [NSLayoutConstraint constraintWithItem:_postPlaybackView
+                                                                   attribute:NSLayoutAttributeCenterY
+                                                                   relatedBy:NSLayoutRelationEqual
+                                                                      toItem:_postPlaybackView.superview
+                                                                   attribute:NSLayoutAttributeCenterY
+                                                                  multiplier:1.f constant:0.f];
+        NSLayoutConstraint *heightConstrain =[NSLayoutConstraint constraintWithItem:_postPlaybackView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeHeight multiplier:0.8 constant:0.0];
+
+
+        NSLayoutConstraint *widthConstrain =[NSLayoutConstraint constraintWithItem:_postPlaybackView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeWidth multiplier:0.8 constant:0.0];
+        
+       [self.view addConstraints:@[centerXConstrain,centerYConstrain,widthConstrain,heightConstrain]];
+       
+    }
+    
+    [self addView:view ToContainer:_postPlaybackView];
+}
+
 
 
 - (void) onMediaPlayerTimeChange:(NSNotification *)notification
@@ -786,6 +865,7 @@
     
     [self stopUIHideTimer];
     self.thumbsContainer.alpha = 1.0;
+    
     [self.volumenContainer setDisplayStatus:NO];
     [self.metadataContainerView setDisplayStatus:NO];
 }
@@ -914,8 +994,8 @@
 {
     [self loadScrubbCollectionViewIfNeeded];
     
-    if (_scrubbCollectionView.view.superview == nil) {
-        
+    if (_scrubbCollectionView.view.superview == nil)
+    {
         NSDictionary *views = @{@"collectionView":_scrubbCollectionView.view};
         [_scrubbCollectionView.view setTranslatesAutoresizingMaskIntoConstraints:NO];
         
@@ -926,7 +1006,6 @@
         [self.thumbsContainer  addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(0)-[collectionView]-(0)-|" options:0 metrics:nil views:views]];
         [self.thumbsContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(0)-[collectionView]-(0)-|" options:0 metrics:nil views:views]];
         [self.thumbsContainer layoutIfNeeded];
-        
         
     }
  
