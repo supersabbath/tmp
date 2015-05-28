@@ -33,10 +33,10 @@
         {
             
               
-            NSString *sessionPath = [[NSBundle mainBundle] pathForResource:@"SessionData" ofType:@"plist"];
+     /**       NSString *sessionPath = [[NSBundle mainBundle] pathForResource:@"SessionData" ofType:@"plist"];
                 
             NSDictionary *sessionData = [NSDictionary dictionaryWithContentsOfFile:sessionPath];
-            
+        */    
            // url = [sessionData objectForKey:@"videoURL"];//[info objectForKey:@"ContentURL"];
             url = [info objectForKey:@"ContentURL"];
             title = [info objectForKey:@"Title"];

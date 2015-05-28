@@ -33,7 +33,7 @@
 }
 
 - (id)initWithDictionary:(NSDictionary *)info;
-- (BOOL)hasTag:(NSString *)tag;
+ 
 
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, strong) NSString *title;
