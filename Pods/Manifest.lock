@@ -1,0 +1,68 @@
+PODS:
+  - Expecta (0.2.4)
+  - Gigya-iOS-SDK (3.3.0)
+  - GoogleAnalytics-iOS-SDK (3.11):
+    - GoogleAnalytics-iOS-SDK/Core (= 3.11)
+  - GoogleAnalytics-iOS-SDK/Core (3.11)
+  - MBProgressHUD (0.9.1)
+  - OCMock (3.1.2)
+  - OMGHTTPURLRQ (2.1):
+    - OMGHTTPURLRQ/RQ (= 2.1)
+  - OMGHTTPURLRQ/FormURLEncode (2.1)
+  - OMGHTTPURLRQ/RQ (2.1):
+    - OMGHTTPURLRQ/FormURLEncode
+    - OMGHTTPURLRQ/UserAgent
+  - OMGHTTPURLRQ/UserAgent (2.1)
+  - PromiseKit (1.4.1):
+    - PromiseKit/CALayer (= 1.4.1)
+    - PromiseKit/NSNotificationCenter (= 1.4.1)
+    - PromiseKit/NSURLConnection (= 1.4.1)
+    - PromiseKit/Pause (= 1.4.1)
+    - PromiseKit/UIActionSheet (= 1.4.1)
+    - PromiseKit/UIAlertView (= 1.4.1)
+    - PromiseKit/UIView (= 1.4.1)
+    - PromiseKit/UIViewController (= 1.4.1)
+    - PromiseKit/Until (= 1.4.1)
+    - PromiseKit/When (= 1.4.1)
+  - PromiseKit/CALayer (1.4.1):
+    - PromiseKit/Promise
+  - PromiseKit/NSNotificationCenter (1.4.1):
+    - PromiseKit/Promise
+  - PromiseKit/NSURLConnection (1.4.1):
+    - OMGHTTPURLRQ
+    - PromiseKit/Promise
+  - PromiseKit/Pause (1.4.1):
+    - PromiseKit/Promise
+  - PromiseKit/Promise (1.4.1)
+  - PromiseKit/UIActionSheet (1.4.1):
+    - PromiseKit/Promise
+  - PromiseKit/UIAlertView (1.4.1):
+    - PromiseKit/Promise
+  - PromiseKit/UIView (1.4.1):
+    - PromiseKit/Promise
+  - PromiseKit/UIViewController (1.4.1):
+    - PromiseKit/Promise
+  - PromiseKit/Until (1.4.1):
+    - PromiseKit/Promise
+    - PromiseKit/When
+  - PromiseKit/When (1.4.1):
+    - PromiseKit/Promise
+
+DEPENDENCIES:
+  - Expecta (~> 0.2.4)
+  - Gigya-iOS-SDK
+  - GoogleAnalytics-iOS-SDK (~> 3.10)
+  - MBProgressHUD (~> 0.8)
+  - OCMock (~> 3.1)
+  - PromiseKit (= 1.4.1)
+
+SPEC CHECKSUMS:
+  Expecta: cfaf1d3e2e194ca704a25e997093d30a1ce70b61
+  Gigya-iOS-SDK: 62ce99f0d823f3e86a380066aeeafb2c49e5edad
+  GoogleAnalytics-iOS-SDK: fb15cc7e3d01d06d531653f37443fda90274d53d
+  MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
+  OCMock: a10ea9f0a6e921651f96f78b6faee95ebc813b92
+  OMGHTTPURLRQ: f8c515dfd2f57a5d74c710978f600231f52afec5
+  PromiseKit: c40a74164b65439bbd830a8249fc559bac6c97f8
+
+COCOAPODS: 0.36.0

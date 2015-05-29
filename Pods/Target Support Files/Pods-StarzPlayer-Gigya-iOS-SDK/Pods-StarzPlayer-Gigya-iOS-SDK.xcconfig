@@ -1,0 +1,2 @@
+PODS_STARZPLAYER_GIGYA_IOS_SDK_FRAMEWORK_SEARCH_PATHS = "$(PODS_ROOT)/Gigya-iOS-SDK"
+PODS_STARZPLAYER_GIGYA_IOS_SDK_OTHER_LDFLAGS = -framework "Foundation" -framework "GigyaSDK" -framework "Security"

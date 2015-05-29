@@ -52,7 +52,6 @@ typedef void (^Completion)(PTSVideoItem*);
 - (void ) reloadWithURL:(NSString*)surl withCompletion:(Completion) block
 {
  
-    
     dispatch_queue_t thread = dispatch_queue_create("LoadDictionary", NULL);
     dispatch_async(thread, ^{
         

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>	 
+	<dict>  
+		<key>ContentURL</key>
+		<string>https://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/bipbop_4x3_variant.m3u8</string>
+		<key>Title</key>
+		<string>Apple HLS Stream</string>
+		<key>MediaID</key>
+		<string>aud_test_asset1</string>
+		<key>StreamType</key>
+		<string>VOD</string>
+		<key>Thumbnail</key>
+		<string></string>				
+		<key>Description</key>
+		<string>Sample stream from Apple with WebVTT Subtitles and Alternate Audio</string>
+		<key>Tags</key>
+		<string>HLS3, MBR, Ads, CC</string>
+		<key>Auditude</key>
+		<dict>
+			<key>domain</key>
+			<string>auditude.com</string>	 
+			<key>zoneId</key>
+			<string>9797</string>
+			<key>targetingParameters</key>
+			<string></string>						
+		</dict>
+	</dict>
+	<dict>  
+		<key>ContentURL</key>
+		<string>https://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/bipbop_4x3_variant.m3u8</string>
+		<key>Title</key>
+		<string>Apple HLS Stream No Ads</string>
+		<key>MediaID</key>
+		<string>aud_test_asset1</string>
+		<key>StreamType</key>
+		<string>VOD</string>
+		<key>Thumbnail</key>
+		<string></string>				
+		<key>Description</key>
+		<string>Sample stream from Apple with WebVTT Subtitles and Alternate Audio</string>
+		<key>Tags</key>
+		<string>HLS3, MBR, No Ads, CC</string>
+	</dict>	
+	<dict>  
+		<key>ContentURL</key>
+		<string>http://public.infozen.cshls.lldns.net/infozen/public/public.m3u8</string>
+		<key>Title</key>
+		<string>NASA Live Stream</string>
+		<key>MediaID</key>
+		<string>asset1</string>
+		<key>StreamType</key>
+		<string>LIVE</string>
+		<key>Thumbnail</key>
+		<string></string>				
+		<key>Description</key>
+		<string>Sample live stream from NASA</string>
+		<key>Tags</key>
+		<string>HLS2, MBR, Ads</string>
+		<key>Auditude</key>
+		<dict>
+			<key>domain</key>
+			<string>auditude.com</string>	 
+			<key>zoneId</key>
+			<string>9797</string>
+			<key>targetingParameters</key>
+			<string></string>						
+		</dict>
+	</dict>
+	<dict>  
+		<key>ContentURL</key>
+		<string>http://public.infozen.cshls.lldns.net/infozen/public/public.m3u8</string>
+		<key>Title</key>
+		<string>NASA Live Stream No Ads</string>
+		<key>MediaID</key>
+		<string>asset1</string>
+		<key>StreamType</key>
+		<string>LIVE</string>
+		<key>Thumbnail</key>
+		<string></string>				
+		<key>Description</key>
+		<string>Sample live stream from NASA</string>
+		<key>Tags</key>
+		<string>HLS2, MBR, No Ads</string>
+	</dict>					   	
+</array>
+</plist>
