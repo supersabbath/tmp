@@ -20,10 +20,13 @@
 
 #import "PTSVideoItem.h"
 
+
+
 @implementation PTSVideoItem
 
 
 @synthesize url,title,mediaId,streamType,contentDescription,drmToken,drmUserName,drmUserPassword,thumbnail,stripContentUrl;
+@synthesize abrControl,contentType,starzAsset;
 
 - (id)initWithDictionary:(NSDictionary *)info
 {
@@ -56,6 +59,9 @@
     return self;
 }
 
+-(void) setInitialPosition:(NSTimeInterval) newPosition {
 
+    _initialPosition = newPosition;
+}
 
 @end

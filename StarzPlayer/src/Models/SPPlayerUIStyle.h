@@ -7,7 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-// title lable
+// Main Title Label
+FOUNDATION_EXPORT  NSString *const kFontMainTitleLabel;
+FOUNDATION_EXPORT  NSString *const kTintMainTitleLabel;
+
+// time lable
 FOUNDATION_EXPORT  NSString *const kFontTimeLabel;
 FOUNDATION_EXPORT  NSString *const kTintColorTimeLabel;
 // subtitle label
@@ -40,7 +44,10 @@ FOUNDATION_EXPORT  NSString *const kSliderMaxImageName;
 
 /*Getter methodos*/
 -(UIFont*) fontForTimeLabel;            // kFontTimeLabel
--(UIColor*) tintColorForTitleLabel;     // kTintColorTimeLabel
+-(UIColor*) tintColorForTimeLabel;     // kTintColorTimeLabel
+
+-(UIColor*) tintColorForMainTitleLabel;
+-(UIFont*) fontForMainTitleLabel;
 
 -(UIColor*) tintColorForSubtitleLabel;  // kFontSubtimeLabel
 -(UIFont*) fontForSutimeLabel;          // kFontSubtimeLabel

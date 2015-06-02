@@ -19,12 +19,14 @@
 // Style
 #import "SPPlayerUIStyle.h"
 
-
+// used in the timer
 #define HIDE_TIME_PERIOD 5.0
 
 #ifdef DEBUG
 #define LOGGIN_LABEL_TAG 731
 #endif
+
+#define EPISODE_VIEW_TAG 778
 
 #ifdef UI_USER_INTERFACE_IDIOM
 #define IS_IPAD_IDIOM \
@@ -32,10 +34,31 @@
 #else
 #define IS_IPAD_IDIOM NO
 #endif
+
+#include <math.h>       /* fmod */
+
+
+/*
+ Notifications Read header file
+ @see: SPPlayerControllerObserverProtocol
+ **/
+ NSString *const SPPlayerChangeContentNotification =@"SPPlayerChangeContentNotification";
+ NSString *const SPPlayerDidLoadNotification = @"SPPlayerDidLoadNotification";
+ NSString *const SPPlayerStatusPlayingNotification = @"SPPlayerStatusPlayingNotification";
+
+ NSString *const SPPlayerTimeElapset5SecondsNotification = @"SPPlayerTimeElapset5SecondsNotification";
+ NSString *const SPPlayerStatusPausedNotification = @"SPPlayerStatusPausedNotification";
+ NSString *const SPPlayerStatusStoppedNotification = @"SPPlayerStatusStoppedNotification";
+ NSString *const SPPlayerStatusCompletedNotification = @"SPPlayerStatusCompletedNotification";
+ NSString *const SPPPlayerStatusErrorNotification = @"SPPPlayerStatusErrorNotification";
+ NSString *const SPPlayerWillStopNotification = @"SPPlayerWillStopNotification";
+
+/* Extension Private iVars*/
+
 @interface SPPlayerViewController ()
 {
     PTQoSProvider *qosProvider;
-
+ 
 }
 
 @property (nonatomic, strong) PTMediaPlayer *player;
@@ -86,24 +109,15 @@
     self = [super init];
     if (self) {
         _currentItem = videoItem;
-        _containerViewsArray = [@[] mutableCopy];
         _uiPropertiesStyle = uiStyler;
-    }
-    return self;
-}
-
-- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundle
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nil];
-   
-    if (self) {
         _containerViewsArray = [@[] mutableCopy];
-        _uiPropertiesStyle = [[SPPlayerUIStyle alloc] init];
-
+        [self listenForChangeContentNotification];
     }
     return self;
 }
-- (void)qosSetup
+
+
+- (void) qosSetup
 {
     qosProvider = [[PTQoSProvider alloc] initWithPlayer:self.player];
     [self addLogginLabel];
@@ -126,6 +140,13 @@
         [_thumbsContainer removeFromSuperview];
         [_scrubbCollectionView removeFromParentViewController];
     }
+    if (_episodeSelectorView) {
+        
+        [self tryRemoveUnUsedElement:_episodeSelectorView];
+    }
+    if (_postPlaybackView) {
+        [self tryRemoveUnUsedElement:_postPlaybackView];
+    }
 }
 
 
@@ -143,7 +164,8 @@
 -(void) dealloc
 {
     [self.hideUIElementsTimer invalidate];
-    [self stopObservingAdobeNotifications];
+    [self clearCurrentItemAssociatedViews]; // to prevent a crash from the table views
+    [self stopObservingNotifications];
 }
 
 #pragma mark -  ViewController Lifecycle
@@ -151,9 +173,10 @@
 {
     [super viewDidLoad];
 
-    [self setUp];
+    [self configUI];
     
     [self addScrubbingThumbnailsToView];
+    [self setTextInInformationLabels:_currentItem];
 }
 
 - (void)bringControlViewsToFrontMostPosition
@@ -163,7 +186,7 @@
 }
 
 
--(void) setUp
+-(void) configUI
 {
     [_containerViewsArray addObjectsFromArray:@[_metadataContainerView,_thumbsContainer,_volumenContainer,_topControlsContainer,_controlView]];
     
@@ -176,24 +199,43 @@
         [self.backButton setProvidedAssetAsImage:IS_IPAD_IDIOM ? @"ico_arrowright_32_c1_": @"ico_arrowright_24_c1_"];
     }
     [self setupAppearence];
+    [self configureForContentType:_currentItem.contentType];
 }
 
 -(void) setupAppearence
 {
-    [_mainTitleLabel setFont:[_uiPropertiesStyle fontForTimeLabel]];
-    [_mainTitleLabel setTintColor:[_uiPropertiesStyle tintColorForTitleLabel]];
+    [_mainTitleLabel setFont:[_uiPropertiesStyle fontForMainTitleLabel]];
+    [_mainTitleLabel setTintColor:[_uiPropertiesStyle tintColorForMainTitleLabel]];
     
     [_subtitleLabel setFont:[_uiPropertiesStyle fontForSutimeLabel]];
     [_subtitleLabel setTintColor:[_uiPropertiesStyle tintColorForSubtitleLabel]];
     
- 
+    // TIME LABELS
+    [_controlView setupFontInTimeLabel:[_uiPropertiesStyle fontForTimeLabel]];
+    
     [_controlView setupColorInLangButton:[_uiPropertiesStyle titleColorForLangButtonStateNormal] forState:UIControlStateNormal];
     [_controlView setupColorInLangButton:[_uiPropertiesStyle titleColorForLangButtonStateHighlighted] forState:UIControlStateHighlighted];
+    
     [_controlView setupFontInLanButton:[_uiPropertiesStyle fontForLangButton]];
     [_controlView setControlViewColor:[_uiPropertiesStyle backgroundColorForControlView]];
     [_controlView setupFontInTimeLabel:[_uiPropertiesStyle fontForTimeLabel]];
+    
+    [_metadataTableViewController configureBackgroundColorInTables:[_uiPropertiesStyle backgroundColorForMetadataTablesViews]];
 }
 
+-(void) configureForContentType:(PTSContentType) conteType
+{
+
+    switch (conteType) {
+        case PTSEpisodeContent:
+            [_episodeSelectorButton setHidden:NO];
+            break;
+        case PTSMovieContent:
+             [_episodeSelectorButton setHidden:YES];
+            break;
+    }
+
+}
 
 -(NSUInteger)supportedInterfaceOrientations
 {
@@ -226,23 +268,41 @@
 }
 
 
+-(void) listenForChangeContentNotification
+{
+    [self stopVideo];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changePlayerToDiffentContent:) name:SPPlayerChangeContentNotification object:nil];
+
+}
+
+
+-(void) clearCurrentItemAssociatedViews
+{
+    [_episodeSelectorView removeFromSuperview];
+    _episodeSelectorView = nil;
+    
+    [_postPlaybackView removeFromSuperview];
+    _postPlaybackView = nil;
+}
 
 #pragma mark - Player Actions
 #pragma mark - Public Actions
+- (void) playCurrentVideo
+{
+    [_scrubbCollectionView fetchScrubbingImagesForULR:_currentItem.stripContentUrl];
+    
+    [self playVideo];
+}
+
+
 - (void) playVideo:(PTSVideoItem *)item
 {
     self.currentItem = item;
     [self loadScrubbCollectionViewIfNeeded];
     [_scrubbCollectionView fetchScrubbingImagesForULR:_currentItem.stripContentUrl];
-    
-    if (self.player)
-    {
-        [self.player stop];
-        [self.player reset];
-    }
+    [self setTextInInformationLabels:item];
     
     [self playVideo];
-    [self setTextInInformationLabels:item];
 }
 
 
@@ -269,6 +329,8 @@
 
 -(void) releasePlayer
 {
+    [self stopObservingNotifications];
+    
     if (self.player != nil)
     {
         [self.player reset];
@@ -298,6 +360,7 @@
     
     if (self.player)
     {
+        [self.player stop];
         [self releasePlayer];
     }
     
@@ -395,8 +458,31 @@
 - (void) logDRMError:(NSString*)str :(DRMError*)error
 {
     NSLog(@"[%@:] major:[%ld] minor:[%ld] string: [%@] NSError:[%@]", str, (long)error.majorError, (long)error.minorError, error.errorString, error.platformError);
+    NSUInteger major = error.majorError;
+    
+    __block SPPlayerViewController * __weak unretainedSelf = self;
+    if (major == 3322 || major == 3323 || major == 3324 || major == 3326)
+    {
+        
+        [[DRMManager sharedManager] resetDRM:^(DRMError *error) {
+            NSLog(@"[Second Error %@:] major:[%ld] minor:[%ld] string: [%@] NSError:[%@]", str, (long)error.majorError, (long)error.minorError, error.errorString, error.platformError);
+             [self callDelegateForDRMError:error];
+        } complete:^{
+            [unretainedSelf playVideo];
+        }];
+    }
+    else {
+        [self callDelegateForDRMError:error];
+    }
 };
 
+-(void) callDelegateForDRMError:(DRMError*) error
+{
+    if ([self.delgate respondsToSelector:@selector(playerViewController:willStopDueDRMError:)]) {
+        [self.delgate playerViewController:self willStopDueDRMError:error ];
+    }
+
+}
 
 - (void) startAuthentication:(PTSVideoItem *)videoItem
 {
@@ -486,6 +572,8 @@
              // please don't use the error object here, there is an exception thrown in the PSDK that will be addressed soon.
              // use player.error object instead
              [self log:@"=============== loadDRMMetadataWithCompletionHandler ERROR:  media player item error code[%ld], description[%@]", (long)self.player.error.code, self.player.error.description];
+#warning TODO: 
+             //Server error 3005
              
          }
          ];
@@ -501,7 +589,7 @@
 - (PTMetadata *) createMetadata
 {
     PTMetadata* metadata = [[PTMetadata alloc] init];
-// #warning TODO:
+ #warning TODO:
 //TODO: check wtf is this for ?'
     
     //ABR metadata
@@ -511,9 +599,25 @@
 //    int maxBR = 2000000;
 //    
 //    PTABRControlParameters *abrMetaData = [[PTABRControlParameters alloc] initWithABRControlParams:initialBR minBitRate:minBR maxBitRate:maxBR];
-//    [metadata setMetadata:abrMetaData forKey:PTMBRResolvingMetadataKey];
+    if (_currentItem.abrControl != nil)
+    {
+#warning TODO:
+      //  [metadata setMetadata:_currentItem.abrControl forKey:PTMBRResolvingMetadataKey];
+    }
+    
     
     return metadata;
+}
+
+-(void) changePlayerToDiffentContent:(NSNotification*) notification
+{
+    [_episodeSelectorView setDisplayStatus:NO];
+    PTSVideoItem *newItem = [notification object];
+    if (newItem) {
+        [self stopVideo];
+        
+        [self playVideo:newItem];
+    }
 }
 
 #pragma mark -
@@ -543,9 +647,17 @@
     
     if ([self.dataSource respondsToSelector:@selector(playerViewController:viewForEpisodeSelectorForVideoItem:)]) {
         
-        UIView *contentView = [self.dataSource playerViewController:self viewForEpisodeSelectorForVideoItem:self.currentItem];
+        UIView *contentView = [_episodeSelectorView viewWithTag:EPISODE_VIEW_TAG];
 
-        [self loadEpisodeSelectorContainerViewFrorView:contentView];
+        if (contentView == nil) {
+            contentView = [self.dataSource playerViewController:self viewForEpisodeSelectorForVideoItem:self.currentItem];
+            
+            [contentView setTag:EPISODE_VIEW_TAG];
+            [self log:@"creating view with tag : %d",EPISODE_VIEW_TAG];
+            [self loadEpisodeSelectorContainerViewFrorView:contentView];
+        }
+        
+   
         [_episodeSelectorView setDisplayStatus:![self.episodeSelectorView isDisplayed]];
         [self markViewAsVisible:_episodeSelectorView];
     }
@@ -585,9 +697,24 @@
 
 -(void) setTextInInformationLabels:(PTSVideoItem*) item
 {
-    [self.subtitleLabel setText:item.description];
+    [self.subtitleLabel setText:item.contentDescription];
     [self.mainTitleLabel setText:item.title];
-
+/*
+ NSString* title = playObject.film.title;
+ self.titleLabel.text = [title uppercaseString];
+ 
+ self.subtitleLabel.text = @"";
+ }
+ else
+ {
+ NSString * title = playObject.serieGroup.title;
+ self.titleLabel.text = [title uppercaseString];
+ 
+ NSString * subtitle = [NSString stringWithFormat:@"S%02d - E%02d - %@", [playObject.film.tvSeasonNumber intValue], [playObject.film.tvSeasonEpisodeNumber intValue], playObject.film.title];
+ self.subtitleLabel.text = [subtitle uppercaseString];
+ }
+ */
+ 
 }
 
 -(void) addView:(UIView*) view ToContainer:(SPContainerView*) container
@@ -601,7 +728,8 @@
 }
 
 
--(void) loadEpisodeSelectorContainerViewFrorView:(UIView*)view {
+-(void) loadEpisodeSelectorContainerViewFrorView:(UIView*)view
+{
     
     if (!self.episodeSelectorView) {
         
@@ -691,9 +819,11 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMediaPlayerItemPlayStarted:) name:PTMediaPlayerPlayStartedNotification object:self.player];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMediaPlayerItemPlayCompleted:) name:PTMediaPlayerPlayCompletedNotification object:self.player];
+    
+    
 }
 
-- (void) stopObservingAdobeNotifications
+- (void) stopObservingNotifications
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -719,29 +849,38 @@
             break;
         case PTMediaPlayerStatusInitialized:
             [self log:@"=== Status: PTMediaPlayerStatusInitialized ==="];
+            [self postNotificationToObservers:SPPlayerDidLoadNotification];
+
+            [_player setCurrentTimeUpdateInterval:_currentItem.initialPosition];
             break;
         case PTMediaPlayerStatusReady:
-              [[self controlView] changeViewToLoadingMode];
+            [[self controlView] changeViewToLoadingMode];
        
-                [self startHideElementsTimer];
+            [self startHideElementsTimer];
             [self log:@"=== Status: PTMediaPlayerStatusReady ==="];
             break;
         case PTMediaPlayerStatusPlaying:
 
             [self log:@"=== Status: PTMediaPlayerStatusPlaying ==="];
             [[self controlView] changeViewToPlayingMode];
+            [self postNotificationToObservers:SPPlayerStatusPlayingNotification];
             break;
         case PTMediaPlayerStatusPaused:
-            //TODO: 
-            [self onMediaPlayerItemPlayCompleted:nil];
+
             [self log:@"=== Status: PTMediaPlayerStatusPaused ==="];
+            [self postNotificationToObservers:SPPlayerStatusPausedNotification];
+
             break;
         case PTMediaPlayerStatusStopped:
             [self log:@"=== Status: PTMediaPlayerStatusStopped ==="];
               [[self controlView] changeViewToLoadingMode];
+            [self postNotificationToObservers:SPPlayerStatusStoppedNotification];
+            
             break;
         case PTMediaPlayerStatusCompleted:
             [self log:@"=== Status: PTMediaPlayerStatusCompleted ==="];
+            [self postNotificationToObservers:SPPlayerStatusCompletedNotification];
+
             break;
         case PTMediaPlayerStatusError:
             error = self.player.error;
@@ -750,8 +889,34 @@
 //#warning TODO: check the error
             [self log:@"PTSPlayerView:: Stopping playback due to errors."];
             [self.player stop];
+            [self postNotificationToObservers:SPPPlayerStatusErrorNotification];
+
             break;
     }
+}
+
+-(void) postNotificationToObservers:(NSString*) notificationIdentifier
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:notificationIdentifier object:self.player];
+}
+
+-(void) addObserverToStarzPlayerRequiredNotifications:(id<SPPlayerControllerObserverProtocol>) observer
+{
+   
+   
+
+    [[NSNotificationCenter defaultCenter] addObserver:observer selector:@selector(moviePlayerDidLoad:) name:SPPlayerDidLoadNotification object:self.player];
+    
+      [[NSNotificationCenter defaultCenter] addObserver:observer selector:@selector(moviePlayerDidStartPlay:) name:SPPlayerStatusPlayingNotification object:self.player];
+    
+     [[NSNotificationCenter defaultCenter] addObserver:observer selector:@selector(moviePlayerDidFinishBuffering:) name:PTMediaPlayerBufferingCompletedNotification object:self.player];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:observer selector:@selector(moviePlayerDidPause:) name:SPPlayerStatusPausedNotification object:self.player];
+    [[NSNotificationCenter defaultCenter] addObserver:observer selector:@selector(moviePlayerDidStop:) name:SPPlayerStatusStoppedNotification object:self.player];
+    [[NSNotificationCenter defaultCenter] addObserver:observer selector:@selector(moviePlayer:didErrorOccur:) name:SPPPlayerStatusErrorNotification object:self.player];
+    
+        [[NSNotificationCenter defaultCenter] addObserver:observer selector:@selector(moviePlayerDidFinishPlayback:) name:SPPlayerStatusCompletedNotification object:self.player];
+    
 }
 
 - (void)onMediaPlayerNotificationItemEntry:(NSNotification *)nsnotification
@@ -825,6 +990,13 @@
     CMTimeRange seekableRange = self.player.seekableRange;
     [_controlView updateViewForTimeRange:seekableRange andCurrentPosition:self.player.currentItem.currentTime];
     [self logVideoDetailsToLabel:qosProvider.playbackInformation];
+    
+    double secs =CMTimeGetSeconds(_player.currentTime);
+   
+    if (fmod(secs, 5.0) == 0) {
+        [self log:@"Elapset time"];
+        [self postNotificationToObservers:SPPlayerTimeElapset5SecondsNotification];
+    }
 }
 
 
@@ -885,7 +1057,7 @@
         self.thumbsContainer.alpha = 0.0;
     } completion:nil];
     [self.player seekToTime:time completionHandler:^(BOOL finished) {
-        NSLog(@"seekToTime complete........");
+        [self log:@"seekToTime complete........" ];
         [[self controlView] changeViewToPlayingMode];
         [self.player play];
     }];
@@ -1036,7 +1208,7 @@
 #pragma mark - UTILS and Debugger
 - (void) log:(NSString*)format, ...
 {
-#ifdef DEBUG
+//#ifdef DEBUG
 
     //if(DEBUG) //logging could be turned on/off here
    // {
@@ -1045,7 +1217,7 @@
         NSLogv(format, args);
         va_end(args);
    // }
-#endif
+//#endif
 }
 
 

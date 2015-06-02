@@ -10,7 +10,7 @@
 #define StarzPlayer_SPPlayerViewControllerDelegate_h
 @class SPPlayerViewController;
 @class PTSVideoItem;
- 
+@class DRMError;
 
 
 @protocol SPPlayerViewControllerDelegate <NSObject>
@@ -23,11 +23,18 @@
 -(void) playerViewController:(SPPlayerViewController*) playerVC changePlaybackStatus:(PTMediaPlayerStatus) status;
 
 /*
- Called before dissmising the player View
+ Called before dissmising the player View. Prepare the view for removing the player from the view hierachy. After calling this method
+ playerViewControllerReadyToBeDissmissed: will be called
  */
 -(void) playerViewControllerWillDissmissed:(SPPlayerViewController *)playerVC ;
 
+/*
+  Remove the player from view .. or release it 
+ */
 -(void) playerViewControllerReadyToBeDissmissed:(SPPlayerViewController *)playerVC ;
+
+/* All the drm error willbe log here*/
+-(void) playerViewController:(SPPlayerViewController *)playerVC willStopDueDRMError:(DRMError *)error;
 @end
 
 @protocol SPPlayerViewControllerViewDataSource <NSObject>

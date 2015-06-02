@@ -8,9 +8,12 @@
 
 #import "SPPlayerUIStyle.h"
 // title lable
+NSString *const kFontMainTitleLabel = @"kFontMainTitleLabel";
+NSString *const kTintMainTitleLabel =  @"kTintMainTitleLabel" ;
 
+//  !!  TIME LABELS
 NSString *const kFontTimeLabel = @"kFontTimeLabel";
-NSString *const kTintColorTimeLabel;
+NSString *const kTintColorTimeLabel = @"kTintColorTimeLabel";
 // subtitle label
 NSString *const kFontSubtimeLabel = @"kFontSubtimeLabel" ;
 NSString *const kTintColorSubtimeLabel = @"kTintColorSubtimeLabel";
@@ -84,17 +87,31 @@ NSString *const kSliderMaxImageName = @"kSliderMaxImageName";
     [propertiesDictionary setObject:[UIFont systemFontOfSize:12] forKey:kFontSubtimeLabel];
     [propertiesDictionary setObject:[UIFont systemFontOfSize:10] forKey:kFontHeaderTableView];
     [propertiesDictionary setObject:[UIColor whiteColor] forKey:kHeaderTableViewTextColor];
+    
+    [propertiesDictionary setObject:[UIColor whiteColor] forKey:kTintMainTitleLabel];
+    [propertiesDictionary setObject:[UIFont systemFontOfSize:15] forKey:kFontMainTitleLabel];
 }
 
 #pragma mark -
 #pragma mark Getter
+-(UIColor*) tintColorForMainTitleLabel
+{
+    return propertiesDictionary[kTintMainTitleLabel];
+}
+
+-(UIFont*) fontForMainTitleLabel
+{
+  return propertiesDictionary[kFontMainTitleLabel];
+    
+}
+
 -(UIFont*) fontForTimeLabel
 {
     return propertiesDictionary[kFontTimeLabel];
     
 }
 
--(UIColor*) tintColorForTitleLabel
+-(UIColor*) tintColorForTimeLabel
 {
     return propertiesDictionary[kTintColorTimeLabel];
 }

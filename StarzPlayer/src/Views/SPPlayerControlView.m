@@ -11,6 +11,7 @@
 
 #define AD_TIMESCALE 100000
 #define CONTROL_CONTAINER_TAG 221
+
 @interface SPPlayerControlView ()
 {
     CMTimeRange sliderRange;
@@ -61,9 +62,7 @@
 
 
 -(IBAction) sliderStarted:(id)sender {
-
-   NSLog(@"-...............................        ....................    Started ");
-    
+ 
     if ([self.delegate respondsToSelector:@selector(view:seekingDidStartWithPlaybackTime:)]) {
         [self.delegate view:self seekingDidStartWithPlaybackTime:CMTimeMake(0, AD_TIMESCALE)];
     }
@@ -117,6 +116,7 @@
 {
     [self sendSelectorToDelegate:@selector(view:didReceiveVolumenButtonTouch:) withSender:sender];
 }
+
 
 -(void) sendSelectorToDelegate:(SEL) selector withSender:(UIButton *) button
 {
@@ -200,6 +200,7 @@
 {
     [_timeLabel setFont:font];
 }
+
 
 -(void) setControlViewColor:(UIColor*) backColor
 {
