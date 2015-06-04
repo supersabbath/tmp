@@ -16,22 +16,13 @@
 @class SPContainerView;
 @class PTSVideoItem;
 @class SPPlayerUIStyle;
-/*
-    Notfication Types .. Objects registered to these notifications must implement SPPlayerControllerObserverProtocol
- */
-FOUNDATION_EXPORT NSString *const SPPlayerChangeContentNotification;
-FOUNDATION_EXPORT NSString *const SPPlayerDidLoadNotification;
-FOUNDATION_EXPORT NSString *const SPPlayerStatusPlayingNotification;
 
-FOUNDATION_EXPORT NSString *const SPPlayerTimeElapset5SecondsNotification;
-FOUNDATION_EXPORT NSString *const SPPlayerStatusPausedNotification;
-FOUNDATION_EXPORT NSString *const SPPlayerStatusStoppedNotification;
-FOUNDATION_EXPORT NSString *const SPPlayerStatusCompletedNotification;
-FOUNDATION_EXPORT NSString *const SPPPlayerStatusErrorNotification;
-FOUNDATION_EXPORT NSString *const SPPlayerWillStopNotification;
+@protocol SPPlayerControllerObserverProtocol ;
 
 @interface SPPlayerViewController : UIViewController <SPPlayerControlViewDelegate, UITableViewDelegate ,MetadataTableViewControllerDelegate, SPChildViewControllerDelegate>
 
+/* Adobe Player*/
+@property (nonatomic, strong) PTMediaPlayer *player;
 /*currentItem Video playable item*/
 @property (nonatomic, strong) PTSVideoItem *currentItem ;
 /* DataSource Will provide views that are not included in the player view controller .. such as the Episode Selector*/
@@ -50,6 +41,8 @@ FOUNDATION_EXPORT NSString *const SPPlayerWillStopNotification;
 -(instancetype) initWithVideoItem:(PTSVideoItem *) videoItem andStyle:(SPPlayerUIStyle*) uiStyle;
 
 
+
+
 /*Playback Public Actions*/
 - (void) playVideo:(PTSVideoItem *)item;
 - (void) playCurrentVideo;
@@ -60,7 +53,10 @@ FOUNDATION_EXPORT NSString *const SPPlayerWillStopNotification;
 - (void) stopVideo;
 - (void) pauseVideo;
 - (void) resumeVideo;
- 
+
+/*  Observers class */
+-(void) addObserverToStarzPlayerRequiredNotifications:(id<SPPlayerControllerObserverProtocol>) observer;
+
 @end
 
 
@@ -69,6 +65,10 @@ FOUNDATION_EXPORT NSString *const SPPlayerWillStopNotification;
 @property (nonatomic, weak) IBOutlet SPPlayerControlView *controlView;
 
 @end
+
+@class PTSVideoItem;
+@class SPPlayerNotification;
+
 
 @protocol SPPlayerControllerObserverProtocol <NSObject>
 
@@ -81,43 +81,88 @@ FOUNDATION_EXPORT NSString *const SPPlayerWillStopNotification;
  */
 
 /** Called by `PTMoviePlayerController` right before it starts loading the original resource. */
-@required
-- (void)moviePlayerDidLoad:(id<SPPlayerControllerObserverProtocol>)moviePlayerController;
 
+@optional
+- (void)moviePlayerDidLoad:(SPPlayerNotification*) notification ;
 /** Called after playback is initiated for the first time, but before buffering is done. */
-@required
-- (void)moviePlayerDidStartPlay:(id<SPPlayerControllerObserverProtocol>)moviePlayerController;
+
+@optional
+- (void)moviePlayerDidStartPlay:(SPPlayerNotification*) notification ;
 
 /** Called when buffering started */
 @optional
-- (void)moviePlayerDidStartBuffering:(id<SPPlayerControllerObserverProtocol>)moviePlayerController;
+- (void)moviePlayerDidStartBuffering:(SPPlayerNotification*) notification ;
+
 
 /** Called after buffering completed */
-@required
-- (void)moviePlayerDidFinishBuffering:(id<SPPlayerControllerObserverProtocol>)moviePlayerController;
+@optional
+- (void)moviePlayerDidFinishBuffering:(SPPlayerNotification*) notification ;
 
 /** Called when Stop event occurs */
-@required
-- (void)moviePlayerDidPause:(id<SPPlayerControllerObserverProtocol>)moviePlayerController;
+@optional
+- (void)moviePlayerDidPause:(SPPlayerNotification*) notification ;
 
 /** Called when Resume event occurs */
 //- (void)moviePlayerDidResume:(id<SPPlayerControllerObserverProtocol>)moviePlayerController;
 
 /** Called when Stop event occurs */
-@required
-- (void)moviePlayerDidStop:(id<SPPlayerControllerObserverProtocol>)moviePlayerController;
+@optional
+- (void)moviePlayerDidStop:(SPPlayerNotification*) notification ;
+
 
 /** Called when an error occured which needs to be reported to analytics API */
-@required
-- (void)moviePlayer:(id<SPPlayerControllerObserverProtocol>)moviePlayerController didErrorOccur:(NSError *)err;
+@optional
+- (void)moviePlayerErrorDidOccur:(SPPlayerNotification*) playerNotification ;
 
 /** Called when playback is done. Classe that implement this method should Stop Observing when called */
-@required
-- (void)moviePlayerDidFinishPlayback:(id<SPPlayerControllerObserverProtocol>)moviePlayerController;
+
+- (void)moviePlayerDidFinishPlayback:(SPPlayerNotification*) notification ;
 /** Called right before normal Stop event will occur */
 @optional
-- (void)moviePlayerWillStop:(id<SPPlayerControllerObserverProtocol>)moviePlayerController;
+- (void)moviePlayerWillStop:(SPPlayerNotification*) notification ;
 
+
+/* Call when the movie is about to finish*/
+@optional
+- (void)moviePlayerVideoWillFinish:(SPPlayerNotification*) playerNotification ;
+@end
+
+
+@interface SPPlayerNotification : NSNotification
+
+
+/*
+ Notfication Types .. Objects registered to these notifications must implement SPPlayerControllerObserverProtocol
+ */
+
+FOUNDATION_EXPORT NSString *const SPPlayerChangeContentNotification;
+FOUNDATION_EXPORT NSString *const SPPlayerDidLoadNotification;
+FOUNDATION_EXPORT NSString *const SPPlayerStatusPlayingNotification;
+
+FOUNDATION_EXPORT NSString *const SPPlayerPlaybackWillFinish;
+FOUNDATION_EXPORT NSString *const SPPlayerStatusPausedNotification;
+FOUNDATION_EXPORT NSString *const SPPlayerStatusStoppedNotification;
+FOUNDATION_EXPORT NSString *const SPPlayerStatusCompletedNotification;
+FOUNDATION_EXPORT NSString *const SPPPlayerStatusErrorNotification;
+FOUNDATION_EXPORT NSString *const SPPlayerWillStopNotification;
+
+@property(atomic, retain) id object;
+
++(id) notificationForplayer:(SPPlayerViewController*)player Item:(PTSVideoItem*)currentItem andIdentifier:(NSString*) identfier;
+/*
+ This expects to receive a dictionary with error an current item
+ */
++(id) notificationForplayer:(SPPlayerViewController*)player withUserInfo:(NSDictionary*) userInf andIdentifier:(NSString*) identfier ;
+
+-(instancetype)initWithObject:(id) player userInfo:(NSDictionary*) userdic andIdentifier:(NSString*) identifier;
+
+-(NSString*) name;
+
+-(NSDictionary*) userInfo;
+
+//-(id) object;
+
+-(PTSVideoItem*) currentVideo;
 @end
 
 
