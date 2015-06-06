@@ -125,7 +125,13 @@
 /* Call when the movie is about to finish*/
 @optional
 - (void)moviePlayerVideoWillFinish:(SPPlayerNotification*) playerNotification ;
+
+@required
+-(void) startObservingPlayer:(SPPlayerViewController*) playerViewController;
+@required
+-(void) stopObservingPlayer;
 @end
+
 
 
 @interface SPPlayerNotification : NSNotification

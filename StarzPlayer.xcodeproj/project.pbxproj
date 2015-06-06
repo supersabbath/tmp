@@ -28,7 +28,6 @@
 		E10A9E101B0DEB55007A71F8 /* PSLangSelectorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E10A9E0A1B0DEB55007A71F8 /* PSLangSelectorCell.m */; };
 		E10A9E111B0DEB55007A71F8 /* PSLangSelectorCell~ipad.xib in Resources */ = {isa = PBXBuildFile; fileRef = E10A9E0B1B0DEB55007A71F8 /* PSLangSelectorCell~ipad.xib */; };
 		E10A9E121B0DEB55007A71F8 /* PSLangSelectorCell~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = E10A9E0C1B0DEB55007A71F8 /* PSLangSelectorCell~iphone.xib */; };
-		E10A9EBB1B0DF7D5007A71F8 /* MetadataHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E10A9EBA1B0DF7D5007A71F8 /* MetadataHeaderView.xib */; };
 		E10A9EC21B0E091F007A71F8 /* check_32_c3@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E10A9EBC1B0E091F007A71F8 /* check_32_c3@2x~ipad.png */; };
 		E10A9EC31B0E091F007A71F8 /* check_32_c3@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = E10A9EBD1B0E091F007A71F8 /* check_32_c3@2x~iphone.png */; };
 		E10A9EC41B0E091F007A71F8 /* check_32_c3@3x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E10A9EBE1B0E091F007A71F8 /* check_32_c3@3x~ipad.png */; };
@@ -220,7 +219,6 @@
 		E10A9E0A1B0DEB55007A71F8 /* PSLangSelectorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSLangSelectorCell.m; sourceTree = "<group>"; };
 		E10A9E0B1B0DEB55007A71F8 /* PSLangSelectorCell~ipad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "PSLangSelectorCell~ipad.xib"; sourceTree = "<group>"; };
 		E10A9E0C1B0DEB55007A71F8 /* PSLangSelectorCell~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "PSLangSelectorCell~iphone.xib"; sourceTree = "<group>"; };
-		E10A9EBA1B0DF7D5007A71F8 /* MetadataHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MetadataHeaderView.xib; path = StarzPlayer/src/Views/MetadataHeaderView.xib; sourceTree = SOURCE_ROOT; };
 		E10A9EBC1B0E091F007A71F8 /* check_32_c3@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "check_32_c3@2x~ipad.png"; sourceTree = "<group>"; };
 		E10A9EBD1B0E091F007A71F8 /* check_32_c3@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "check_32_c3@2x~iphone.png"; sourceTree = "<group>"; };
 		E10A9EBE1B0E091F007A71F8 /* check_32_c3@3x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "check_32_c3@3x~ipad.png"; sourceTree = "<group>"; };
@@ -494,7 +492,6 @@
 				E10A9E0A1B0DEB55007A71F8 /* PSLangSelectorCell.m */,
 				E10A9E0B1B0DEB55007A71F8 /* PSLangSelectorCell~ipad.xib */,
 				E10A9E0C1B0DEB55007A71F8 /* PSLangSelectorCell~iphone.xib */,
-				E10A9EBA1B0DF7D5007A71F8 /* MetadataHeaderView.xib */,
 			);
 			path = cell;
 			sourceTree = "<group>";
@@ -1013,7 +1010,6 @@
 				E1012B601B0C8D7C00333DE2 /* btn_player_volume_n@2x~iphone.png in Resources */,
 				E1D939291B0B94B800C084B6 /* btn_player_playhead_n@3x~ipad.png in Resources */,
 				E17643181B11285C00E6C840 /* volume_value~ipad.png in Resources */,
-				E10A9EBB1B0DF7D5007A71F8 /* MetadataHeaderView.xib in Resources */,
 				E1D939101B0B532C00C084B6 /* btn_player_play_n~iphone.png in Resources */,
 				E12C5A321B1366B500BE4A17 /* ico_arrowright_24_c1_n@2x~iphone.png in Resources */,
 				E12C59F11B132C8300BE4A17 /* volume_value@2x~ipad.png in Resources */,

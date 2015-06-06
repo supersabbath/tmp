@@ -8,21 +8,59 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MetadataTableViewController">
             <connections>
+                <outlet property="audiosLabel" destination="cNT-ke-cfd" id="Sri-OT-lwi"/>
                 <outlet property="audiosTableView" destination="cye-Ld-Sst" id="eUa-kA-mdD"/>
+                <outlet property="subtitlesLabel" destination="iwh-bt-vA7" id="Zdt-aJ-JC1"/>
                 <outlet property="subtitlesTableView" destination="wpS-hb-whU" id="BtR-8Q-Cme"/>
                 <outlet property="view" destination="Pad-Dd-5Ye" id="Xcm-mQ-tZR"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="Pad-Dd-5Ye" userLabel="MutipleTables View">
-            <rect key="frame" x="0.0" y="0.0" width="334" height="154"/>
+            <rect key="frame" x="0.0" y="0.0" width="334" height="199"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MbH-2A-xVq" userLabel="Header">
+                    <rect key="frame" x="0.0" y="0.0" width="334" height="50"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="wQJ-6F-zK3">
+                            <rect key="frame" x="0.0" y="0.0" width="334" height="47"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Subtitles" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iwh-bt-vA7" userLabel="subtitles">
+                                    <rect key="frame" x="49.5" y="13.5" width="67.5" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <color key="textColor" red="0.81176470590000005" green="0.76470588240000004" blue="0.63137254899999995" alpha="1" colorSpace="calibratedRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Audio" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cNT-ke-cfd" userLabel="audios">
+                                    <rect key="frame" x="229" y="13.5" width="44.5" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <color key="textColor" red="0.81176470590000005" green="0.76470588240000004" blue="0.63137254899999995" alpha="1" colorSpace="calibratedRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="centerY" secondItem="cNT-ke-cfd" secondAttribute="centerY" id="G3H-OI-Brb"/>
+                                <constraint firstAttribute="centerY" secondItem="iwh-bt-vA7" secondAttribute="centerY" id="hpp-Se-w0h"/>
+                                <constraint firstItem="cNT-ke-cfd" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="iwh-bt-vA7" secondAttribute="trailing" constant="8" symbolic="YES" id="li2-Ts-uFh"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" red="0.4431372549" green="0.39607843139999999" blue="0.28235294119999998" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstItem="wQJ-6F-zK3" firstAttribute="leading" secondItem="MbH-2A-xVq" secondAttribute="leading" id="2Eo-hv-PM2"/>
+                        <constraint firstAttribute="trailing" secondItem="wQJ-6F-zK3" secondAttribute="trailing" id="CrC-BK-HVv"/>
+                        <constraint firstItem="wQJ-6F-zK3" firstAttribute="top" secondItem="MbH-2A-xVq" secondAttribute="top" id="VdH-24-eA4"/>
+                        <constraint firstAttribute="bottom" secondItem="wQJ-6F-zK3" secondAttribute="bottom" constant="3" id="XvM-eV-Z4T"/>
+                        <constraint firstAttribute="height" constant="50" id="d4G-cD-cqq"/>
+                    </constraints>
+                </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4YD-7q-Y1t" userLabel="Container">
-                    <rect key="frame" x="0.0" y="0.0" width="334" height="154"/>
+                    <rect key="frame" x="0.0" y="50" width="334" height="149"/>
                     <subviews>
                         <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="cye-Ld-Sst" userLabel="Table Audio">
-                            <rect key="frame" x="167" y="0.0" width="167" height="154"/>
+                            <rect key="frame" x="168.5" y="0.0" width="166.5" height="149"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <connections>
@@ -31,7 +69,7 @@
                             </connections>
                         </tableView>
                         <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="wpS-hb-whU" userLabel="Table Subtitle">
-                            <rect key="frame" x="0.0" y="0.0" width="167" height="154"/>
+                            <rect key="frame" x="0.0" y="0.0" width="166.5" height="149"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <color key="separatorColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -47,23 +85,31 @@
                         <constraint firstItem="cye-Ld-Sst" firstAttribute="height" secondItem="wpS-hb-whU" secondAttribute="height" id="7TY-9i-yZe"/>
                         <constraint firstItem="wpS-hb-whU" firstAttribute="leading" secondItem="4YD-7q-Y1t" secondAttribute="leading" id="9mZ-vd-vZF"/>
                         <constraint firstAttribute="height" secondItem="wpS-hb-whU" secondAttribute="height" id="SFB-sA-Qc7"/>
-                        <constraint firstItem="cye-Ld-Sst" firstAttribute="leading" secondItem="wpS-hb-whU" secondAttribute="trailing" id="UOc-tC-Jp2"/>
+                        <constraint firstItem="cye-Ld-Sst" firstAttribute="leading" secondItem="wpS-hb-whU" secondAttribute="trailing" constant="2" id="UOc-tC-Jp2"/>
                         <constraint firstItem="cye-Ld-Sst" firstAttribute="centerY" secondItem="wpS-hb-whU" secondAttribute="centerY" id="VcC-mj-Xkn"/>
                         <constraint firstItem="wpS-hb-whU" firstAttribute="top" secondItem="4YD-7q-Y1t" secondAttribute="top" id="bPL-oL-yOY"/>
                         <constraint firstAttribute="width" secondItem="wpS-hb-whU" secondAttribute="width" multiplier="2" constant="1" id="hC1-X3-Qua"/>
+                        <constraint firstAttribute="width" constant="334" id="kqy-zZ-PKT"/>
                         <constraint firstItem="cye-Ld-Sst" firstAttribute="width" secondItem="wpS-hb-whU" secondAttribute="width" id="u08-V2-BVi"/>
                     </constraints>
                 </view>
             </subviews>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <constraints>
+                <constraint firstItem="MbH-2A-xVq" firstAttribute="top" secondItem="Pad-Dd-5Ye" secondAttribute="top" id="1YT-7z-iTX"/>
+                <constraint firstItem="wpS-hb-whU" firstAttribute="centerX" secondItem="iwh-bt-vA7" secondAttribute="centerX" id="BrH-rv-b6W"/>
                 <constraint firstItem="4YD-7q-Y1t" firstAttribute="leading" secondItem="Pad-Dd-5Ye" secondAttribute="leading" id="EHW-RF-j4F"/>
+                <constraint firstAttribute="trailing" secondItem="MbH-2A-xVq" secondAttribute="trailing" id="EyD-ia-JI3"/>
                 <constraint firstAttribute="bottom" secondItem="4YD-7q-Y1t" secondAttribute="bottom" id="euw-wX-W6N"/>
+                <constraint firstItem="cNT-ke-cfd" firstAttribute="centerX" secondItem="cye-Ld-Sst" secondAttribute="centerX" id="gzf-uu-E0C"/>
                 <constraint firstAttribute="trailing" secondItem="4YD-7q-Y1t" secondAttribute="trailing" id="kjI-Zz-Ns1"/>
-                <constraint firstItem="4YD-7q-Y1t" firstAttribute="top" secondItem="Pad-Dd-5Ye" secondAttribute="top" id="r94-Wt-89M"/>
+                <constraint firstItem="4YD-7q-Y1t" firstAttribute="top" secondItem="MbH-2A-xVq" secondAttribute="bottom" id="xta-bk-zQR"/>
+                <constraint firstItem="MbH-2A-xVq" firstAttribute="leading" secondItem="Pad-Dd-5Ye" secondAttribute="leading" id="yOY-XW-Qyg"/>
             </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <nil key="simulatedTopBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="146" y="1118"/>
+            <point key="canvasLocation" x="146" y="1140.5"/>
         </view>
     </objects>
 </document>

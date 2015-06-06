@@ -9,12 +9,23 @@
 #import "MetadataTableViewController.h"
 #import "PSLangSelectorCell.h"
 
+
+#ifndef PLAYER_AS_IS_MODE
+#import "LanguageManager.h"
+#endif
+
+#define HEADER_TEXT_LABEL_TAG 222
+
+
 @interface MetadataTableViewController () {
     
     PTMediaPlayerItem *currentItem;
 
 }
 
+@property (weak, nonatomic) IBOutlet UILabel *subtitlesLabel;
+
+@property (weak, nonatomic) IBOutlet UILabel *audiosLabel;
 
 @property (strong, nonatomic) NSMutableArray * subtitleDataSource;
 
@@ -42,6 +53,17 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+#ifdef PLAYER_AS_IS_MODE
+    [self.audiosLabel setText: NSLocalizedString(@"key_moviePlayer_audio",nil)];
+    [self.subtitlesLabel setText: NSLocalizedString(@"key_moviePlayer_subtitles", nil)];
+#endif
+
+#ifndef PLAYER_AS_IS_MODE
+    
+    [self.audiosLabel setText: ACLocalizedString(@"key_moviePlayer_audio")];
+    [self.subtitlesLabel setText: ACLocalizedString(@"key_moviePlayer_subtitles")];
+#endif
     [self registerTablesForCellNib];
 }
 
@@ -51,16 +73,9 @@
     UINib * langSelectorCellNib = [UINib nibWithNibName:@"PSLangSelectorCell" bundle:nil];
     [self.audiosTableView registerNib:langSelectorCellNib forCellReuseIdentifier:@"PSLangSelectorCellID"];
     [self.subtitlesTableView registerNib:langSelectorCellNib forCellReuseIdentifier:@"PSLangSelectorCellID"];
-    
- //   _subtitlesTableView.tableHeaderView = [self customHeaderView];
-
+ 
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
 
 -(void) configureBackgroundColorInTables:(UIColor*) color
@@ -153,6 +168,8 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
+
+
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
 {
     // Background color
@@ -160,11 +177,15 @@
     
     // Text Color
     UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
+    UILabel * textLabel = ( UILabel *) [header viewWithTag:HEADER_TEXT_LABEL_TAG];
+    
     if (_headerFont)
     {
-        [header.textLabel setFont:_headerFont];
+      
+        
+        [textLabel setFont:_headerFont];
+        [textLabel setTextColor:(_headerTextColor)?_headerTextColor:[UIColor whiteColor]];
     }
-    [header.textLabel setTextColor:(_headerTextColor)?_headerTextColor:[UIColor whiteColor]];
 
 }
 
@@ -191,13 +212,12 @@
 }
 
 
-- (NSString *) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    if (tableView == self.audiosTableView)
-        return NSLocalizedString(@"key_moviePlayer_audio",nil);
-    else
-        return NSLocalizedString(@"key_moviePlayer_subtitles", nil);
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return  0;
 }
+
+
+
 
 #pragma mark - Helper
 

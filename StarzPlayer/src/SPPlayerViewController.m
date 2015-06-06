@@ -16,6 +16,7 @@
 #import "UIButton+Player.h"
 // Views
 #import "SPContainerView.h"
+
 // Style
 #import "SPPlayerUIStyle.h"
 
@@ -44,7 +45,9 @@
 @interface SPPlayerViewController ()
 {
     PTQoSProvider *qosProvider;
-    
+    BOOL wasPlayingBeforeSuspend;
+    BOOL wasPlaybackNotificationSent;
+
 }
 
 
@@ -94,12 +97,36 @@
 {
     self = [super init];
     if (self) {
+        wasPlaybackNotificationSent = NO;
         _currentItem = videoItem;
         _uiPropertiesStyle = uiStyler;
         _containerViewsArray = [@[] mutableCopy];
         [self listenForChangeContentNotification];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(applicationWillResignActive)
+                                                     name:UIApplicationWillResignActiveNotification
+                                                   object:NULL];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(applicationDidBecomeActive)
+                                                     name:UIApplicationDidBecomeActiveNotification
+                                                   object:NULL];
     }
     return self;
+}
+
+- (void) applicationWillResignActive
+{
+    wasPlayingBeforeSuspend = self.player.status == PTMediaPlayerStatusPlaying;
+    [self.player pause];
+}
+
+- (void) applicationDidBecomeActive
+{
+    if (wasPlayingBeforeSuspend)
+    {
+        [self.player play];
+    }
 }
 
 
@@ -192,10 +219,10 @@
 {
     [_mainTitleLabel setFont:[_uiPropertiesStyle fontForMainTitleLabel]];
     [_mainTitleLabel setTintColor:[_uiPropertiesStyle tintColorForMainTitleLabel]];
-    
+    [_mainTitleLabel setTextColor:[_uiPropertiesStyle tintColorForMainTitleLabel]];
     [_subtitleLabel setFont:[_uiPropertiesStyle fontForSutimeLabel]];
     [_subtitleLabel setTintColor:[_uiPropertiesStyle tintColorForSubtitleLabel]];
-    
+    [_mainTitleLabel setTextColor:[_uiPropertiesStyle tintColorForMainTitleLabel]];
     // TIME LABELS
     [_controlView setupFontInTimeLabel:[_uiPropertiesStyle fontForTimeLabel]];
     
@@ -364,6 +391,8 @@
         [self.player stop];
         [self releasePlayer];
     }
+    
+    wasPlaybackNotificationSent = NO;
     
     PTMetadata *metadata = [self createMetadata];
     
@@ -541,7 +570,7 @@
                           [self logDRMError:@"SetAuthenticationToken DRM error" :error];
                       
                             } complete:^(){
-                          //	FORCE_REFRESH The License is always downloaded from the media rights server.
+                          // FORCE_REFRESH The License is always downloaded from the media rights server.
                           // LOCAL_ONLY The License is only loaded from the local cache.
                           // ALLOW_SERVER The License is loaded from the local cache if possible, but otherwise is downloaded from the server.
                           DRMAcquireLicenseSettings drmSetting = FORCE_REFRESH;
@@ -621,6 +650,7 @@
 -(void) changePlayerToDiffentContent:(NSNotification*) notification
 {
     [_episodeSelectorView setDisplayStatus:NO];
+    [self clearCurrentItemAssociatedViews];
     PTSVideoItem *newItem = [notification object];
     if (newItem) {
         [self stopVideo];
@@ -665,6 +695,7 @@
         
         if (contentView == nil) {
             contentView = [self.dataSource playerViewController:self viewForEpisodeSelectorForVideoItem:self.currentItem];
+            
             
             [contentView setTag:EPISODE_VIEW_TAG];
             [self log:@"creating view with tag : %d",EPISODE_VIEW_TAG];
@@ -711,24 +742,8 @@
 
 -(void) setTextInInformationLabels:(PTSVideoItem*) item
 {
-    [self.subtitleLabel setText:item.contentDescription];
-    [self.mainTitleLabel setText:item.title];
-    /*
-     NSString* title = playObject.film.title;
-     self.titleLabel.text = [title uppercaseString];
-     
-     self.subtitleLabel.text = @"";
-     }
-     else
-     {
-     NSString * title = playObject.serieGroup.title;
-     self.titleLabel.text = [title uppercaseString];
-     
-     NSString * subtitle = [NSString stringWithFormat:@"S%02d - E%02d - %@", [playObject.film.tvSeasonNumber intValue], [playObject.film.tvSeasonEpisodeNumber intValue], playObject.film.title];
-     self.subtitleLabel.text = [subtitle uppercaseString];
-     }
-     */
-    
+    [self.subtitleLabel setText:[item.contentDescription uppercaseString] ];
+    [self.mainTitleLabel setText:[item.title uppercaseString]];    
 }
 
 -(void) addView:(UIView*) view ToContainer:(SPContainerView*) container
@@ -751,11 +766,12 @@
         episodeSelectorView.translatesAutoresizingMaskIntoConstraints  = NO;
         [episodeSelectorView setBackgroundColor:[UIColor lightGrayColor]];
         
+        [episodeSelectorView setClipsToBounds:NO];
         [self.view addSubview:episodeSelectorView];
         
         CGPoint postion = [self positionForEpisodeSelectorView];
         
-        NSDictionary *metrics = @{@"viewHeight":@200.0,@"viewWidth":@300.0,@"padding":@15.0,@"rightPaddin":@(postion.x-300),@"topPosition":@(postion.y),@"lowPriority":@(UILayoutPriorityDefaultLow),@"highPriority":@(UILayoutPriorityDefaultHigh)};
+        NSDictionary *metrics = @{@"viewHeight":@350.0,@"viewWidth":@200.0,@"padding":@15.0,@"rightPaddin":@(postion.x-300),@"topPosition":@(postion.y),@"lowPriority":@(UILayoutPriorityDefaultLow),@"highPriority":@(UILayoutPriorityDefaultHigh)};
         NSDictionary *views = NSDictionaryOfVariableBindings(episodeSelectorView);
         
         [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10@200-[episodeSelectorView(viewWidth@highPriority)]-padding@highPriority-|" options:NSLayoutFormatAlignAllLeft metrics:metrics views:views]];
@@ -774,6 +790,51 @@
     CGFloat secureMargin = 10.0;
     return CGPointMake(CGRectGetMaxX(btnFrame), CGRectGetMaxY(btnFrame)+secureMargin);
 }
+
+
+-(void) addPostPlaybackViewToScreenWithContent:(UIView *) view
+{
+    [self loadPostPlaybackContainerViewFrorView:view];
+    [_postPlaybackView setDisplayStatus:![_postPlaybackView isDisplayed]];
+    [self markViewAsVisible:_postPlaybackView];
+}
+
+
+- (void) loadPostPlaybackContainerViewFrorView:(UIView*)view {
+    
+    if (!self.postPlaybackView) {
+        
+        self.postPlaybackView=[[SPContainerView alloc] init];
+        _postPlaybackView.translatesAutoresizingMaskIntoConstraints  = NO;
+        [_postPlaybackView setBackgroundColor:[UIColor clearColor]];
+        [self.view addSubview:_postPlaybackView];
+        
+        NSLayoutConstraint *centerXConstrain = [NSLayoutConstraint constraintWithItem:_postPlaybackView
+                                                                            attribute:NSLayoutAttributeCenterX
+                                                                            relatedBy:NSLayoutRelationEqual
+                                                                               toItem:_postPlaybackView.superview
+                                                                            attribute:NSLayoutAttributeCenterX
+                                                                           multiplier:1.f constant:0.f];
+        NSLayoutConstraint *centerYConstrain = [NSLayoutConstraint constraintWithItem:_postPlaybackView
+                                                                            attribute:NSLayoutAttributeCenterY
+                                                                            relatedBy:NSLayoutRelationEqual
+                                                                               toItem:_postPlaybackView.superview
+                                                                            attribute:NSLayoutAttributeCenterY
+                                                                           multiplier:1.f constant:0.f];
+        NSLayoutConstraint *heightConstrain =[NSLayoutConstraint constraintWithItem:_postPlaybackView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeHeight multiplier:0.8 constant:-40.0];
+        
+        
+        NSLayoutConstraint *widthConstrain =[NSLayoutConstraint constraintWithItem:_postPlaybackView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeWidth multiplier:1.0 constant:0.0];
+        
+        [self.view addConstraints:@[centerXConstrain,centerYConstrain,widthConstrain,heightConstrain]];
+        
+    }
+    
+    [self addView:view ToContainer:_postPlaybackView];
+}
+
+
+
 
 #pragma mark  Touches
 
@@ -833,9 +894,10 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMediaPlayerItemPlayStarted:) name:PTMediaPlayerPlayStartedNotification object:self.player];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMediaPlayerItemPlayCompleted:) name:PTMediaPlayerPlayCompletedNotification object:self.player];
     
-    //PTMediaPlayerSeekStartedNotification
-    // PTMediaPlayerSeekCompletedNotification
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMediaPlayerSeekCompleted:) name:PTMediaPlayerSeekCompletedNotification object:self.player];
+
 }
+
 
 - (void) stopObservingNotifications
 {
@@ -877,6 +939,8 @@
             
             [self log:@"=== Status: PTMediaPlayerStatusPlaying ==="];
             [[self controlView] changeViewToPlayingMode];
+            
+            [self postNotificationToObservers:SPPlayerStatusPlayingNotification];
          
             break;
         case PTMediaPlayerStatusPaused:
@@ -912,6 +976,7 @@
 -(void) postNotificationToObservers:(NSString*) notificationIdentifier
 {
     
+    
     SPPlayerNotification *notification  = [SPPlayerNotification notificationForplayer:self Item:_currentItem andIdentifier:notificationIdentifier ];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
 
@@ -929,61 +994,18 @@
 - (void) onMediaPlayerItemPlayStarted:(NSNotification *)notification
 {
     [self log:@"PTSPlayerView:: Media Playback started."];
-    [self postNotificationToObservers:SPPlayerStatusPlayingNotification];
+   // [self postNotificationToObservers:SPPlayerStatusPlayingNotification];
 }
 
 - (void) onMediaPlayerItemPlayCompleted:(NSNotification *) notification
 {
     [self log:@"PTSPlayerView:: Media Playback completed."];
-    
+
     if ([self.dataSource respondsToSelector:@selector(playerViewController:viewToDisplayAfterVideoPlayback:)]) {
         UIView *postPlaybackView = [self.dataSource playerViewController:self viewToDisplayAfterVideoPlayback:self.currentItem];
         [self addPostPlaybackViewToScreenWithContent:postPlaybackView];
     }
 }
-
-
--(void) addPostPlaybackViewToScreenWithContent:(UIView *) view
-{
-    [self loadPostPlaybackContainerViewFrorView:view];
-    [_postPlaybackView setDisplayStatus:![_postPlaybackView isDisplayed]];
-    [self markViewAsVisible:_postPlaybackView];
-}
-
-
-- (void) loadPostPlaybackContainerViewFrorView:(UIView*)view {
-    
-    if (!self.postPlaybackView) {
-        
-        self.postPlaybackView=[[SPContainerView alloc] init];
-        _postPlaybackView.translatesAutoresizingMaskIntoConstraints  = NO;
-        [_postPlaybackView setBackgroundColor:[UIColor blueColor]];
-        [self.view addSubview:_postPlaybackView];
-        
-        NSLayoutConstraint *centerXConstrain = [NSLayoutConstraint constraintWithItem:_postPlaybackView
-                                                                            attribute:NSLayoutAttributeCenterX
-                                                                            relatedBy:NSLayoutRelationEqual
-                                                                               toItem:_postPlaybackView.superview
-                                                                            attribute:NSLayoutAttributeCenterX
-                                                                           multiplier:1.f constant:0.f];
-        NSLayoutConstraint *centerYConstrain = [NSLayoutConstraint constraintWithItem:_postPlaybackView
-                                                                            attribute:NSLayoutAttributeCenterY
-                                                                            relatedBy:NSLayoutRelationEqual
-                                                                               toItem:_postPlaybackView.superview
-                                                                            attribute:NSLayoutAttributeCenterY
-                                                                           multiplier:1.f constant:0.f];
-        NSLayoutConstraint *heightConstrain =[NSLayoutConstraint constraintWithItem:_postPlaybackView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeHeight multiplier:0.8 constant:0.0];
-        
-        
-        NSLayoutConstraint *widthConstrain =[NSLayoutConstraint constraintWithItem:_postPlaybackView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeWidth multiplier:0.8 constant:0.0];
-        
-        [self.view addConstraints:@[centerXConstrain,centerYConstrain,widthConstrain,heightConstrain]];
-        
-    }
-    
-    [self addView:view ToContainer:_postPlaybackView];
-}
-
 
 
 - (void) onMediaPlayerTimeChange:(NSNotification *)notification
@@ -992,14 +1014,32 @@
     [_controlView updateViewForTimeRange:seekableRange andCurrentPosition:self.player.currentItem.currentTime];
     [self logVideoDetailsToLabel:qosProvider.playbackInformation];
     
-    double secs =CMTimeGetSeconds(_player.currentTime);
-    double duration = CMTimeGetSeconds(_player.duration);
-    if (secs / duration > 0.9) {
-        [self log:@"PostWillFinishNotification"];
-        [self postNotificationToObservers:SPPlayerWillStopNotification];
-    }
+    [self checkIfPlaybackIsAlmostDone:_player];
 }
 
+- (void)onMediaPlayerSeekCompleted:(NSNotification *)notification
+{
+    [self postNotificationToObservers:SPPlayerStatusPlayingNotification];
+    
+}
+
+
+-(void) checkIfPlaybackIsAlmostDone:(PTMediaPlayer*) player
+{
+    double secs =CMTimeGetSeconds(_player.currentTime);
+    double duration = CMTimeGetSeconds(_player.duration);
+
+    if (secs / duration > 0.9) {
+     
+       
+        if (wasPlaybackNotificationSent == NO) {
+            
+            [self log:@"PostWillFinishNotification"];
+            [self postNotificationToObservers:SPPlayerWillStopNotification];
+            wasPlaybackNotificationSent = true;
+        }
+    }
+}
 
 
 #pragma mark - SPPlayerControlView Delegate
@@ -1008,7 +1048,7 @@
 #pragma mark  Play Button methods
 - (void)view:(SPPlayerControlView*) view didReceivePlayTouch:(UIButton*) button
 {
-    [self.player  play];
+    [self resumeVideo];
 }
 
 - (void)view:(SPPlayerControlView*) view didReceivePauseTouch:(UIButton*) button
@@ -1059,9 +1099,16 @@
     } completion:nil];
     [self.player seekToTime:time completionHandler:^(BOOL finished) {
         [self log:@"seekToTime complete........" ];
-        [[self controlView] changeViewToPlayingMode];
-        [self.player play];
+        [self updateViewAfterSeeking:nil];
     }];
+
+}
+
+-(void) updateViewAfterSeeking:(NSNotification*) notification {
+
+    [self log:@"seek Notification" ];
+    [[self controlView] changeViewToPlayingMode];
+    [self.player play];
 }
 
 /*Buttons delegate*/

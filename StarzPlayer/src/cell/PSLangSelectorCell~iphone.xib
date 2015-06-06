@@ -15,20 +15,22 @@
                 <rect key="frame" x="0.0" y="0.0" width="768" height="43"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Zf-SI-czg">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Default" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Zf-SI-czg">
+                        <rect key="frame" x="28" y="11" width="54.5" height="20.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" red="1" green="0.91614064679999996" blue="0.70325556840000003" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="check_32_c3.png" translatesAutoresizingMaskIntoConstraints="NO" id="DmL-VI-jmj">
-                        <rect key="frame" x="38" y="17" width="8" height="8"/>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="check_32_c3.png" translatesAutoresizingMaskIntoConstraints="NO" id="DmL-VI-jmj">
+                        <rect key="frame" x="151" y="17" width="8" height="8"/>
                     </imageView>
                 </subviews>
                 <constraints>
                     <constraint firstItem="5Zf-SI-czg" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="20" id="Dq0-CV-JVb"/>
                     <constraint firstAttribute="centerY" secondItem="5Zf-SI-czg" secondAttribute="centerY" id="LBN-2F-z0h"/>
                     <constraint firstItem="DmL-VI-jmj" firstAttribute="centerY" secondItem="5Zf-SI-czg" secondAttribute="centerY" id="bbk-Hv-JEi"/>
-                    <constraint firstItem="DmL-VI-jmj" firstAttribute="leading" secondItem="5Zf-SI-czg" secondAttribute="trailing" constant="10" id="mbS-L0-fb1"/>
+                    <constraint firstAttribute="trailing" secondItem="DmL-VI-jmj" secondAttribute="trailing" constant="20" symbolic="YES" id="dmf-u0-zQB"/>
+                    <constraint firstItem="DmL-VI-jmj" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5Zf-SI-czg" secondAttribute="trailing" priority="750" constant="10" id="mbS-L0-fb1"/>
                 </constraints>
             </tableViewCellContentView>
             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>

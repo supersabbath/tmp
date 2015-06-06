@@ -23,5 +23,8 @@
 #import "Macros.h"
 #endif
 
+#define PLAYER_AS_IS_MODE
+
+
 #endif
 
