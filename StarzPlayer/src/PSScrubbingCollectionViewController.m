@@ -29,26 +29,47 @@ static NSString * const reuseIdentifier = @"Cell";
     
 }
 
+-(void) viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self reloadScrubberIfNeeded];
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+
 }
 #pragma mark - Public
+
 
 - (void)fetchScrubbingImagesForULR:(NSString*) url
 {
     PSScrubbingCollectionViewController __weak * weakSelf = self;
     
-    PSScrubbingThumbs *thunmbails =[[PSScrubbingThumbs alloc] init];
-    thunmbails.url = [NSURL URLWithString:url];
+    self.thumbnails =[[PSScrubbingThumbs alloc] init];
+    _thumbnails.url = [NSURL URLWithString:url];
     
-    [thunmbails fetchThumbsWithCompletion:^(BOOL succeded) {
+    [_thumbnails fetchThumbsWithCompletion:^(BOOL succeded) {
         if (succeded) {
-            weakSelf.thumbnails = thunmbails;
+          
             [weakSelf.collectionView reloadData];
         }
     }];
 }
+
+-(void) reloadScrubberIfNeeded
+{
+    
+    if (self.thumbnails.thumbnails) return;
+        
+    [_thumbnails fetchThumbsWithCompletion:^(BOOL succeded) {
+        if (succeded) {
+            
+            [self.collectionView reloadData];
+        }
+    }];
+}
+
 
 #pragma mark <UICollectionViewDataSource>
 

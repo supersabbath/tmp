@@ -38,7 +38,7 @@
 /* Appearence*/
 -(void) setupColorInLangButton:(UIColor*) color forState:(UIControlState) state;
 -(void) setupFontInLanButton:(UIFont*) font;
--(void) setupFontInTimeLabel:(UIFont*) font;
+-(void) setupFontInTimeLabel:(UIFont*) font withColor:(UIColor *) color;
 -(void) setControlViewColor:(UIColor*) backColor;
 @end
 

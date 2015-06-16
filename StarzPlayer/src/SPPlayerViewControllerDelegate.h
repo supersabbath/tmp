@@ -15,32 +15,46 @@
 
 @protocol SPPlayerViewControllerDelegate <NSObject>
 
+@optional
 -(void) playerViewController:(SPPlayerViewController*) playerVC didLoadWithVideoItem:(PTSVideoItem*) item;
 
 /*
   Called when Adobe's player notifications are received
  */
+@optional
 -(void) playerViewController:(SPPlayerViewController*) playerVC changePlaybackStatus:(PTMediaPlayerStatus) status;
 
 /*
  Called before dissmising the player View. Prepare the view for removing the player from the view hierachy. After calling this method
  playerViewControllerReadyToBeDissmissed: will be called
  */
+@optional
 -(void) playerViewControllerWillDissmissed:(SPPlayerViewController *)playerVC ;
 
 /*
   Remove the player from view .. or release it 
  */
+@optional
 -(void) playerViewControllerReadyToBeDissmissed:(SPPlayerViewController *)playerVC ;
 
 /* All the drm error willbe log here*/
+@optional
 -(void) playerViewController:(SPPlayerViewController *)playerVC willStopDueDRMError:(DRMError *)error;
 @end
+
+@protocol SPPlayerViewControllerAddableViews <NSObject>
+@optional
+-(UIView*) addableViewShow;
+@optional
+-(UIView*) addableViewHide;
+@end
+
+
 
 @protocol SPPlayerViewControllerViewDataSource <NSObject>
 
 /* Must provide a view to add in the view hierarchy of the player*/
--(UIView*) playerViewController:(SPPlayerViewController*) playerVC viewForEpisodeSelectorForVideoItem:(PTSVideoItem*) item;
+-(id<SPPlayerViewControllerAddableViews>) playerViewController:(SPPlayerViewController*) playerVC viewForEpisodeSelectorForVideoItem:(PTSVideoItem*) item;
 
 /* Must return view for the postPlay Scenario*/
 -(UIView*) playerViewController:(SPPlayerViewController*) playerVC  viewToDisplayAfterVideoPlayback:(PTSVideoItem*) item;

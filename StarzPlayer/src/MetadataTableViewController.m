@@ -10,9 +10,9 @@
 #import "PSLangSelectorCell.h"
 
 
-#ifndef PLAYER_AS_IS_MODE
-#import "LanguageManager.h"
-#endif
+//#ifndef PLAYER_AS_IS_MODE
+//#import "LanguageManager.h"
+//#endif
 
 #define HEADER_TEXT_LABEL_TAG 222
 
@@ -28,6 +28,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *audiosLabel;
 
 @property (strong, nonatomic) NSMutableArray * subtitleDataSource;
+@property (nonatomic,strong) UIFont *headerFont;
+@property (nonatomic,strong) UIColor *headerTextColor;
 
 @end
 
@@ -54,16 +56,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-#ifdef PLAYER_AS_IS_MODE
-    [self.audiosLabel setText: NSLocalizedString(@"key_moviePlayer_audio",nil)];
-    [self.subtitlesLabel setText: NSLocalizedString(@"key_moviePlayer_subtitles", nil)];
-#endif
-
-#ifndef PLAYER_AS_IS_MODE
+//#ifdef PLAYER_AS_IS_MODE
+//    [self.audiosLabel setText: NSLocalizedString(@"key_moviePlayer_audio",nil)];
+//    [self.subtitlesLabel setText: NSLocalizedString(@"key_moviePlayer_subtitles", nil)];
+//#endif
+//
+//#ifndef PLAYER_AS_IS_MODE
     
-    [self.audiosLabel setText: ACLocalizedString(@"key_moviePlayer_audio")];
-    [self.subtitlesLabel setText: ACLocalizedString(@"key_moviePlayer_subtitles")];
-#endif
+    [self.audiosLabel setText: NSLocalizedString(@"key_moviePlayer_audio",nil)];
+    [self.subtitlesLabel setText: NSLocalizedString(@"key_moviePlayer_subtitles",nil)];
+//#endif
     [self registerTablesForCellNib];
 }
 
@@ -84,6 +86,15 @@
     [_subtitlesTableView setBackgroundColor:color];
 }
 
+-(void) configureFontInTableHeader:(UIFont*)font withColor:(UIColor*) color
+{
+    
+    [self.audiosLabel setTextColor:color];
+    [self.audiosLabel setFont:font];
+    
+    [self.subtitlesLabel setTextColor:color];
+    [self.subtitlesLabel setFont:font];
+}
 
 #pragma mark - UITableViewDataSource methods
 
@@ -168,26 +179,6 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
-
-
-- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
-{
-    // Background color
-    view.tintColor = [UIColor blackColor];
-    
-    // Text Color
-    UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
-    UILabel * textLabel = ( UILabel *) [header viewWithTag:HEADER_TEXT_LABEL_TAG];
-    
-    if (_headerFont)
-    {
-      
-        
-        [textLabel setFont:_headerFont];
-        [textLabel setTextColor:(_headerTextColor)?_headerTextColor:[UIColor whiteColor]];
-    }
-
-}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {

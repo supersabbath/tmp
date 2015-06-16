@@ -10,6 +10,6 @@
 
 @interface PSScrubbingCollectionViewController : UICollectionViewController
 
-- (void)fetchScrubbingImagesForULR:(NSString*) url;
-
+- (void) fetchScrubbingImagesForULR:(NSString*) url;
+- (void) reloadScrubberIfNeeded;
 @end

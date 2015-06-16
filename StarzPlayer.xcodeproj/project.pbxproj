@@ -117,6 +117,7 @@
 		E17643261B11313200E6C840 /* btn_player_voltop_n@3x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E17643211B11313200E6C840 /* btn_player_voltop_n@3x~ipad.png */; };
 		E17643271B11313200E6C840 /* btn_player_voltop_n~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E17643221B11313200E6C840 /* btn_player_voltop_n~ipad.png */; };
 		E17643281B11313200E6C840 /* btn_player_voltop_n~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = E17643231B11313200E6C840 /* btn_player_voltop_n~iphone.png */; };
+		E183A5871B25DAA600E55F77 /* SPPlayerNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = E183A5861B25DAA600E55F77 /* SPPlayerNotification.m */; };
 		E1A5FF7A1B0F30B00093C1DF /* SessionData.plist in Resources */ = {isa = PBXBuildFile; fileRef = E1A5FF791B0F30B00093C1DF /* SessionData.plist */; };
 		E1A5FF7D1B0F5FED0093C1DF /* PSLinearLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = E1A5FF7C1B0F5FED0093C1DF /* PSLinearLayout.m */; };
 		E1BAD21F1B15A9F300C82EEA /* SPPlayerUIStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = E1BAD21E1B15A9F300C82EEA /* SPPlayerUIStyle.m */; };
@@ -321,6 +322,9 @@
 		E17643211B11313200E6C840 /* btn_player_voltop_n@3x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_player_voltop_n@3x~ipad.png"; sourceTree = "<group>"; };
 		E17643221B11313200E6C840 /* btn_player_voltop_n~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_player_voltop_n~ipad.png"; sourceTree = "<group>"; };
 		E17643231B11313200E6C840 /* btn_player_voltop_n~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_player_voltop_n~iphone.png"; sourceTree = "<group>"; };
+		E183A5841B25DA1E00E55F77 /* SPPlayerControllerObserverProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPPlayerControllerObserverProtocol.h; sourceTree = "<group>"; };
+		E183A5851B25DAA600E55F77 /* SPPlayerNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPPlayerNotification.h; sourceTree = "<group>"; };
+		E183A5861B25DAA600E55F77 /* SPPlayerNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPPlayerNotification.m; sourceTree = "<group>"; };
 		E1A5FF791B0F30B00093C1DF /* SessionData.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SessionData.plist; sourceTree = "<group>"; };
 		E1A5FF7B1B0F5FED0093C1DF /* PSLinearLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSLinearLayout.h; sourceTree = "<group>"; };
 		E1A5FF7C1B0F5FED0093C1DF /* PSLinearLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSLinearLayout.m; sourceTree = "<group>"; };
@@ -583,6 +587,15 @@
 			name = mute;
 			sourceTree = "<group>";
 		};
+		E183A5831B25D9F300E55F77 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				E10ADC0E1B14A94B0045DAE8 /* SPPlayerViewControllerDelegate.h */,
+				E183A5841B25DA1E00E55F77 /* SPPlayerControllerObserverProtocol.h */,
+			);
+			name = Protocols;
+			sourceTree = "<group>";
+		};
 		E1D938621B09F16300C084B6 = {
 			isa = PBXGroup;
 			children = (
@@ -737,6 +750,7 @@
 		E1D938E11B0A244900C084B6 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				E183A5831B25D9F300E55F77 /* Protocols */,
 				E10A9E081B0DEB55007A71F8 /* cell */,
 				E1012B691B0CDF2700333DE2 /* Controllers */,
 				E1D938EB1B0A2A4300C084B6 /* Views */,
@@ -744,7 +758,6 @@
 				E1D938E21B0A246B00C084B6 /* SPPlayerViewController.h */,
 				E1D938E31B0A246B00C084B6 /* SPPlayerViewController.m */,
 				E1D938E41B0A246B00C084B6 /* SPPlayerViewController.xib */,
-				E10ADC0E1B14A94B0045DAE8 /* SPPlayerViewControllerDelegate.h */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -758,6 +771,8 @@
 				E10A9ECE1B0E28ED007A71F8 /* PSScrubbingThumbs.m */,
 				E1BAD21D1B15A9F300C82EEA /* SPPlayerUIStyle.h */,
 				E1BAD21E1B15A9F300C82EEA /* SPPlayerUIStyle.m */,
+				E183A5851B25DAA600E55F77 /* SPPlayerNotification.h */,
+				E183A5861B25DAA600E55F77 /* SPPlayerNotification.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1149,6 +1164,7 @@
 				E12C5A641B1379F900BE4A17 /* SPContainerView.m in Sources */,
 				E1BAD21F1B15A9F300C82EEA /* SPPlayerUIStyle.m in Sources */,
 				E176431D1B112EB200E6C840 /* SPVolumeViewController.m in Sources */,
+				E183A5871B25DAA600E55F77 /* SPPlayerNotification.m in Sources */,
 				E1D938711B09F16300C084B6 /* main.m in Sources */,
 				E1D938F91B0A364B00C084B6 /* HomeViewController.m in Sources */,
 				E1A5FF7D1B0F5FED0093C1DF /* PSLinearLayout.m in Sources */,

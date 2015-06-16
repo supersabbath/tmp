@@ -19,8 +19,7 @@
 @property (nonatomic, weak) id <MetadataTableViewControllerDelegate> delegate;
 @property (weak, nonatomic) IBOutlet UITableView * audiosTableView;
 @property (weak, nonatomic) IBOutlet UITableView * subtitlesTableView;
-@property (nonatomic,strong) UIFont *headerFont;
-@property (nonatomic,strong) UIColor *headerTextColor;
+
 
 
 -(id) initWithAVPlayerItem:(PTMediaPlayerItem*) item;
@@ -29,6 +28,7 @@
 
 -(void) configureBackgroundColorInTables:(UIColor*) color;
 
+-(void) configureFontInTableHeader:(UIFont*)font withColor:(UIColor*) color;
 
 @end
 

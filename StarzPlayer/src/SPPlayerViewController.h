@@ -12,12 +12,15 @@
 #import "SPChildViewControllerDelegate.h"
 
 #import "SPPlayerViewControllerDelegate.h"
+#import "SPPlayerControllerObserverProtocol.h"
 
 @class SPContainerView;
 @class PTSVideoItem;
 @class SPPlayerUIStyle;
 
-@protocol SPPlayerControllerObserverProtocol ;
+#define POST_VIEW_TAG 518
+#define EPISODE_VIEW_TAG 778
+
 
 @interface SPPlayerViewController : UIViewController <SPPlayerControlViewDelegate, UITableViewDelegate ,MetadataTableViewControllerDelegate, SPChildViewControllerDelegate>
 
@@ -30,7 +33,7 @@
 @property (nonatomic, weak) id <SPPlayerViewControllerDelegate> delgate;            // see SPPlayerViewControllerDelegate.h
 
 
-/*  initWithVideoItem:(PTSVideoItem *) videoItem andStyle:(SPPlayerUIStyle*) uiStyle
+/*  initWithVideoItem: ideoItem andStyle:
  
  @param videoItem PTSVideoItem's objects contains all the metadata needed for the receiver to been able to playback
  
@@ -39,8 +42,6 @@
  @warning *Warning:* Use initWithVideoItem: for initialization .. don 't use the super class methods
  */
 -(instancetype) initWithVideoItem:(PTSVideoItem *) videoItem andStyle:(SPPlayerUIStyle*) uiStyle;
-
-
 
 
 /*Playback Public Actions*/
@@ -54,122 +55,24 @@
 - (void) pauseVideo;
 - (void) resumeVideo;
 
-/*  Observers class */
--(void) addObserverToStarzPlayerRequiredNotifications:(id<SPPlayerControllerObserverProtocol>) observer;
+/* Prepares the player for a new playable item .. removes the postplayback view and episode selector view */
+-(void) refreshPlayerForNewPlaybackItem:(PTSVideoItem *)item;
 
+
+/*Concurrency could call this method*/
+- (IBAction) closePlayer:(id)sender;
 @end
 
 
 @interface SPPlayerViewController (TEST)
 
-@property (nonatomic, weak) IBOutlet SPPlayerControlView *controlView;
+@property (nonatomic, weak) IBOutlet SPPlayerControlView *controlsContainerView;
 
 @end
 
-@class PTSVideoItem;
-@class SPPlayerNotification;
-
-
-@protocol SPPlayerControllerObserverProtocol <NSObject>
-
-/**
- * Protocol which defines an interface on which the movie player can notify an implementor
- * of this protocol of certain lifecycle events.
- *
- * Its use can be for various reasons, e.g. implementing analytics reacting to various events
- * in the player's lifetime.
- */
-
-/** Called by `PTMoviePlayerController` right before it starts loading the original resource. */
-
-@optional
-- (void)moviePlayerDidLoad:(SPPlayerNotification*) notification ;
-/** Called after playback is initiated for the first time, but before buffering is done. */
-
-@optional
-- (void)moviePlayerDidStartPlay:(SPPlayerNotification*) notification ;
-
-/** Called when buffering started */
-@optional
-- (void)moviePlayerDidStartBuffering:(SPPlayerNotification*) notification ;
-
-
-/** Called after buffering completed */
-@optional
-- (void)moviePlayerDidFinishBuffering:(SPPlayerNotification*) notification ;
-
-/** Called when Stop event occurs */
-@optional
-- (void)moviePlayerDidPause:(SPPlayerNotification*) notification ;
-
-/** Called when Resume event occurs */
-//- (void)moviePlayerDidResume:(id<SPPlayerControllerObserverProtocol>)moviePlayerController;
-
-/** Called when Stop event occurs */
-@optional
-- (void)moviePlayerDidStop:(SPPlayerNotification*) notification ;
-
-
-/** Called when an error occured which needs to be reported to analytics API */
-@optional
-- (void)moviePlayerErrorDidOccur:(SPPlayerNotification*) playerNotification ;
-
-/** Called when playback is done. Classe that implement this method should Stop Observing when called */
-
-- (void)moviePlayerDidFinishPlayback:(SPPlayerNotification*) notification ;
-/** Called right before normal Stop event will occur */
-@optional
-- (void)moviePlayerWillStop:(SPPlayerNotification*) notification ;
-
-
-/* Call when the movie is about to finish*/
-@optional
-- (void)moviePlayerVideoWillFinish:(SPPlayerNotification*) playerNotification ;
-
-@required
--(void) startObservingPlayer:(SPPlayerViewController*) playerViewController;
-@required
--(void) stopObservingPlayer;
-@end
 
 
 
-@interface SPPlayerNotification : NSNotification
-
-
-/*
- Notfication Types .. Objects registered to these notifications must implement SPPlayerControllerObserverProtocol
- */
-
-FOUNDATION_EXPORT NSString *const SPPlayerChangeContentNotification;
-FOUNDATION_EXPORT NSString *const SPPlayerDidLoadNotification;
-FOUNDATION_EXPORT NSString *const SPPlayerStatusPlayingNotification;
-
-FOUNDATION_EXPORT NSString *const SPPlayerPlaybackWillFinish;
-FOUNDATION_EXPORT NSString *const SPPlayerStatusPausedNotification;
-FOUNDATION_EXPORT NSString *const SPPlayerStatusStoppedNotification;
-FOUNDATION_EXPORT NSString *const SPPlayerStatusCompletedNotification;
-FOUNDATION_EXPORT NSString *const SPPPlayerStatusErrorNotification;
-FOUNDATION_EXPORT NSString *const SPPlayerWillStopNotification;
-
-@property(atomic, retain) id object;
-
-+(id) notificationForplayer:(SPPlayerViewController*)player Item:(PTSVideoItem*)currentItem andIdentifier:(NSString*) identfier;
-/*
- This expects to receive a dictionary with error an current item
- */
-+(id) notificationForplayer:(SPPlayerViewController*)player withUserInfo:(NSDictionary*) userInf andIdentifier:(NSString*) identfier ;
-
--(instancetype)initWithObject:(id) player userInfo:(NSDictionary*) userdic andIdentifier:(NSString*) identifier;
-
--(NSString*) name;
-
--(NSDictionary*) userInfo;
-
-//-(id) object;
-
--(PTSVideoItem*) currentVideo;
-@end
 
 
 

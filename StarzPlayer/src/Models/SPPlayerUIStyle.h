@@ -23,7 +23,7 @@ FOUNDATION_EXPORT  NSString *const kTextColorLangButton;
 FOUNDATION_EXPORT  NSString *const kTextColorLangButtonHighligthed;
 // Tableview
 FOUNDATION_EXPORT  NSString *const kBackgroundColorMetadataTables;
-FOUNDATION_EXPORT  NSString *const kHeaderTableViewTextColor;
+FOUNDATION_EXPORT  NSString *const kTextColorHeaderTableView;
 FOUNDATION_EXPORT  NSString *const kFontHeaderTableView;
 
 // Control
@@ -72,7 +72,7 @@ Tables Header color and Font
 */
 
 -(UIFont*) fontForMetadataTableHeader;
--(UIColor*) tableHeaderTextColor;
+-(UIColor*) textColorForHeaderTableView;
 -(UIColor*) backgroundColorForMetadataTablesViews; // kBackgroundColorMetadataTables
 
 @end

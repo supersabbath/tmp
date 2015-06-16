@@ -22,7 +22,11 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0), ^{
         
         
-        NSURLRequest *request = [NSURLRequest requestWithURL:self.url];
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.url];
+        
+        request.cachePolicy = NSURLRequestReturnCacheDataElseLoad; // this will make sure the request always returns the cached image
+        request.HTTPShouldHandleCookies = NO;
+        request.HTTPShouldUsePipelining = YES;
         
         NSURLResponse *response = nil;
         NSError *connectionError = nil;

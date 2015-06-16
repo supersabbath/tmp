@@ -24,7 +24,7 @@
 {
     self = [super init];
     if (self) {
-        displayed = @NO;
+        self.displayed = @NO;
     }
     return self;
 }
@@ -33,7 +33,7 @@
 {
     self = [super initWithCoder:coder];
     if (self) {
-           displayed = @NO;
+           self.displayed = @NO;
         
     }
     return self;
@@ -59,6 +59,12 @@
 }
 
 
+-(void) setDisplayStatusNonAnimated:(BOOL) isDisplayed
+{
+    displayed = [NSNumber numberWithBool:isDisplayed];
+}
+
+
 -(void) setDisplayStatus:(BOOL) isDisplayed
 {
     self.displayed = [NSNumber numberWithBool:isDisplayed];
@@ -74,7 +80,9 @@
 {
     [UIView animateWithDuration:0.2 animations:^{
         self.alpha = 0.0f;
+      
     }];
+
 }
 
 
@@ -82,6 +90,7 @@
 {
     [UIView animateWithDuration:0.2 animations:^{
         self.alpha = 1.0;
+      
     }];
 }
 @end

@@ -18,4 +18,5 @@
  @param isDisplayed  A NSNumber with a boolean value
  */
 -(void) setDisplayStatus:(BOOL) isDisplayed;
+-(void) setDisplayStatusNonAnimated:(BOOL) isDisplayed;
 @end

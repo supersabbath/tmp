@@ -34,14 +34,11 @@
 {
     isSeeking = NO;
     
-    UIImage *minImage = [[UIImage imageNamed:@"bg_player_played_n.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 1, 0, 1)];
-    UIImage *maxImage = [[UIImage imageNamed:@"bg_player_loaded_n.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 1, 0, 1)];
-    
     [playButton setImage:[UIImage imageNamed:@"btn_player_pause_n.png"] forState:UIControlStateSelected];
     [playButton setImage:[UIImage imageNamed:@"btn_player_play_p.png"] forState:UIControlStateNormal];
-
-    [[UISlider appearance] setMaximumTrackImage:maxImage forState:UIControlStateNormal];
-    [[UISlider appearance] setMinimumTrackImage:minImage forState:UIControlStateNormal];
+ 
+    [scrubber setMaximumTrackTintColor:[UIColor colorWithRed:132.0/255 green:119.0/255 blue:92.0/255 alpha:1.0]];
+    [scrubber setMinimumTrackTintColor:[UIColor colorWithRed:216.0/255 green:205.0/255 blue:178.0/255 alpha:1.0]];
     [scrubber setThumbImage:[UIImage imageNamed:@"btn_player_playhead_n.png"] forState:UIControlStateNormal];
     [scrubber setThumbImage:[UIImage imageNamed:@"btn_player_playhead_p.png"] forState:UIControlStateHighlighted];
 }
@@ -88,9 +85,8 @@
 
 }
 
-- (IBAction) sliderFinishedMoving: (id)sender {
-    
-    NSLog(@"-...............................   finished     ....................     ");
+- (IBAction) sliderFinishedMoving: (id)sender
+{
     isSeeking  = NO;
     double sliderTime = [scrubber value];
     if (CMTIMERANGE_IS_VALID(sliderRange))
@@ -105,6 +101,7 @@
         }
     }
 }
+
 
 - (IBAction) showLanguageOptions:(id)sender
 {
@@ -145,13 +142,14 @@
 -(void) changeViewToPlayingMode
 {
     playButton.selected  = YES;
-    [MBProgressHUD hideAllHUDsForView:self animated:YES];
+ 
 }
 
 
 -(void) changeViewToLoadingMode
 {
-    [MBProgressHUD showHUDAddedTo:self animated:YES];
+
+    
 }
 
 
@@ -196,9 +194,10 @@
     [_langButton.titleLabel setFont:font];
 }
 
--(void) setupFontInTimeLabel:(UIFont*) font
+-(void) setupFontInTimeLabel:(UIFont*) font withColor: (UIColor *) color
 {
     [_timeLabel setFont:font];
+    [_timeLabel setTextColor:color];
 }
 
 
@@ -210,9 +209,13 @@
 #pragma mark - Time Format Helpers
 -(NSString*) formatStringCurrenTime:(double) time andTotalLenght:(double) duration
 {
-
     NSString *currentTime = [self formattedTime:time] ;
-    return [currentTime stringByAppendingFormat:@" / %@",[self formattedTime:duration]];
+    if (UIUserInterfaceLayoutDirectionRightToLeft == [UIApplication sharedApplication].userInterfaceLayoutDirection)
+    {
+        return  [[self formattedTime:duration] stringByAppendingFormat:@" / %@",currentTime];
+    }else{
+        return [currentTime stringByAppendingFormat:@" / %@",[self formattedTime:duration]];
+    }
 }
 
 
@@ -233,5 +236,6 @@
     seconds = [NSString stringWithFormat:@"%02d", s];
     
     return [NSString stringWithFormat:@"%@:%@:%@", hours, minutes, seconds];
+   
 }
 @end

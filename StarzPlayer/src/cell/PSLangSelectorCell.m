@@ -49,7 +49,7 @@
     self.option = nil;
     
    // self.titleLabel.text = [ACLocalizedString(@"key_langSelector_none") uppercaseString];
-    self.titleLabel.text = @"key_langSelector_none";
+    self.titleLabel.text = NSLocalizedString(@"key_langSelector_none",nil);
     [self setSelected:selected animated:NO];
     self.checkImage.hidden = !selected;
     
@@ -57,11 +57,11 @@
     self.offSelected = selected;
     if (selected)
     {
-        self.titleLabel.textColor =[UIColor blueColor];// [UIColor PSColorC3];
+        self.titleLabel.textColor =[UIColor colorWithRed:0xD8/255.0 green: 0xCD/255.0 blue:0xB0/255.0 alpha:1]; // silly code copied from accedo [Color PSColorC4]
     }
     else
     {
-        self.titleLabel.textColor = [UIColor whiteColor];// PSColorC4];
+        self.titleLabel.textColor = [UIColor colorWithRed:0x84/255.0 green: 0x77/255.0 blue:0x58/255.0 alpha:1];//  PSColorC4];
     }
 }
 
@@ -69,9 +69,10 @@
 {
     self.option = option;
     
-  //  self.titleLabel.text = ACLocalizedString([[option title] uppercaseString]);
+  //
+    self.titleLabel.text = NSLocalizedString([option.title uppercaseString],nil);
     
-    self.titleLabel.text = option.title;
+//    self.titleLabel.text = option.title;
     self.offMode = NO;
     
     [self setSelected:option.selected animated:NO];
@@ -92,15 +93,15 @@
     [self updateForHighlight];
 }
 
-- (void)updateForHighlight
+- (void) updateForHighlight
 {
     if (self.highlighted || (self.option && self.option.selected) || (self.offMode && self.offSelected))
     {
-        self.titleLabel.textColor = [UIColor blueColor];
+        self.titleLabel.textColor =[UIColor colorWithRed:0xD8/255.0 green: 0xCD/255.0 blue:0xB0/255.0 alpha:1];
     }
     else
     {
-        self.titleLabel.textColor = [UIColor whiteColor];
+        self.titleLabel.textColor = [UIColor colorWithRed:0x84/255.0 green: 0x77/255.0 blue:0x58/255.0 alpha:1];
     }
 }
 

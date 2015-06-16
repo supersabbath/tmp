@@ -23,7 +23,7 @@ NSString *const kTextColorLangButton = @"kTextColorLangButton";
 NSString *const kTextColorLangButtonHighligthed = @"kTextColorLangButtonHighligthed";
 //tables
 NSString *const kBackgroundColorMetadataTables = @"kBackgroundColorMetadataTables";
-NSString *const kHeaderTableViewTextColor = @"kHeaderTableViewTextColor";
+NSString *const kTextColorHeaderTableView = @"kHeaderTableViewTextColor";
 NSString *const kFontHeaderTableView = @"kFontHeaderTableView";
 
 // Control
@@ -86,7 +86,7 @@ NSString *const kSliderMaxImageName = @"kSliderMaxImageName";
     [propertiesDictionary setObject:[UIFont systemFontOfSize:12] forKey:kFontTimeLabel];
     [propertiesDictionary setObject:[UIFont systemFontOfSize:12] forKey:kFontSubtimeLabel];
     [propertiesDictionary setObject:[UIFont systemFontOfSize:10] forKey:kFontHeaderTableView];
-    [propertiesDictionary setObject:[UIColor whiteColor] forKey:kHeaderTableViewTextColor];
+    [propertiesDictionary setObject:[UIColor whiteColor] forKey:kTextColorHeaderTableView];
     
     [propertiesDictionary setObject:[UIColor whiteColor] forKey:kTintMainTitleLabel];
     [propertiesDictionary setObject:[UIFont systemFontOfSize:15] forKey:kFontMainTitleLabel];
@@ -174,8 +174,8 @@ NSString *const kSliderMaxImageName = @"kSliderMaxImageName";
     return propertiesDictionary[kFontHeaderTableView];
 }
 
--(UIColor*) tableHeaderTextColor
+-(UIColor*) textColorForHeaderTableView
 {
-    return propertiesDictionary[kHeaderTableViewTextColor];
+    return propertiesDictionary[kTextColorHeaderTableView];
 }
 @end

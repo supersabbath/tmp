@@ -39,17 +39,17 @@
     [super tearDown];
 }
 
-- (void)testControlViewShouldBeConnected
+- (void)testcontrolsContainerViewShouldBeConnected
 {
     [sut view];
 
-    expect(sut.controlView).toNot.beNil();
+    expect(sut.controlsContainerView).toNot.beNil();
 }
 
 - (void)testControlViewDelegateShouldBeConnected
 {
     [sut view];
-    expect(sut.controlView.delegate).to.beIdenticalTo(sut);
+    expect(sut.controlsContainerView.delegate).to.beIdenticalTo(sut);
 }
 
 #pragma mark Play Button
@@ -57,7 +57,7 @@
 {
     [sut view];
     
-    expect([sut.controlView.playButton actionsForTarget:sut.controlView forControlEvent:UIControlEventTouchUpInside]).to.contain(@"playTouch:");
+    expect([sut.controlsContainerView.playButton actionsForTarget:sut.controlsContainerView forControlEvent:UIControlEventTouchUpInside]).to.contain(@"playTouch:");
 
 }
 
@@ -67,9 +67,9 @@
     
     [sut view];
     
-    [sut.controlView setDelegate:protocolMock];
-    [sut.controlView.playButton setSelected:YES];
-    [sut.controlView.playButton sendActionsForControlEvents:UIControlEventTouchUpInside];
+    [sut.controlsContainerView setDelegate:protocolMock];
+    [sut.controlsContainerView.playButton setSelected:YES];
+    [sut.controlsContainerView.playButton sendActionsForControlEvents:UIControlEventTouchUpInside];
     
     OCMVerify([protocolMock view:[OCMArg any] didReceivePauseTouch:[OCMArg any]]);
 }
@@ -80,9 +80,9 @@
     
     [sut view];
     
-    [sut.controlView setDelegate:protocolMock];
-    [sut.controlView.playButton setSelected:NO];
-    [sut.controlView.playButton sendActionsForControlEvents:UIControlEventTouchUpInside];
+    [sut.controlsContainerView setDelegate:protocolMock];
+    [sut.controlsContainerView.playButton setSelected:NO];
+    [sut.controlsContainerView.playButton sendActionsForControlEvents:UIControlEventTouchUpInside];
     
     OCMVerify([protocolMock view:[OCMArg any] didReceivePlayTouch:[OCMArg any]]);
 }
@@ -93,7 +93,7 @@
 {
     [sut view];
     
-    expect(sut.controlView.scrubber).toNot.beNil();
+    expect(sut.controlsContainerView.scrubber).toNot.beNil();
 }
 
 
@@ -114,8 +114,8 @@
     
     [sut view];
     
-    [sut.controlView setDelegate:protocolMock];
-    UIButton *lang = (UIButton *)[sut.controlView viewWithTag:543];  // tag added just for testing
+    [sut.controlsContainerView setDelegate:protocolMock];
+    UIButton *lang = (UIButton *)[sut.controlsContainerView viewWithTag:543];  // tag added just for testing
     [lang sendActionsForControlEvents:UIControlEventTouchUpInside];
     OCMVerify([protocolMock view:[OCMArg any] didReceiveLANGButtonTouch:[OCMArg any]]);
 
@@ -131,8 +131,8 @@
     
     [sut view];
     
-    [sut.controlView setDelegate:protocolMock];
-    UIButton *lang = (UIButton *)[sut.controlView viewWithTag:545];  // tag added just for testing
+    [sut.controlsContainerView setDelegate:protocolMock];
+    UIButton *lang = (UIButton *)[sut.controlsContainerView viewWithTag:545];  // tag added just for testing
     [lang sendActionsForControlEvents:UIControlEventTouchUpInside];
     OCMVerify([protocolMock view:[OCMArg any] didReceiveVolumenButtonTouch:[OCMArg any]]);
     
