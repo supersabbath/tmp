@@ -7,12 +7,12 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SPVolumeViewController">
             <connections>
-                <outlet property="VolContainerWidth" destination="4bB-du-6DX" id="jPG-Ua-7B1"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
                 <outlet property="volumeBaseView" destination="ZPs-ke-sEU" id="0Bn-fn-pHq"/>
                 <outlet property="volumeControlMuteButton" destination="G6p-2f-Qtx" id="ZfP-bt-w7H"/>
                 <outlet property="volumeControlView" destination="Xwz-vI-KrN" id="48J-xf-8u3"/>
                 <outlet property="volumeFrontView" destination="09P-gp-IST" id="8Jz-2q-2pJ"/>
+                <outlet property="volumeLevelWidthConstrain" destination="TC4-1u-fY9" id="cVz-Xp-upu"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -24,28 +24,23 @@
                     <rect key="frame" x="0.0" y="0.0" width="72" height="201"/>
                     <subviews>
                         <view clipsSubviews="YES" contentMode="bottom" horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="249" verticalCompressionResistancePriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="ZPs-ke-sEU" userLabel="MPVol Container">
-                            <rect key="frame" x="5" y="48" width="57" height="148"/>
+                            <rect key="frame" x="24" y="48" width="24" height="148"/>
                             <subviews>
                                 <view contentMode="bottom" horizontalCompressionResistancePriority="249" verticalCompressionResistancePriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="09P-gp-IST" userLabel="FrontView">
-                                    <rect key="frame" x="0.0" y="0.0" width="57" height="148"/>
-                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="22" height="148"/>
+                                    <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 </view>
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
-                                <constraint firstAttribute="width" priority="750" constant="48" id="4bB-du-6DX"/>
                                 <constraint firstAttribute="height" priority="250" constant="120" id="56D-cC-KNl"/>
+                                <constraint firstAttribute="width" constant="24" id="TC4-1u-fY9"/>
                                 <constraint firstAttribute="bottom" secondItem="09P-gp-IST" secondAttribute="bottom" id="XJv-jw-7Qh"/>
                                 <constraint firstItem="09P-gp-IST" firstAttribute="leading" secondItem="ZPs-ke-sEU" secondAttribute="leading" id="d5k-nb-Tm2"/>
                                 <constraint firstItem="09P-gp-IST" firstAttribute="top" secondItem="ZPs-ke-sEU" secondAttribute="top" id="eVo-Lf-rgQ"/>
-                                <constraint firstAttribute="trailing" secondItem="09P-gp-IST" secondAttribute="trailing" id="o9a-CP-CXQ"/>
+                                <constraint firstAttribute="trailing" secondItem="09P-gp-IST" secondAttribute="trailing" constant="2" id="o9a-CP-CXQ"/>
                                 <constraint firstItem="09P-gp-IST" firstAttribute="top" secondItem="ZPs-ke-sEU" secondAttribute="top" id="qfT-8C-y6z"/>
                             </constraints>
-                            <variation key="default">
-                                <mask key="constraints">
-                                    <exclude reference="4bB-du-6DX"/>
-                                </mask>
-                            </variation>
                         </view>
                         <button autoresizesSubviews="NO" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G6p-2f-Qtx" userLabel="Mute Button">
                             <rect key="frame" x="20" y="8" width="32" height="32"/>
@@ -63,7 +58,7 @@
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
-                        <constraint firstItem="ZPs-ke-sEU" firstAttribute="leading" secondItem="Xwz-vI-KrN" secondAttribute="leading" constant="5" id="41K-ni-Aaa"/>
+                        <constraint firstItem="ZPs-ke-sEU" firstAttribute="leading" secondItem="Xwz-vI-KrN" secondAttribute="leading" constant="10" id="41K-ni-Aaa"/>
                         <constraint firstAttribute="bottom" secondItem="ZPs-ke-sEU" secondAttribute="bottom" constant="5" id="6Za-wl-g8x"/>
                         <constraint firstItem="G6p-2f-Qtx" firstAttribute="top" secondItem="Xwz-vI-KrN" secondAttribute="top" constant="8" id="8CE-Qk-77G"/>
                         <constraint firstItem="09P-gp-IST" firstAttribute="top" secondItem="G6p-2f-Qtx" secondAttribute="bottom" constant="8" id="EBj-6s-YgN"/>
@@ -72,12 +67,15 @@
                         <constraint firstAttribute="centerX" secondItem="G6p-2f-Qtx" secondAttribute="centerX" id="RB4-S5-u8X"/>
                         <constraint firstAttribute="centerX" secondItem="ZPs-ke-sEU" secondAttribute="centerX" id="TMw-Bs-eC9"/>
                         <constraint firstAttribute="trailing" secondItem="ZPs-ke-sEU" secondAttribute="trailing" constant="10" id="tbJ-7R-z96"/>
+                        <constraint firstAttribute="centerX" secondItem="ZPs-ke-sEU" secondAttribute="centerX" id="zlj-Q8-R3Z"/>
                     </constraints>
                     <variation key="default">
                         <mask key="constraints">
+                            <exclude reference="41K-ni-Aaa"/>
                             <exclude reference="FPP-cM-mBM"/>
                             <exclude reference="HcN-5X-FWk"/>
                             <exclude reference="TMw-Bs-eC9"/>
+                            <exclude reference="tbJ-7R-z96"/>
                         </mask>
                     </variation>
                 </view>

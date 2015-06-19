@@ -39,15 +39,15 @@
                             <rect key="frame" x="0.0" y="60" width="667" height="245"/>
                             <subviews>
                                 <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mzQ-aP-kv1" userLabel="Volume Container" customClass="SPContainerView">
-                                    <rect key="frame" x="601" y="43" width="32" height="200"/>
+                                    <rect key="frame" x="591" y="43" width="42" height="200"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="200" id="JT1-5L-ftm"/>
-                                        <constraint firstAttribute="width" constant="32" id="h7Y-kT-jhR"/>
+                                        <constraint firstAttribute="width" constant="42" id="h7Y-kT-jhR"/>
                                     </constraints>
                                 </view>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="t8X-vt-KEo" userLabel="metadataContainerView" customClass="SPContainerView">
-                                    <rect key="frame" x="241" y="103" width="360" height="140"/>
+                                    <rect key="frame" x="231" y="103" width="360" height="140"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="360" id="fhJ-Wz-Rzh"/>

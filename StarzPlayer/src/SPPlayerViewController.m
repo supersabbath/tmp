@@ -1283,6 +1283,7 @@
     [self addChildViewController:_volumeViewController];
     UIView *volumeView = _volumeViewController.view;
     [volumeView setTranslatesAutoresizingMaskIntoConstraints:NO];
+  
     [_volumenContainer addSubview:_volumeViewController.view];
     [_volumeViewController didMoveToParentViewController:self];
     

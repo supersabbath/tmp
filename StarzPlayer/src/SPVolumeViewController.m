@@ -16,9 +16,10 @@
 @property (weak, nonatomic) IBOutlet UIView * volumeBaseView;
 @property (weak, nonatomic) IBOutlet UIView * volumeFrontView;
 @property (weak, nonatomic) IBOutlet UIView *volumeControlView;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *VolContainerWidth;
+
 @property (weak, nonatomic) IBOutlet UIButton *volumeControlMuteButton;
 @property (nonatomic, strong) MPVolumeView *volumeView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *volumeLevelWidthConstrain;
 @end
 
 @implementation SPVolumeViewController
@@ -28,6 +29,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        
+        self.volumeLevelWidthConstrain.constant = 48;
+    }
+
     [self startListeningToAudioVolume];
     [self configVolumenButtonsImages];
     [self setupView];
@@ -67,12 +73,12 @@
     [self.volumeView setMinimumVolumeSliderImage:blankImage forState:UIControlStateNormal];
     [self.volumeView setMaximumVolumeSliderImage:blankImage forState:UIControlStateNormal];
     [self.volumeView setVolumeThumbImage:blankImage forState:UIControlStateNormal];
-    
+
  
     
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
     {
-        [self.volumeBaseView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.volumeBaseView attribute:NSLayoutAttributeLeft multiplier:1.0 constant:self.volumeBaseView.bounds.size.width / 2]];
+        [self.volumeBaseView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.volumeBaseView attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:1]];
         [self.volumeBaseView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.volumeBaseView attribute:NSLayoutAttributeTop multiplier:1.0 constant:self.volumeBaseView.bounds.size.height / 2]];
         
         [self.volumeBaseView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:self.volumeBaseView.frame.size.height]];
@@ -80,11 +86,12 @@
     }
     else
     {
-        [self.volumeBaseView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeBaseView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.volumeBaseView attribute:NSLayoutAttributeLeft multiplier:1.0 constant:self.volumeBaseView.bounds.size.width / 2]];
+        [self.volumeBaseView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.volumeBaseView attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
         [self.volumeBaseView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.volumeBaseView attribute:NSLayoutAttributeTop multiplier:1.0 constant:self.volumeBaseView.bounds.size.height / 2]];
         // here is the diff
         [self.volumeBaseView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:self.volumeBaseView.frame.size.height]];
         [self.volumeBaseView addConstraint:[NSLayoutConstraint constraintWithItem:self.volumeView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:self.volumeBaseView.frame.size.width]];
+        
     }
     
     
@@ -97,11 +104,7 @@
     self.volumeBaseView.backgroundColor = [UIColor colorWithPatternImage:baseImage];
     self.volumeFrontView.backgroundColor = [UIColor colorWithPatternImage:valueImage];
     
-    if (( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)) {
-        
-        self.VolContainerWidth.constant = 24;
-    }
-
+   
  
     [self.volumeControlView setNeedsLayout];
     [self.volumeControlView layoutIfNeeded];
