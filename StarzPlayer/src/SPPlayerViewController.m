@@ -1040,9 +1040,9 @@
             [self log:[NSString stringWithFormat:@"PTSPlayerView:: Error - media player error code[%ld], description[%@], metadata[%@].", (long)error.code, error.description, error.metadata]];
             //#warning TODO: check the error
             [self log:@"PTSPlayerView:: Stopping playback due to errors."];
-     //       [self.player stop];
+            [self.player stop];
             [self postNotificationToObservers:SPPPlayerStatusErrorNotification];
-     //       [self.delgate playerViewController:self willStopDuePTMediaError:error];
+            [self.delgate playerViewController:self willStopDuePTMediaError:error];
             
             break;
     }
