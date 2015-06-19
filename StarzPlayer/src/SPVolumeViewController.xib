@@ -24,10 +24,10 @@
                     <rect key="frame" x="0.0" y="0.0" width="72" height="201"/>
                     <subviews>
                         <view clipsSubviews="YES" contentMode="bottom" horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="249" verticalCompressionResistancePriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="ZPs-ke-sEU" userLabel="MPVol Container">
-                            <rect key="frame" x="12" y="48" width="48" height="143"/>
+                            <rect key="frame" x="5" y="48" width="57" height="148"/>
                             <subviews>
                                 <view contentMode="bottom" horizontalCompressionResistancePriority="249" verticalCompressionResistancePriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="09P-gp-IST" userLabel="FrontView">
-                                    <rect key="frame" x="0.0" y="0.0" width="48" height="143"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="57" height="148"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                             </subviews>
@@ -41,6 +41,11 @@
                                 <constraint firstAttribute="trailing" secondItem="09P-gp-IST" secondAttribute="trailing" id="o9a-CP-CXQ"/>
                                 <constraint firstItem="09P-gp-IST" firstAttribute="top" secondItem="ZPs-ke-sEU" secondAttribute="top" id="qfT-8C-y6z"/>
                             </constraints>
+                            <variation key="default">
+                                <mask key="constraints">
+                                    <exclude reference="4bB-du-6DX"/>
+                                </mask>
+                            </variation>
                         </view>
                         <button autoresizesSubviews="NO" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G6p-2f-Qtx" userLabel="Mute Button">
                             <rect key="frame" x="20" y="8" width="32" height="32"/>
@@ -58,18 +63,21 @@
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
-                        <constraint firstAttribute="bottom" secondItem="ZPs-ke-sEU" secondAttribute="bottom" constant="10" id="6Za-wl-g8x"/>
+                        <constraint firstItem="ZPs-ke-sEU" firstAttribute="leading" secondItem="Xwz-vI-KrN" secondAttribute="leading" constant="5" id="41K-ni-Aaa"/>
+                        <constraint firstAttribute="bottom" secondItem="ZPs-ke-sEU" secondAttribute="bottom" constant="5" id="6Za-wl-g8x"/>
                         <constraint firstItem="G6p-2f-Qtx" firstAttribute="top" secondItem="Xwz-vI-KrN" secondAttribute="top" constant="8" id="8CE-Qk-77G"/>
                         <constraint firstItem="09P-gp-IST" firstAttribute="top" secondItem="G6p-2f-Qtx" secondAttribute="bottom" constant="8" id="EBj-6s-YgN"/>
                         <constraint firstItem="ZPs-ke-sEU" firstAttribute="leading" secondItem="Xwz-vI-KrN" secondAttribute="leading" constant="12" id="FPP-cM-mBM"/>
                         <constraint firstAttribute="trailing" secondItem="ZPs-ke-sEU" secondAttribute="trailing" constant="12" id="HcN-5X-FWk"/>
                         <constraint firstAttribute="centerX" secondItem="G6p-2f-Qtx" secondAttribute="centerX" id="RB4-S5-u8X"/>
                         <constraint firstAttribute="centerX" secondItem="ZPs-ke-sEU" secondAttribute="centerX" id="TMw-Bs-eC9"/>
+                        <constraint firstAttribute="trailing" secondItem="ZPs-ke-sEU" secondAttribute="trailing" constant="10" id="tbJ-7R-z96"/>
                     </constraints>
                     <variation key="default">
                         <mask key="constraints">
                             <exclude reference="FPP-cM-mBM"/>
                             <exclude reference="HcN-5X-FWk"/>
+                            <exclude reference="TMw-Bs-eC9"/>
                         </mask>
                     </variation>
                 </view>

@@ -239,8 +239,12 @@
     }
     [self.episodeSelectorButton setProvidedAssetAsBackgroundImage:IS_IPAD_IDIOM ? @"ico_episodes_32_c1_": @"ico_episodes_36_c1_"];
     [self setupAppearence];
+ 
     [self configureForContentType:_currentItem.contentType];
 }
+
+
+
 
 -(void) setupAppearence
 {
@@ -529,7 +533,6 @@
 
 -(void) postNotificationForDRMError:(DRMError*)error {
 
-  //  [SPPlayerNotification notificationForplayer:]
     SPPlayerNotification *notification  = [SPPlayerNotification notificationForplayer:self withUserInfo:@{@"videoAsset":_currentItem, @"error":error} andIdentifier:SPPPlayerStatusErrorNotification];
 
     [[NSNotificationCenter defaultCenter] postNotification:notification];
@@ -719,7 +722,7 @@
             
             if ([_episodeSelectorContainerView isDisplayed] == NO) {
                 [contentView addableViewHide];
-            }else{
+            }else  if ([contentView respondsToSelector:@selector(addableViewShow)])  {
                 [contentView addableViewShow];
             }
         }
@@ -892,14 +895,7 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesBegan:touches withEvent:event];
-    UITouch *any = [touches anyObject];
-    CGRect centerFrame =CGRectInset(self.view.frame, 50, 100);
-    
-//    if ( !CGRectContainsPoint(centerFrame, [any locationInView:self.view])) {
-//        [[UIApplication sharedApplication] performSelector:@selector(_performMemoryWarning)];
-//        return;
-//    }
-    
+
     if (self.controlsContainerView.alpha == 1.0 || self.visibleElement != nil )
     {
         [self hideUIElements];
@@ -916,7 +912,7 @@
 -(void) hideUIElements
 
 {
-    if ([_postPlaybackView isDisplayed]) return; // do nothing
+    if ([_postPlaybackView isDisplayed] || [_volumenContainer isDisplayed] || [_metadataContainerView isDisplayed]) return; // do nothing
  
     [_containerViewsArray enumerateObjectsUsingBlock:^(SPContainerView *obj, NSUInteger idx, BOOL *stop) {
         [obj setDisplayStatus:NO];// set all objects to Not Visible
@@ -925,7 +921,7 @@
     if (self.episodeSelectorContainerView)
     {
         [_episodeSelectorContainerView setDisplayStatus:NO];
-        id<SPPlayerViewControllerAddableViews> view = [_episodeSelectorContainerView viewWithTag:EPISODE_VIEW_TAG];
+        id<SPPlayerViewControllerAddableViews> view = (id <SPPlayerViewControllerAddableViews>)[_episodeSelectorContainerView viewWithTag:EPISODE_VIEW_TAG];
         [view addableViewHide];
         
     }
@@ -1044,8 +1040,9 @@
             [self log:[NSString stringWithFormat:@"PTSPlayerView:: Error - media player error code[%ld], description[%@], metadata[%@].", (long)error.code, error.description, error.metadata]];
             //#warning TODO: check the error
             [self log:@"PTSPlayerView:: Stopping playback due to errors."];
-            [self.player stop];
+     //       [self.player stop];
             [self postNotificationToObservers:SPPPlayerStatusErrorNotification];
+     //       [self.delgate playerViewController:self willStopDuePTMediaError:error];
             
             break;
     }
@@ -1276,9 +1273,9 @@
     if(_volumeViewController) return NO; // not created
     
     if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        self.volumeContainerHeightConstrain.constant = 172;
-        self.volumenContainerWidthConstrain.constant = 40;
-        [self.volumenContainer layoutIfNeeded];
+    //    self.volumeContainerHeightConstrain.constant = 120;
+    //    self.volumenContainerWidthConstrain.constant = 38;
+    //    [self.volumenContainer layoutIfNeeded];
     }
     
     self.volumeViewController= [[SPVolumeViewController alloc] initWithNibName:@"SPVolumeViewController" bundle:nil];
@@ -1362,22 +1359,22 @@
 #pragma mark - UTILS and Debugger
 - (void) log:(NSString*)format, ...
 {
-    //#ifdef DEBUG
+    #ifdef DEBUG
     
-    //if(DEBUG) //logging could be turned on/off here
-    // {
+    if(DEBUG) //logging could be turned on/off here
+    {
     va_list args;
     va_start(args,format);
     NSLogv(format, args);
     va_end(args);
-    // }
-    //#endif
+     }
+    #endif
 }
 
 
 -(void) addLogginLabel
 {
-#ifdef DEBUG2
+#ifdef DEBUG
     // Show playback stats
     UILabel *logingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.frame), 100.0, 200.0)];
     [logingLabel setBackgroundColor:[UIColor colorWithWhite:0.1 alpha:0.3]];
@@ -1393,14 +1390,14 @@
     NSDictionary *metrics = @{@"viewHeight":@160.0,@"viewWidth":@200.0,@"padding":@15.0,@"topPosition":@(CGRectGetHeight(self.view.frame) *0.3),@"lowPriority":@(UILayoutPriorityDefaultLow),@"highPriority":@(UILayoutPriorityDefaultHigh)};
     NSDictionary *views = NSDictionaryOfVariableBindings(logingLabel);
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10@highPriority-[logingLabel(viewWidth@highPriority)]-padding@lowPriority-|" options:NSLayoutFormatAlignAllLeft metrics:metrics views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-topPosition@highPriority-[logingLabel(viewHeight@highPriority)]->=0@lowPriority-|" options:NSLayoutFormatAlignAllLeft metrics:metrics views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[logingLabel(viewHeight@highPriority)]-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
     
 #endif
     
 }
 -(void) logVideoDetailsToLabel:(PTPlaybackInformation*) playbackInfo
 {
-#ifdef DEBUG2
+#ifdef DEBUG
     UILabel *logLabel =(UILabel*)[self.view viewWithTag:LOGGIN_LABEL_TAG];
     NSString *infoString = [NSString stringWithFormat:@"Status: %ld \n, BitRate (Observed): %f bits \nBitrate (Server): %f bits\nTs Downloaded: %ld Dropped: ( %ld ) \nTimeToStart ( %f )\nBufferinTime: %f\nBytesTransfered: ( %lld )", (long)_player.status,playbackInfo.observedBitrate, playbackInfo.indicatedBitrate,(long)playbackInfo.numberOfSegmentsDownloaded, (long)playbackInfo.numberOfDroppedVideoFrames,  playbackInfo.timeToStart ,playbackInfo.totalBufferingTime,playbackInfo.numberOfBytesTransferred];
     [logLabel setText:infoString];

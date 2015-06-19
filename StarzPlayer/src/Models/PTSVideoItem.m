@@ -26,7 +26,7 @@
 
 
 @synthesize url,title,mediaId,streamType,contentDescription,drmToken,drmUserName,drmUserPassword,thumbnail,stripContentUrl;
-@synthesize abrControl,contentType,starzAsset;
+@synthesize abrControl,contentType,starzAsset, initialPosition;
 
 - (id)initWithDictionary:(NSDictionary *)info
 {
@@ -59,9 +59,10 @@
     return self;
 }
 
--(void) setInitialPosition:(NSTimeInterval) newPosition {
+-(void) setInitialPosition:(NSTimeInterval) newPosition
+{
 
-    _initialPosition = newPosition;
+    initialPosition = newPosition;
 }
 
 @end

@@ -10,6 +10,8 @@
 #define StarzPlayer_SPPlayerViewControllerDelegate_h
 @class SPPlayerViewController;
 @class PTSVideoItem;
+@class PTMediaError;
+
 @class DRMError;
 
 
@@ -40,6 +42,8 @@
 /* All the drm error willbe log here*/
 @optional
 -(void) playerViewController:(SPPlayerViewController *)playerVC willStopDueDRMError:(DRMError *)error;
+
+-(void) playerViewController:(SPPlayerViewController *)playerVC willStopDuePTMediaError:(PTMediaError*)error;
 @end
 
 @protocol SPPlayerViewControllerAddableViews <NSObject>

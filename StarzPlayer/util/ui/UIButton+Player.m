@@ -34,35 +34,4 @@
     [self setBackgroundImage:resizablePressed forState:UIControlStateSelected];
 }
 
-//+ (NSMutableAttributedString *)buttonAttributedString:(NSString *)text
-//{
-//    return [[[NSAttributedString
-//              withString:text]
-//             withTracking:IS_IPAD ? 2 : 3] withFont:[FontUtil fontWithKey:IS_IPAD ? PSFontPDRS : PSFontPDRXXS]];
-//}
-
-//- (void)updateWatchButtonTitleForState:(PSWatchlistType)watchListType color:(UIColor *)c
-//{
-//    NSString* watchTitleStr = nil;
-//    switch (watchListType) {
-//        case PSWatchlistTypeWatchedlist:
-//            watchTitleStr = ACLocalizedString(@"key_playButtonTitle_watchAgain");
-//            break;
-//        case PSWatchlistTypeWatchlist:
-//            watchTitleStr = ACLocalizedString(@"dict_series_resume");
-//            break;
-//        case PSWatchlistTypeNone:
-//        case PSWatchlistTypeWishlist:
-//        default:
-//            watchTitleStr = ACLocalizedString(@"dict_movies_whatchnow");
-//            break;
-//    }
-//    watchTitleStr = [watchTitleStr uppercaseString];
-//    
-//    NSMutableAttributedString * watchTitle = [UIButton buttonAttributedString:watchTitleStr];
-//    
-//    [self setAttributedTitle:[[watchTitle mutableCopy] withColor:c] forState:UIControlStateNormal];
-//    [self setAttributedTitle:[[watchTitle mutableCopy] withColor:c] forState:UIControlStateHighlighted];
-//}
-
 @end
