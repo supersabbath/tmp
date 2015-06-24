@@ -34,18 +34,15 @@ typedef void (^Completion)(PTSVideoItem*);
 {
     [self reloadWithURL:@"http://adunit.cdn.auditude.com/player/downloads/data/psdk-ios/data/content.plist" withCompletion:^(PTSVideoItem *video) {
         
-        SPPlayerViewController* playerController = [[SPPlayerViewController alloc]initWithNibName:@"SPPlayerViewController" bundle:nil];
+        SPPlayerViewController* playerController = [[SPPlayerViewController alloc] initWithVideoItem:nil andStyle:nil];
         
         [playerController setDataSource:self];
         [self presentViewController:playerController animated:YES completion:^{
             NSLog(@"Presented");
-            
             [playerController playVideo:video];
         }];
     }];
- 
 }
-
 
 
 //http://adunit.cdn.auditude.com/player/downloads/data/psdk-ios/data/content.plist

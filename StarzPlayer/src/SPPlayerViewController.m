@@ -12,11 +12,12 @@
 #import "SPPlayerControlView.h"
 #import "PSScrubbingCollectionViewController.h"
 #import "SPVolumeViewController.h"
+// SPMoviePlayer
+#import "SPMoviePlayerController.h"
 // Accedo Utils
 #import "UIButton+Player.h"
 // Views
 #import "SPContainerView.h"
-
 
 // Style
 #import "SPPlayerUIStyle.h"
@@ -50,24 +51,25 @@
 
 /* Extension Private iVars*/
 
-@interface SPPlayerViewController ()
+@interface SPPlayerViewController ()  <SPMoviewPlayerControllerObserver>
 {
     PTQoSProvider *qosProvider;
     BOOL wasPlayingBeforeSuspend;
-    BOOL wasPlaybackNotificationSent;
-
+    BOOL wasPlaybackNotificationSent; // for resume after home button is touch
+    SPMoviePlayerController *playerController;
 }
 
 
-@property (nonatomic, strong) NSTimer * hideUIElementsTimer;
 
+@property (nonatomic, strong) NSTimer * hideUIElementsTimer;
+@property (copy) PlayerInitializationCompletion addPlayerViewBlock;
 /*
  View Containes for the differen view Controllers
  */
 @property (unsafe_unretained, nonatomic) IBOutlet SPContainerView *centerControlsContainer;
 @property (nonatomic, weak) IBOutlet SPPlayerControlView *controlsContainerView;
 
-@property (weak, nonatomic) IBOutlet UIView *playerContainerView;           //  --> PTMediaPlayer
+
 @property (weak, nonatomic) IBOutlet SPContainerView *thumbsContainer;      //  --> PSScrubbingCollectionViewController
 @property (weak, nonatomic) IBOutlet SPContainerView *volumenContainer;     //  --> SPVolumeViewController
 @property (weak, nonatomic) IBOutlet SPContainerView *topControlsContainer;
@@ -107,46 +109,78 @@
 {
     self = [super init];
     if (self) {
-        wasPlaybackNotificationSent = NO;
+       
         _currentItem = videoItem;
         _uiPropertiesStyle = uiStyler;
         _containerViewsArray = [@[] mutableCopy];
- 
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillResignActive)
-                                                     name:UIApplicationWillResignActiveNotification
-                                                   object:NULL];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationDidBecomeActive)
-                                                     name:UIApplicationDidBecomeActiveNotification
-                                                   object:NULL];
-     
+        [self configurePlayerViewAddingBlock];
+        
     }
     return self;
 }
 
-- (void) applicationWillResignActive
+-(void) configurePlayerViewAddingBlock
 {
-    wasPlayingBeforeSuspend = self.player.status == PTMediaPlayerStatusPlaying;
-    [self.player pause];
+    
+    SPPlayerViewController * __weak unretainedSelf = self;
+    self.addPlayerViewBlock =^(UIView *playerView) {
+ 
+        [unretainedSelf.playerContainerView insertSubview:playerView atIndex:0];
+        [unretainedSelf bringControlViewsToFrontMostPosition];
+        [unretainedSelf.playerContainerView addConstraint:[NSLayoutConstraint constraintWithItem:playerView
+                                                                             attribute:NSLayoutAttributeWidth
+                                                                             relatedBy:NSLayoutRelationEqual
+                                                                                toItem:unretainedSelf.playerContainerView
+                                                                             attribute:NSLayoutAttributeWidth
+                                                                            multiplier:1.0
+                                                                              constant:0]];
+        
+        
+        [unretainedSelf.playerContainerView addConstraint:[NSLayoutConstraint constraintWithItem:playerView
+                                                                             attribute:NSLayoutAttributeHeight
+                                                                             relatedBy:NSLayoutRelationEqual
+                                                                                toItem:unretainedSelf.playerContainerView
+                                                                             attribute:NSLayoutAttributeHeight
+                                                                            multiplier:1.0
+                                                                              constant:0]];
+        
+        // Center horizontally
+        [unretainedSelf.playerContainerView addConstraint:[NSLayoutConstraint constraintWithItem:playerView
+                                                                             attribute:NSLayoutAttributeCenterX
+                                                                             relatedBy:NSLayoutRelationEqual
+                                                                                toItem:unretainedSelf.playerContainerView
+                                                                             attribute:NSLayoutAttributeCenterX
+                                                                            multiplier:1.0
+                                                                              constant:0.0]];
+        
+        // Center vertically
+        [unretainedSelf.playerContainerView addConstraint:[NSLayoutConstraint constraintWithItem:playerView
+                                                                             attribute:NSLayoutAttributeCenterY
+                                                                             relatedBy:NSLayoutRelationEqual
+                                                                                toItem:unretainedSelf.playerContainerView
+                                                                             attribute:NSLayoutAttributeCenterY
+                                                                            multiplier:1.0
+                                                                              constant:0.0]];
+        
+    };
 }
+//- (void) applicationWillResignActive
+//{
+//    wasPlayingBeforeSuspend = self.player.status == PTMediaPlayerStatusPlaying;
+//    [self.player pause];
+//}
+//
+//- (void) applicationDidBecomeActive
+//{
+//    if (wasPlayingBeforeSuspend)
+//    {
+//        [self.player play];
+//    }
+//}
 
-- (void) applicationDidBecomeActive
-{
-    if (wasPlayingBeforeSuspend)
-    {
-        [self.player play];
-    }
-}
-
-
-- (void) qosSetup
-{
-    qosProvider = [[PTQoSProvider alloc] initWithPlayer:self.player];
-    [self addLogginLabel];
-}
-
-
+/*
+     // _scrubbCollectionView memory is managed in its onw viewcontroller
+ */
 - (void) didReceiveMemoryWarning
 {
     
@@ -182,7 +216,7 @@
         [self.postPlaybackView removeFromSuperview];
         self.postPlaybackView = nil;
     }
-    // _scrubbCollectionView memory is managed in its onw viewcontroller 
+   
 }
 
 
@@ -200,6 +234,7 @@
     [self clearCurrentItemAssociatedViews]; // to prevent a crash from the table views
     [self stopObservingNotifications];
 }
+
 
 #pragma mark -  ViewController Lifecycle
 - (void)viewDidLoad
@@ -274,12 +309,15 @@
         case PTSEpisodeContent:
             [_episodeSelectorButton setHidden:NO];
             break;
+        case PTSTrailerContent:
+            [_episodeSelectorButton setHidden:YES];
+            break;
         case PTSMovieContent:
             [_episodeSelectorButton setHidden:YES];
             break;
     }
-    
 }
+
 
 -(NSUInteger)supportedInterfaceOrientations
 {
@@ -288,7 +326,6 @@
 
 -(void) startHideElementsTimer
 {
-    [self log:@" =============== Start Timer ================="];
     if (self.hideUIElementsTimer)
     {
         [self.hideUIElementsTimer invalidate];
@@ -307,7 +344,6 @@
 
 -(void) stopUIHideTimer
 {
-    [self log:@" =============== invalidate Timer ================="];
     [self.hideUIElementsTimer invalidate];
 }
 
@@ -326,7 +362,6 @@
 - (void) playCurrentVideo
 {
     [_scrubbCollectionView fetchScrubbingImagesForULR:_currentItem.stripContentUrl];
-    
     [self playVideo];
 }
 
@@ -337,56 +372,26 @@
     [self loadScrubbCollectionViewIfNeeded];
     [_scrubbCollectionView fetchScrubbingImagesForULR:_currentItem.stripContentUrl];
     [self setTextInInformationLabels:item];
-    
     [self playVideo];
 }
 
 
-- (void) pauseVideo
-{
-    [self.player pause];
-}
-
-- (void) resumeVideo
-{
-    if (self.player && self.player.status == PTMediaPlayerStatusPaused)
-    {
-        [self.player play];
-    }
-}
-
 - (void) stopVideo
 {
-    if (self.player)
-    {
-        [self.player stop];
-    }
+    [playerController stopVideo];
 }
 
--(void) releasePlayer
+-(void) releaseMoviePlayerController
 {
-    [self stopObservingNotifications];
-    
-    if (self.player != nil)
-    {
-    
-        [self.player reset];
-        [(UIView *)self.player.view removeFromSuperview];
-        self.player = nil;
-    }
-    
-    if (qosProvider)
-    {
-        qosProvider = nil;
-    }
-    
+    [playerController releasePlayer];
+    playerController = nil;
 }
 
 -(void) moveToInitialPosition
 {
     if (_currentItem.initialPosition > 10) {
          
-        [_player seekToTime:CMTimeMakeWithSeconds(_currentItem.initialPosition,100000) completionHandler:^(BOOL finished) {
+        [playerController seekToTime:CMTimeMakeWithSeconds(_currentItem.initialPosition,100000) completionHandler:^(BOOL finished) {
             
             if (finished) {
                 
@@ -395,141 +400,55 @@
         }];
     }
 }
+
+-(BOOL) isPlayerControllerLive
+{
+    return [playerController isLive];
+}
+
+-(CMTime) currentPlaybackTime {
+    return playerController.currentTime;
+}
+
+-(CMTime) videoDuration
+{
+    return playerController.player.duration;
+}
+#pragma mark - Private Actions
 /*
  Internal methods
  */
-#pragma mark - Private Actions
+
 - (void) playVideo
 {
+ 
     NSURL *url = [NSURL URLWithString:_currentItem.url];
     if (url == nil) // invalid url
     {
         [self closePlayer:nil];
         return;
     }
-    
-    
-    if (self.player)
+
+    if (playerController)
     {
-        [self.player stop];
-        [self releasePlayer];
+        [playerController stopVideo];
+        [self releaseMoviePlayerController];
     }
     
-    wasPlaybackNotificationSent = NO;
-    
-    PTMetadata *metadata = [self createMetadata];
-    
-    PTMediaPlayerItem *item = [[PTMediaPlayerItem alloc] initWithUrl:url mediaId:_currentItem.mediaId metadata:metadata];
-    item.secure = NO;
-    
-    [self createMediaPlayer:item];
-}
-
-
-- (void) createMediaPlayer:(PTMediaPlayerItem *)item
-{
-    [PTSDKConfig setSubscribedTags:[NSArray arrayWithObject:@"#EXT-OATCLS-SCTE35"]];
-#ifdef DEBUG
-    [PTMediaPlayer enableDebugLog:NO];
-#endif
-    self.player = [PTMediaPlayer playerWithMediaPlayerItem:item];
-    
-    [self addObserversToAdobeNotifications];
-    
-    self.player.currentTimeUpdateInterval = 1000;
-    self.player.allowsAirPlayVideo = NO;                               // enable airplay
-    self.player.videoGravity = PTMediaPlayerVideoGravityResizeAspect;   // set the video display properties
-    self.player.muted = NO;
-    self.player.autoPlay = YES;
-    
-    
-    UIView *playerView =_player.view;
-    playerView.translatesAutoresizingMaskIntoConstraints = NO;
-    [playerView setBackgroundColor:[UIColor clearColor]];
-    
-    [self.playerContainerView insertSubview:playerView atIndex:0];
-    [self bringControlViewsToFrontMostPosition];
-    [self.playerContainerView addConstraint:[NSLayoutConstraint constraintWithItem:playerView
-                                                                         attribute:NSLayoutAttributeWidth
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:self.playerContainerView
-                                                                         attribute:NSLayoutAttributeWidth
-                                                                        multiplier:1.0
-                                                                          constant:0]];
-    
-    
-    [self.playerContainerView addConstraint:[NSLayoutConstraint constraintWithItem:playerView
-                                                                         attribute:NSLayoutAttributeHeight
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:self.playerContainerView
-                                                                         attribute:NSLayoutAttributeHeight
-                                                                        multiplier:1.0
-                                                                          constant:0]];
-    
-    // Center horizontally
-    [self.playerContainerView addConstraint:[NSLayoutConstraint constraintWithItem:playerView
-                                                                         attribute:NSLayoutAttributeCenterX
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:self.playerContainerView
-                                                                         attribute:NSLayoutAttributeCenterX
-                                                                        multiplier:1.0
-                                                                          constant:0.0]];
-    
-    // Center vertically
-    [self.playerContainerView addConstraint:[NSLayoutConstraint constraintWithItem:playerView
-                                                                         attribute:NSLayoutAttributeCenterY
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:self.playerContainerView
-                                                                         attribute:NSLayoutAttributeCenterY
-                                                                        multiplier:1.0
-                                                                          constant:0.0]];
-    
-    
-    
-    [self qosSetup]; // attach player to qosProvider
-    
-    DRMManager *manager = _player.drmManager;
-    if (! _player.currentItem.isDrmProtected || ! [manager isSupportedPlaylist:item.url]) {
-        // since this content is not FlashAccess protected, we will queue it up for playback without further DRM consideration
-        NSLog(@"Loading NON FAXS content  %@", item.url);
-        // start playback directly
-        [self startPlayback];
-    }
-    else {
-        [self startAuthentication:_currentItem];
-    }
-    
-}
-
-
-- (void) startPlayback
-{
-    [self.player play];
+    playerController = [[SPMoviePlayerController alloc] initWithMediaPlayerItem:_currentItem andViewController:self];
+ 
+    [playerController playCurrentVideo:self.addPlayerViewBlock];
+  
 }
 
 
 - (void) logDRMError:(NSString*)str :(DRMError*)error
 {
-    NSLog(@"[%@:] major:[%ld] minor:[%ld] string: [%@] NSError:[%@]", str, (long)error.majorError, (long)error.minorError, error.errorString, error.platformError);
-    NSUInteger major = error.majorError;
-    
-    __block SPPlayerViewController * __weak unretainedSelf = self;
-    if (major == 3322 || major == 3323 || major == 3324 || major == 3326)
-    {
-        
-        [[DRMManager sharedManager] resetDRM:^(DRMError *error) {
-            NSLog(@"[Second Error %@:] major:[%ld] minor:[%ld] string: [%@] NSError:[%@]", str, (long)error.majorError, (long)error.minorError, error.errorString, error.platformError);
-            [self callDelegateForDRMError:error];
-        } complete:^{
-            [unretainedSelf playVideo];
-        }];
-    }
-    else {
-        [self callDelegateForDRMError:error];
-    }
-
+     NSLog(@"[%@:] major:[%ld] minor:[%ld] string: [%@] NSError:[%@]", str, (long)error.majorError, (long)error.minorError, error.errorString, error.platformError);
+    [self callDelegateForDRMError:error];
     [self postNotificationForDRMError:error];
 };
+
 
 -(void) postNotificationForDRMError:(DRMError*)error {
 
@@ -546,120 +465,8 @@
     
 }
 
-- (void) startAuthentication:(PTSVideoItem *)videoItem
-{
-    [self log: @"=== startAuthentication ==="];
-    DRMManager *manager = _player.drmManager;
-    if (_player && _player.currentItem)
-    {
-        PTMediaPlayerItem *mpItem = _player.currentItem;
-        
-        [mpItem loadDRMMetadataWithCompletionHandler:^(PTDRMMetadataInfo *metadata)
-         {
-             [self log:@"DRM Metadata loaded complete"];
-             
-             DRMMetadata *newMetadata = metadata.drmMetadata;
-             if (newMetadata)
-             {
-                 DRMPolicy* firstPolicy = (DRMPolicy*)[[newMetadata getPolicies] objectAtIndex:0];
-                 if (firstPolicy.authenticationMethod == USERNAME_AND_PASSWORD)
-                 {
-                     [self log:@"=============== Authenticating to License server, USERNAME_AND_PASSWORD : %@", [newMetadata getServerUrl]];
-                     [manager authenticate:newMetadata url:newMetadata.serverUrl authenticationDomain:firstPolicy.authenticationDomain username:videoItem.drmUserName password:videoItem.drmUserPassword
-                                     error:^(DRMError* error)
-                      {
-                          [self logDRMError:@"DRM authenticating error" :error];
-                      }
-                                  complete:^(NSData* token)
-                      {
-                          [self log:@"authentication successful"];
-                          [self log:@"authentication token is %ld bytes", (long)[token length]];
-                          [self startPlayback];
-                      }
-                      ];
-                 }
-                 else if (firstPolicy.authenticationMethod == UNKNOWN)
-                 {
-                     // custom authentication method, unkown to Adobe
-                     NSData* tokenData = [videoItem.drmToken dataUsingEncoding:NSUTF8StringEncoding];
-                     [self log:@"=============== Authenticating to License server, UNKNOWN : %@", [newMetadata getServerUrl]];
-                     
-                     __weak DRMManager *weakDRMManager = manager;
-                     
-                     // set token
-                     [manager setAuthenticationToken:newMetadata authenticationDomain:firstPolicy.authenticationDomain token:tokenData
-                                               error:^(DRMError* error){
-                                                   
-                          [self logDRMError:@"SetAuthenticationToken DRM error" :error];
-                      
-                            } complete:^(){
-                          // FORCE_REFRESH The License is always downloaded from the media rights server.
-                          // LOCAL_ONLY The License is only loaded from the local cache.
-                          // ALLOW_SERVER The License is loaded from the local cache if possible, but otherwise is downloaded from the server.
-                          DRMAcquireLicenseSettings drmSetting = FORCE_REFRESH;
-                          [weakDRMManager acquireLicense:newMetadata setting:drmSetting
-                                                   error:^(DRMError* error) {
-                                                       
-                               [self logDRMError:@"acquireLicense DRM ERROR" :error];
-                           
-                                                   
-                           } acquired:(DRMLicenseAcquired)^{
-                               [self log: @"=============== DRM acquireLicense: successfull "];
-                               [self startPlayback];
-                           }
-                           ];
-                      }
-                      ];
-                 }
-                 else if (firstPolicy.authenticationMethod == ANONYMOUS)
-                 {
-                     [self log:@"=============== Authenticating to License server, ANONYMOUS : %@", [newMetadata getServerUrl]];
-                     [self startPlayback];
-                 }
-                 else
-                 {
-                     [self log: @"DRM ERROR: unsupported authentication method: %d", firstPolicy.authenticationMethod];
-                 }
-             }
-             else
-             {
-                 [self log:@"===============  LOAD DRM ERROR: empty DRM metadata"];
-             }
-             
-         }
-         
-                                        errorHandler:^(PTMediaError *error)
-         {
-             #warning TODO:
-             // please don't use the error object here, there is an exception thrown in the PSDK that will be addressed soon.
-             // use player.error object instead  [self logDRMError:@"SetAuthenticationToken DRM error" :error];
-             [self logDRMError:@"=============== loadDRMMetadataWithCompletionHandler": (DRMError*)self.player.error];
-
-             //Server error 3005
-             
-         }
-         ];
-    }
-    else
-    {
-        [self log:@"===============  DRM Error: Could not start Authentication, no player instance or no current media player item created!"];
-    }
-    
-}
 
 
-- (PTMetadata *) createMetadata
-{
-    PTMetadata* metadata = [[PTMetadata alloc] init];
-
-    if (_currentItem.abrControl != nil)
-    {
-
-          [metadata setMetadata:_currentItem.abrControl forKey:PTABRResolvingMetadataKey];
-    }
-    
-    return metadata;
-}
 
 -(void) changePlayerToDiffentContent:(NSNotification*) notification
 {
@@ -667,7 +474,7 @@
     [self clearCurrentItemAssociatedViews];
     PTSVideoItem *newItem = [notification object];
     if (newItem) {
-        [self stopVideo];
+        [playerController stopVideo];
         
         [self playVideo:newItem];
     }
@@ -676,7 +483,6 @@
 -(void) refreshPlayerForNewPlaybackItem:(PTSVideoItem *)item {
     
     [_episodeSelectorContainerView setDisplayStatus:NO];
-  //  [_postPlaybackView setDisplayStatus:NO];
     self.currentItem = item;
     self.visibleElement = nil;
 }
@@ -696,7 +502,7 @@
         [self.delgate playerViewControllerWillDissmissed:self];
     }
     
-    [self releasePlayer];
+     [self releaseMoviePlayerController]; // this position is important in other to notify the delegate
     
     if ([self.delgate respondsToSelector:@selector(playerViewControllerReadyToBeDissmissed:)]) {
         [self.delgate playerViewControllerReadyToBeDissmissed:self];
@@ -945,17 +751,6 @@
 #pragma mark - Notification
 #pragma mark -
 
-- (void) addObserversToAdobeNotifications
-{
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMediaPlayerStatusChange:) name:PTMediaPlayerStatusNotification object:self.player];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMediaPlayerTimeChange:) name:PTMediaPlayerTimeChangeNotification object:self.player];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMediaPlayerItemPlayStarted:) name:PTMediaPlayerPlayStartedNotification object:self.player];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMediaPlayerItemPlayCompleted:) name:PTMediaPlayerPlayCompletedNotification object:self.player];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMediaPlayerSeekCompleted:) name:PTMediaPlayerSeekCompletedNotification object:self.player];
-
-}
-
 
 - (void) stopObservingNotifications
 {
@@ -1035,12 +830,12 @@
             
             break;
         case PTMediaPlayerStatusError:
-            error = self.player.error;
+            error = playerController.player.error;
             [self log:@"=== Status: PTMediaPlayerStatusError ==="];
             [self log:[NSString stringWithFormat:@"PTSPlayerView:: Error - media player error code[%ld], description[%@], metadata[%@].", (long)error.code, error.description, error.metadata]];
             //#warning TODO: check the error
             [self log:@"PTSPlayerView:: Stopping playback due to errors."];
-            [self.player stop];
+            [playerController stopVideo];
             [self postNotificationToObservers:SPPPlayerStatusErrorNotification];
             [self.delgate playerViewController:self willStopDuePTMediaError:error];
             
@@ -1081,14 +876,14 @@
 
 - (void) onMediaPlayerTimeChange:(NSNotification *)notification
 {
-    CMTimeRange seekableRange = self.player.seekableRange;
-    [self.controlsContainerView updateViewForTimeRange:seekableRange andCurrentPosition:self.player.currentItem.currentTime];
+    CMTimeRange seekableRange = playerController.player.seekableRange;
+    [self.controlsContainerView updateViewForTimeRange:seekableRange andCurrentPosition:playerController.currentTime];
     [self logVideoDetailsToLabel:qosProvider.playbackInformation];
     
-    [self checkIfPlaybackIsAlmostDone:_player];
+    [self checkIfPlaybackIsAlmostDone:playerController.player];
 }
 
-- (void)onMediaPlayerSeekCompleted:(NSNotification *)notification
+- (void) onMediaPlayerSeekCompleted:(NSNotification *)notification
 {
     [self postNotificationToObservers:SPPlayerStatusPlayingNotification];
     
@@ -1118,8 +913,8 @@
 
 -(void) checkIfPlaybackIsAlmostDone:(PTMediaPlayer*) player
 {
-    double secs =CMTimeGetSeconds(_player.currentTime);
-    double duration = CMTimeGetSeconds(_player.duration);
+    double secs =CMTimeGetSeconds(player.currentTime);
+    double duration = CMTimeGetSeconds(player.duration);
 
     if (secs / duration > 0.9) {
      
@@ -1141,12 +936,12 @@
 #pragma mark  Play Button methods
 - (void)view:(SPPlayerControlView*) view didReceivePlayTouch:(UIButton*) button
 {
-    [self resumeVideo];
+    [playerController resumeVideo];
 }
 
 - (void)view:(SPPlayerControlView*) view didReceivePauseTouch:(UIButton*) button
 {
-    [self pauseVideo];
+    [playerController pauseVideo];
 }
 
 
@@ -1158,7 +953,7 @@
     double currentTime = CMTimeGetSeconds(time);
     
     double scrubWidth = self.scrubbCollectionView.collectionView.contentSize.width;
-    double timeWidth = CMTimeGetSeconds(self.player.seekableRange.duration);
+    double timeWidth = CMTimeGetSeconds(playerController.player.seekableRange.duration);
     
     CGFloat currentOffset = (currentTime * scrubWidth ) / timeWidth ;
     
@@ -1190,8 +985,8 @@
     [UIView animateWithDuration:0.2 delay:0.2 options:0 animations:^{
         self.thumbsContainer.alpha = 0.0;
     } completion:nil];
-    [self.player seekToTime:time completionHandler:^(BOOL finished) {
-        [self log:@"seekToTime complete........" ];
+    [playerController seekToTime:time completionHandler:^(BOOL finished) {
+
         [self updateViewAfterSeeking:nil];
     }];
 
@@ -1201,7 +996,7 @@
 
     [self log:@"seek Notification" ];
     [self hideSpinner];
-    [self.player play];
+    [playerController.player play];
 }
 
 /*Buttons delegate*/
@@ -1214,9 +1009,9 @@
     
     if (isCreated == NO) {
         
-        [self.metadataTableViewController reloadDataForItem:_player.currentItem];
+        [self.metadataTableViewController reloadDataForItem:playerController.player.currentItem];
     }
-//    [self.centerControlsContainer bringSubviewToFront:_metadataContainerView];
+
     [self.playerContainerView bringSubviewToFront:_controlsContainerView];
     [self.metadataContainerView setDisplayStatus:![_metadataContainerView isDisplayed]]; // control same button click to hide
     [self markViewAsVisible:_metadataContainerView];
@@ -1228,7 +1023,7 @@
     
     if (_metadataTableViewController == nil)
     {
-        self.metadataTableViewController = [[MetadataTableViewController alloc] initWithAVPlayerItem:_player.currentItem];
+        self.metadataTableViewController = [[MetadataTableViewController alloc] initWithAVPlayerItem:playerController.player.currentItem];
           [_metadataTableViewController configureBackgroundColorInTables:[_uiPropertiesStyle backgroundColorForMetadataTablesViews]];
         [_metadataTableViewController configureFontInTableHeader:[_uiPropertiesStyle fontForMetadataTableHeader] withColor:[_uiPropertiesStyle textColorForHeaderTableView]];
         _metadataTableViewController.delegate = self;
@@ -1272,11 +1067,6 @@
     
     if(_volumeViewController) return NO; // not created
     
-    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-    //    self.volumeContainerHeightConstrain.constant = 120;
-    //    self.volumenContainerWidthConstrain.constant = 38;
-    //    [self.volumenContainer layoutIfNeeded];
-    }
     
     self.volumeViewController= [[SPVolumeViewController alloc] initWithNibName:@"SPVolumeViewController" bundle:nil];
     [_volumeViewController setDelegate:self];
@@ -1298,7 +1088,7 @@
 
 -(void) metadataTableViewController:(MetadataTableViewController*) controller didSelectCloseCaptionOption:(BOOL)enabled
 {
-    self.player.closedCaptionDisplayEnabled = enabled;
+    playerController.player.closedCaptionDisplayEnabled = enabled;
 }
 
 
@@ -1340,10 +1130,10 @@
     
     switch (messageType) {
         case PSPlayerMessageMute:
-            [self.player setVolume:0.0];
+            [playerController setVolume:0.0];
             break;
         case PSPlayerMessageUnMute:
-            [self.player setVolume:[AVAudioSession sharedInstance].outputVolume];
+            [playerController setVolume:[AVAudioSession sharedInstance].outputVolume];
         default:
             break;
     }
@@ -1358,19 +1148,19 @@
 }
 
 #pragma mark - UTILS and Debugger
-- (void) log:(NSString*)format, ...
-{
-    #ifdef DEBUG
-    
-    if(DEBUG) //logging could be turned on/off here
+   - (void) log:(NSString*)format, ...
     {
-    va_list args;
-    va_start(args,format);
-    NSLogv(format, args);
-    va_end(args);
-     }
-    #endif
-}
+#ifdef DEBUG
+        
+        if(DEBUG) //logging could be turned on/off here
+        {
+            va_list args;
+            va_start(args,format);
+            NSLogv(format, args);
+            va_end(args);
+        }
+#endif
+    }
 
 
 -(void) addLogginLabel
@@ -1400,7 +1190,7 @@
 {
 #ifdef DEBUG
     UILabel *logLabel =(UILabel*)[self.view viewWithTag:LOGGIN_LABEL_TAG];
-    NSString *infoString = [NSString stringWithFormat:@"Status: %ld \n, BitRate (Observed): %f bits \nBitrate (Server): %f bits\nTs Downloaded: %ld Dropped: ( %ld ) \nTimeToStart ( %f )\nBufferinTime: %f\nBytesTransfered: ( %lld )", (long)_player.status,playbackInfo.observedBitrate, playbackInfo.indicatedBitrate,(long)playbackInfo.numberOfSegmentsDownloaded, (long)playbackInfo.numberOfDroppedVideoFrames,  playbackInfo.timeToStart ,playbackInfo.totalBufferingTime,playbackInfo.numberOfBytesTransferred];
+    NSString *infoString = [NSString stringWithFormat:@"Status: %ld \n, BitRate (Observed): %f bits \nBitrate (Server): %f bits\nTs Downloaded: %ld Dropped: ( %ld ) \nTimeToStart ( %f )\nBufferinTime: %f\nBytesTransfered: ( %lld )", (long)playerController.player.status,playbackInfo.observedBitrate, playbackInfo.indicatedBitrate,(long)playbackInfo.numberOfSegmentsDownloaded, (long)playbackInfo.numberOfDroppedVideoFrames,  playbackInfo.timeToStart ,playbackInfo.totalBufferingTime,playbackInfo.numberOfBytesTransferred];
     [logLabel setText:infoString];
 #endif
 }

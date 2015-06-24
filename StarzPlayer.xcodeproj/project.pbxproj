@@ -121,6 +121,7 @@
 		E1A5FF7A1B0F30B00093C1DF /* SessionData.plist in Resources */ = {isa = PBXBuildFile; fileRef = E1A5FF791B0F30B00093C1DF /* SessionData.plist */; };
 		E1A5FF7D1B0F5FED0093C1DF /* PSLinearLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = E1A5FF7C1B0F5FED0093C1DF /* PSLinearLayout.m */; };
 		E1BAD21F1B15A9F300C82EEA /* SPPlayerUIStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = E1BAD21E1B15A9F300C82EEA /* SPPlayerUIStyle.m */; };
+		E1BECBD01B3AB5B90065CCDC /* SPMoviePlayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1BECBCF1B3AB5B90065CCDC /* SPMoviePlayerController.m */; };
 		E1D938711B09F16300C084B6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D938701B09F16300C084B6 /* main.m */; };
 		E1D938741B09F16300C084B6 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D938731B09F16300C084B6 /* AppDelegate.m */; };
 		E1D9387C1B09F16300C084B6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1D9387B1B09F16300C084B6 /* Images.xcassets */; };
@@ -330,6 +331,8 @@
 		E1A5FF7C1B0F5FED0093C1DF /* PSLinearLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSLinearLayout.m; sourceTree = "<group>"; };
 		E1BAD21D1B15A9F300C82EEA /* SPPlayerUIStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPPlayerUIStyle.h; sourceTree = "<group>"; };
 		E1BAD21E1B15A9F300C82EEA /* SPPlayerUIStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPPlayerUIStyle.m; sourceTree = "<group>"; };
+		E1BECBCE1B3AB5B90065CCDC /* SPMoviePlayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPMoviePlayerController.h; sourceTree = "<group>"; };
+		E1BECBCF1B3AB5B90065CCDC /* SPMoviePlayerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPMoviePlayerController.m; sourceTree = "<group>"; };
 		E1D9386B1B09F16300C084B6 /* StarzPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StarzPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1D9386F1B09F16300C084B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E1D938701B09F16300C084B6 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -755,6 +758,8 @@
 				E1012B691B0CDF2700333DE2 /* Controllers */,
 				E1D938EB1B0A2A4300C084B6 /* Views */,
 				E1D938E71B0A25E500C084B6 /* Models */,
+				E1BECBCE1B3AB5B90065CCDC /* SPMoviePlayerController.h */,
+				E1BECBCF1B3AB5B90065CCDC /* SPMoviePlayerController.m */,
 				E1D938E21B0A246B00C084B6 /* SPPlayerViewController.h */,
 				E1D938E31B0A246B00C084B6 /* SPPlayerViewController.m */,
 				E1D938E41B0A246B00C084B6 /* SPPlayerViewController.xib */,
@@ -1153,6 +1158,7 @@
 				E10A9ECF1B0E28ED007A71F8 /* PSScrubbingThumbs.m in Sources */,
 				E12C5A611B13754000BE4A17 /* FontUtil.m in Sources */,
 				E12C5A541B1373A000BE4A17 /* UIButton+Player.m in Sources */,
+				E1BECBD01B3AB5B90065CCDC /* SPMoviePlayerController.m in Sources */,
 				E1D938741B09F16300C084B6 /* AppDelegate.m in Sources */,
 				E10A9E061B0DDA89007A71F8 /* MetadataTableViewController.m in Sources */,
 				E1D938E51B0A246B00C084B6 /* SPPlayerViewController.m in Sources */,

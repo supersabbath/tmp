@@ -2,7 +2,8 @@
 typedef NS_ENUM(NSInteger, PTSContentType)
 {
     PTSMovieContent,
-    PTSEpisodeContent
+    PTSEpisodeContent,
+    PTSTrailerContent
 };
 
 @class PTABRControlParameters;
@@ -21,7 +22,7 @@ typedef NS_ENUM(NSInteger, PTSContentType)
     NSString *thumbnail;
     
     PTABRControlParameters * abrControl;
-    id starzAsset;  // this will keep a reference to whatever object the app uses for configuration: Check PSPlayFilmObject
+    PSPlayFilmObject *starzAsset;  // this will keep a reference to whatever object the app uses for configuration: Check PSPlayFilmObject
     NSTimeInterval initialPosition;
     
 }
@@ -40,7 +41,7 @@ typedef NS_ENUM(NSInteger, PTSContentType)
 @property (nonatomic, strong) NSString * stripContentUrl;
 @property (nonatomic, strong) PTABRControlParameters * abrControl;
 @property (nonatomic, assign) PTSContentType contentType;
-@property (nonatomic , strong) id starzAsset;
+@property (nonatomic,strong) PSPlayFilmObject *starzAsset;
 
 
 - (id)initWithDictionary:(NSDictionary *)info;

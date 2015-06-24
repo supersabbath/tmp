@@ -17,6 +17,7 @@
 @class SPContainerView;
 @class PTSVideoItem;
 @class SPPlayerUIStyle;
+@class SPMoviePlayerController;
 
 #define POST_VIEW_TAG 518
 #define EPISODE_VIEW_TAG 778
@@ -24,14 +25,14 @@
 
 @interface SPPlayerViewController : UIViewController <SPPlayerControlViewDelegate, UITableViewDelegate ,MetadataTableViewControllerDelegate, SPChildViewControllerDelegate>
 
-/* Adobe Player*/
-@property (nonatomic, strong) PTMediaPlayer *player;
+
 /*currentItem Video playable item*/
 @property (nonatomic, strong) PTSVideoItem *currentItem ;
 /* DataSource Will provide views that are not included in the player view controller .. such as the Episode Selector*/
 @property (nonatomic, weak) id <SPPlayerViewControllerViewDataSource> dataSource;   // see SPPlayerViewControllerDelegate.h
 @property (nonatomic, weak) id <SPPlayerViewControllerDelegate> delgate;            // see SPPlayerViewControllerDelegate.h
 
+@property (weak, nonatomic) IBOutlet UIView *playerContainerView;           //  --> PTMediaPlayer  - it has to be public, to avoid retain cycles in the addPlayerViewBlock
 
 /*  initWithVideoItem: ideoItem andStyle:
  
@@ -52,12 +53,17 @@
 
 //- (void) resize;
 - (void) stopVideo;
-- (void) pauseVideo;
-- (void) resumeVideo;
 
 /* Prepares the player for a new playable item .. removes the postplayback view and episode selector view */
 -(void) refreshPlayerForNewPlaybackItem:(PTSVideoItem *)item;
+/*
+    Returns the status of the player see adobe documetation for islive property
+ */
+-(BOOL) isPlayerControllerLive;
 
+-(CMTime) currentPlaybackTime;
+
+-(CMTime) videoDuration;
 
 /*Concurrency could call this method*/
 - (IBAction) closePlayer:(id)sender;
