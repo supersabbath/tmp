@@ -22,6 +22,7 @@
 // Style
 #import "SPPlayerUIStyle.h"
 
+#include <math.h>       /* fmod */
 //DEpendencys
 #import "SPPlayerNotification.h"
 #import "SPPlayerControllerObserverProtocol.h"
@@ -35,8 +36,7 @@
 #endif
 
 
-
-
+#ifndef __IPHONE_8_2
 
 #ifdef UI_USER_INTERFACE_IDIOM
 #define IS_IPAD_IDIOM \
@@ -45,7 +45,42 @@
 #define IS_IPAD_IDIOM NO
 #endif
 
-#include <math.h>       /* fmod */
+#ifdef UI_USER_INTERFACE_IDIOM
+#define DO_FOR_IPAD_IPHONE(a, b)                              \
+(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ?    \
+(a) : (b)
+
+#define BLOCK_FOR_IPAD_IPHONE(a, b) \
+(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? a() : b()
+#else
+#define DO_FOR_IPAD_IPHONE(a, b)    a
+
+#define BLOCK_FOR_IPAD_IPHONE(a, b) a()
+#endif
+
+#endif // ENDs __IPHONE_8_2
+
+
+#ifdef __IPHONE_8_3
+#define IS_IPAD_IDIOM \
+(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+#else
+#define IS_IPAD_IDIOM NO
+#endif
+
+#ifdef __IPHONE_8_3
+#define DO_FOR_IPAD_IPHONE(a, b)                              \
+(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ?    \
+(a) : (b)
+
+#define BLOCK_FOR_IPAD_IPHONE(a, b) \
+(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? a() : b()
+#else
+#define DO_FOR_IPAD_IPHONE(a, b)    a
+
+#define BLOCK_FOR_IPAD_IPHONE(a, b) a()
+#endif
+
 
 
 
@@ -56,7 +91,7 @@
     PTQoSProvider *qosProvider;
     BOOL wasPlayingBeforeSuspend;
     BOOL wasPlaybackNotificationSent; // for resume after home button is touch
-    SPMoviePlayerController *playerController;
+   
 }
 
 
@@ -103,6 +138,7 @@
 @end
 
 @implementation SPPlayerViewController
+@synthesize playerController;
 #pragma mark - Initialization
 
 -(instancetype) initWithVideoItem:(PTSVideoItem *) videoItem andStyle:(SPPlayerUIStyle*) uiStyler;
@@ -164,19 +200,7 @@
         
     };
 }
-//- (void) applicationWillResignActive
-//{
-//    wasPlayingBeforeSuspend = self.player.status == PTMediaPlayerStatusPlaying;
-//    [self.player pause];
-//}
-//
-//- (void) applicationDidBecomeActive
-//{
-//    if (wasPlayingBeforeSuspend)
-//    {
-//        [self.player play];
-//    }
-//}
+
 
 /*
      // _scrubbCollectionView memory is managed in its onw viewcontroller
@@ -233,6 +257,7 @@
     [self.hideUIElementsTimer invalidate];
     [self clearCurrentItemAssociatedViews]; // to prevent a crash from the table views
     [self stopObservingNotifications];
+    [self.playerController.player removeObserver:_controlsContainerView forKeyPath:@"status"];
 }
 
 
@@ -246,6 +271,7 @@
     [self addScrubbingThumbnailsToView];
     [self setTextInInformationLabels:_currentItem];
     [self bringControlViewsToFrontMostPosition];
+    
     
 }
 
@@ -401,24 +427,33 @@
     }
 }
 
+#pragma mark - PlayerController Properties
+
 -(BOOL) isPlayerControllerLive
 {
     return [playerController isLive];
 }
 
--(CMTime) currentPlaybackTime {
+-(CMTime) currentPlaybackTime
+{
     return playerController.currentTime;
 }
+
 
 -(CMTime) videoDuration
 {
     return playerController.player.duration;
 }
+
+
+-(NSUInteger) indicatedBitRate
+{
+    return playerController.bitrate;
+}
 #pragma mark - Private Actions
 /*
  Internal methods
- */
-
+*/
 - (void) playVideo
 {
  
@@ -436,9 +471,8 @@
     }
     
     playerController = [[SPMoviePlayerController alloc] initWithMediaPlayerItem:_currentItem andViewController:self];
- 
+   
     [playerController playCurrentVideo:self.addPlayerViewBlock];
-  
 }
 
 
@@ -464,8 +498,6 @@
     }
     
 }
-
-
 
 
 -(void) changePlayerToDiffentContent:(NSNotification*) notification
@@ -534,7 +566,6 @@
         }
     }
 }
-
 
 
 /*
@@ -761,6 +792,7 @@
 -(void) showSpinner
 {
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.centerControlsContainer animated:YES];
+ 
     hud.mode = MBProgressHUDModeIndeterminate;
     
     hud.activityIndicatorColor = [UIColor colorWithRed:216.0/255 green:205.0/255 blue:178.0/255 alpha:1.0];
@@ -798,25 +830,27 @@
             break;
         case PTMediaPlayerStatusReady:
             [self moveToInitialPosition ];
-           
+//             [_controlsContainerView startObservingPlayerStatus:playerController.player]; at the begining I implemented KVO , but call the status change every cycle use changeViewToPauseMode | Don't remove this comment in case someone tries use KVO again
             [self log:@"=== Status: PTMediaPlayerStatusReady ==="];
             break;
         case PTMediaPlayerStatusPlaying:
             
             [self log:@"=== Status: PTMediaPlayerStatusPlaying ==="];
-            [[self controlsContainerView] changeViewToPlayingMode];
+            [self.controlsContainerView changeViewToPlayingMode];
             [self hideSpinner];
             [self startHideElementsTimer];
             [self hidePostPlaybackViewIfNeeded];
             [self postNotificationToObservers:SPPlayerStatusPlayingNotification];
-         
+        
             break;
         case PTMediaPlayerStatusPaused:
             
             [self log:@"=== Status: PTMediaPlayerStatusPaused ==="];
             [self postNotificationToObservers:SPPlayerStatusPausedNotification];
             [self requestPostPlaybackViewToDelegate];
-         
+            [self showViewContainer:self.controlsContainerView animated:YES];
+            [self showViewContainer:self.topControlsContainer animated:YES];
+            [self.controlsContainerView changeViewToPauseMode];
             break;
         case PTMediaPlayerStatusStopped:
             [self log:@"=== Status: PTMediaPlayerStatusStopped ==="];
@@ -845,12 +879,10 @@
 
 -(void) postNotificationToObservers:(NSString*) notificationIdentifier
 {
-    
     SPPlayerNotification *notification  = [SPPlayerNotification notificationForplayer:self Item:_currentItem andIdentifier:notificationIdentifier ];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
 
 }
-
 
 
 - (void)onMediaPlayerNotificationItemEntry:(NSNotification *)nsnotification
@@ -863,7 +895,7 @@
 - (void) onMediaPlayerItemPlayStarted:(NSNotification *)notification
 {
     [self log:@"PTSPlayerView:: Media Playback started."];
-   // [self postNotificationToObservers:SPPlayerStatusPlayingNotification];
+    [self postNotificationToObservers:SPPlayerStatusPlayingNotification];
 }
 
 - (void) onMediaPlayerItemPlayCompleted:(NSNotification *) notification
@@ -886,6 +918,12 @@
 - (void) onMediaPlayerSeekCompleted:(NSNotification *)notification
 {
     [self postNotificationToObservers:SPPlayerStatusPlayingNotification];
+    
+}
+
+-(void) onMediaPlayerMediaSelectionOptionsAvailableNotification:(NSNotification*) notification
+{
+    [self requestLanguageForSubtitles];
     
 }
 
@@ -923,7 +961,9 @@
             
             [self log:@"PostWillFinishNotification"];
             [self postNotificationToObservers:SPPlayerWillStopNotification];
+      
             wasPlaybackNotificationSent = true;
+            
         }
     }
 }
@@ -932,6 +972,25 @@
 
 #pragma mark - SPPlayerControlView Delegate
 #pragma mark -
+#pragma mark  Subtitles
+-(void) requestLanguageForSubtitles
+{
+    if ( [self.delgate respondsToSelector:@selector(validKeyForSubtitles:)])
+    {
+       PTMediaPlayerItem *playerIteM = playerController.player.currentItem;
+        NSArray *subtitles = playerIteM.subtitlesOptions;
+        NSArray *options = [subtitles filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"locale.localeIdentifier != nil"]];
+    
+        NSMutableArray *keys =[NSMutableArray arrayWithCapacity:options.count];
+        
+        [options enumerateObjectsUsingBlock:^(PTMediaSelectionOption *opt, NSUInteger idx, BOOL *stop) {
+            [keys addObject:[opt.locale localeIdentifier]];
+        }];
+        NSString *validKey = [self.delgate validKeyForSubtitles:keys];
+        [playerController showSubtitlesForLangKey:validKey];
+    }
+}
+
 
 #pragma mark  Play Button methods
 - (void)view:(SPPlayerControlView*) view didReceivePlayTouch:(UIButton*) button
@@ -1144,6 +1203,7 @@
  */
 -(void) episodeSelectorViewDidCallPlayer
 {
+  
     [self showEpisodeSelector:self];
 }
 

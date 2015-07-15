@@ -15,13 +15,19 @@
 typedef void(^ PlayerInitializationCompletion)(UIView*);
 
 @interface SPMoviePlayerController : NSObject
+
 /* Adobe Player*/
 @property (nonatomic, strong) PTMediaPlayer *player;
+
+
+
 /* Adobe Player properties*/
 @property (nonatomic, weak, getter=qoServiceInfo) PTPlaybackInformation *playbackInformation;
 @property (readonly, nonatomic) CMTime currentTime;
+@property  (readonly, nonatomic) NSUInteger bitrate;
 @property (assign, nonatomic) float volume;
 @property (readonly, nonatomic) BOOL isLive;
+
 /*Playback Public Actions*/
 - (void) playCurrentVideo:(PlayerInitializationCompletion)onPlayerViewReadyBlock;  // video passed on initialization method
 - (void) playVideo:(PTSVideoItem *)item withCompletionBlock:(PlayerInitializationCompletion)onPlayerViewReadyBlock; // Resume playback or change the episode case
@@ -29,6 +35,7 @@ typedef void(^ PlayerInitializationCompletion)(UIView*);
 - (void) pauseVideo;
 - (void) resumeVideo;
 - (void) releasePlayer;  // call to stop observing a clean adobes player status and instance 
+- (void) showSubtitlesForLangKey:(NSString*)langKey;
 
 /*Seeking*/
 - (void) seekToTime:(CMTime)time completionHandler:(void (^)(BOOL finished))completionHandler;
@@ -52,5 +59,6 @@ typedef void(^ PlayerInitializationCompletion)(UIView*);
 - (void) onMediaPlayerItemPlayCompleted:(NSNotification *) notification;
 - (void) onMediaPlayerItemPlayStarted:(NSNotification *)notification;
 - (void) onMediaPlayerNotificationItemEntry:(NSNotification *)nsnotification;
+- (void) onMediaPlayerMediaSelectionOptionsAvailableNotification:(NSNotification *)nsnotification;
 - (void) logDRMError:(NSString*)str :(DRMError*)error;
 @end

@@ -34,7 +34,8 @@
 /*UI Actions*/
 
 -(void) changeViewToPlayingMode;
--(void) changeViewToLoadingMode;
+-(void) changeViewToPauseMode;
+
 /* Appearence*/
 -(void) setupColorInLangButton:(UIColor*) color forState:(UIControlState) state;
 -(void) setupFontInLanButton:(UIFont*) font;

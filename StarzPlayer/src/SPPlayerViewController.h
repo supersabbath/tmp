@@ -26,6 +26,8 @@
 @interface SPPlayerViewController : UIViewController <SPPlayerControlViewDelegate, UITableViewDelegate ,MetadataTableViewControllerDelegate, SPChildViewControllerDelegate>
 
 
+
+@property (nonatomic, strong) SPMoviePlayerController *playerController;
 /*currentItem Video playable item*/
 @property (nonatomic, strong) PTSVideoItem *currentItem ;
 /* DataSource Will provide views that are not included in the player view controller .. such as the Episode Selector*/
@@ -48,7 +50,7 @@
 /*Playback Public Actions*/
 - (void) playVideo:(PTSVideoItem *)item;
 - (void) playCurrentVideo;
-
+-(void) showSpinner;
 // See also SPPlayerChangeContentNotification
 
 //- (void) resize;
@@ -65,6 +67,7 @@
 
 -(CMTime) videoDuration;
 
+-(NSUInteger) indicatedBitRate;
 /*Concurrency could call this method*/
 - (IBAction) closePlayer:(id)sender;
 @end

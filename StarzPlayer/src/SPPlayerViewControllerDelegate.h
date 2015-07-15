@@ -44,6 +44,16 @@
 -(void) playerViewController:(SPPlayerViewController *)playerVC willStopDueDRMError:(DRMError *)error;
 
 -(void) playerViewController:(SPPlayerViewController *)playerVC willStopDuePTMediaError:(PTMediaError*)error;
+
+
+/**  -(NSString*) validKeyForSubtitles:(NSArray *)subtitleKeys;
+ 
+ @param subtitleKey SSPlayerViewController will  pass the valid key for the delegate to choose
+ @return nsstring key taken from the subtitles array. in the array is empty just retun nil
+ 
+ */
+@optional
+-(NSString*) validKeyForSubtitles:(NSArray *)subtitleKeys;
 @end
 
 @protocol SPPlayerViewControllerAddableViews <NSObject>

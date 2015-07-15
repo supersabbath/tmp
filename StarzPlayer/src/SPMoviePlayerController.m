@@ -34,11 +34,11 @@
         wasPlaybackNotificationSent = NO;
         self.videoItem = mediaItem;
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillResignActive)
+                                                 selector:@selector(applicationWillResignActive:)
                                                      name:UIApplicationWillResignActiveNotification
                                                    object:NULL];
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationDidBecomeActive)
+                                                 selector:@selector(applicationDidBecomeActive:)
                                                      name:UIApplicationDidBecomeActiveNotification
                                                    object:NULL];
         observer = observerViewController;
@@ -48,8 +48,13 @@
     return self;
 }
 
-/*Playback Public Actions*/
+- (void)dealloc
+{
+    NSLog(@"Deallocating player");
+    [[NSNotificationCenter defaultCenter] removeObserver:self ];
+}
 
+/*Playback Public Actions*/
 #pragma mark - Private Actions
 - (void) playVideo:(PTSVideoItem *)item withCompletionBlock:(PlayerInitializationCompletion)onPlayerViewReadyBlock
 {
@@ -61,7 +66,7 @@
 - (void) playCurrentVideo:(PlayerInitializationCompletion)onPlayerViewReadyBlock
 {
     wasPlaybackNotificationSent = NO;
-    PTMediaPlayerItem *playableItem = [self createPTMediaplayerItemIfNeeded];
+    PTMediaPlayerItem *playableItem = [self createPTMediaplayerItem];
     UIView *playerView = [self createMediaPlayerView:playableItem];
     
     if (onPlayerViewReadyBlock) {
@@ -88,7 +93,6 @@
     {
         [self.player play];
     }
-
 }
 
 - (void) releasePlayer
@@ -123,7 +127,6 @@
     self.player.videoGravity = PTMediaPlayerVideoGravityResizeAspect;   // set the video display properties
     self.player.muted = NO;
     self.player.autoPlay = YES;
-    
     
     UIView *playerView =_player.view;
     playerView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -186,6 +189,12 @@
 {
     return self.player.currentItem.currentTime;
 }
+
+- (NSUInteger )bitrate
+{
+    return self.qoServiceInfo.indicatedBitrate;
+}
+
 #pragma mark DRM process
 
 - (void) startAuthentication:(PTSVideoItem *)videoItem
@@ -314,18 +323,12 @@
 
 #pragma mark - PTMetaData 
 
-- (PTMediaPlayerItem*) createPTMediaplayerItemIfNeeded {
-    
-    if ([(NSObject*)self.videoItem.starzAsset valueForKey:@"ptMediaPlayerItem"] != nil) // we are using the the one created by PSPlayFilmObject
-    {
-        return [(NSObject*)self.videoItem.starzAsset valueForKey:@"ptMediaPlayerItem"];
-    }else{
-        
+- (PTMediaPlayerItem*) createPTMediaplayerItem
+{
         NSURL *m3uUrl = [NSURL URLWithString:self.videoItem.url ];
         PTMetadata *metadata = [self createMetadata];
         PTMediaPlayerItem *item = [[PTMediaPlayerItem alloc] initWithUrl:m3uUrl mediaId:self.videoItem.mediaId metadata:metadata];
         return   item;
-    }
 }
 
 - (PTMetadata *) createMetadata
@@ -347,6 +350,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:currentObserver selector:@selector(onMediaPlayerItemPlayStarted:) name:PTMediaPlayerPlayStartedNotification object:self.player];
     [[NSNotificationCenter defaultCenter] addObserver:currentObserver selector:@selector(onMediaPlayerItemPlayCompleted:) name:PTMediaPlayerPlayCompletedNotification object:self.player];
     [[NSNotificationCenter defaultCenter] addObserver:currentObserver selector:@selector(onMediaPlayerSeekCompleted:) name:PTMediaPlayerSeekCompletedNotification object:self.player];
+    [[NSNotificationCenter defaultCenter] addObserver:currentObserver selector:@selector(onMediaPlayerMediaSelectionOptionsAvailableNotification:) name:PTMediaPlayerMediaSelectionOptionsAvailableNotification object:self.player];
+
     
 }
 
@@ -359,6 +364,24 @@
 
 
 #pragma mark - Helpers
+
+-(void) showSubtitlesForLangKey:(NSString*)langKey
+{
+    
+    NSArray *subtiltes =self.player.currentItem.subtitlesOptions;
+    NSArray* options = [subtiltes filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"locale.localeIdentifier like %@ ", langKey]];
+    PTMediaSelectionOption * subtitleOption = options.firstObject;
+    
+    if (subtitleOption) {
+        [self.player.currentItem selectSubtitleOption:subtitleOption];
+        
+    }else if (subtiltes.firstObject)
+    {
+        [self.player.currentItem selectSubtitleOption:subtiltes.firstObject];
+    }
+    self.player.closedCaptionDisplayEnabled = YES;
+}
+
 
 - (void) qosSetup
 {
@@ -388,13 +411,13 @@
 }
 
 #pragma mark - Notitfications from Device
-- (void) applicationWillResignActive
+- (void) applicationWillResignActive:(NSNotification*)notification
 {
-    wasPlayingBeforeSuspend = self.player.status == PTMediaPlayerStatusPlaying;
+    wasPlayingBeforeSuspend = (self.player.status == PTMediaPlayerStatusPlaying);
     [self.player pause];
 }
 
-- (void) applicationDidBecomeActive
+- (void) applicationDidBecomeActive:(NSNotification*)notification
 {
     if (wasPlayingBeforeSuspend)
     {

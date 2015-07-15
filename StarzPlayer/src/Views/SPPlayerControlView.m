@@ -8,7 +8,7 @@
 
 #import "SPPlayerControlView.h"
 #import <MBProgressHUD.h>
-
+#import <PSDKLibrary/PTMediaPlayer.h>
 #define AD_TIMESCALE 100000
 #define CONTROL_CONTAINER_TAG 221
 
@@ -28,6 +28,7 @@
 {
  [self setupView];
 }
+
 
 
 -(void) setupView
@@ -142,16 +143,12 @@
 -(void) changeViewToPlayingMode
 {
     playButton.selected  = YES;
- 
 }
 
-
--(void) changeViewToLoadingMode
+-(void) changeViewToPauseMode
 {
-
-    
+    playButton.selected  = NO;
 }
-
 
 -(void) updateViewForTimeRange:(CMTimeRange) range andCurrentPosition:(CMTime) currentPosition
 {
@@ -238,4 +235,5 @@
     return [NSString stringWithFormat:@"%@:%@:%@", hours, minutes, seconds];
    
 }
+
 @end
